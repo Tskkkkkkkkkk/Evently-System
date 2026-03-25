@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
+<<<<<<< HEAD
 ALLOWED_USER_TYPES = {"event_organizer", "venue_owner"}
+=======
+>>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 
 class RegisterSerializer(serializers.Serializer):
     full_name = serializers.CharField(required=False, allow_blank=True)
@@ -10,6 +13,7 @@ class RegisterSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, min_length=8)
     password_confirm = serializers.CharField(write_only=True, min_length=8)
 
+<<<<<<< HEAD
     def validate_user_type(self, value):
         if value and value.lower() not in ALLOWED_USER_TYPES:
             raise serializers.ValidationError(
@@ -17,6 +21,8 @@ class RegisterSerializer(serializers.Serializer):
             )
         return value.lower() if value else value
 
+=======
+>>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     def validate(self, attrs):
         if attrs.get("password") != attrs.get("password_confirm"):
             raise serializers.ValidationError({"password": "Passwords do not match."})
