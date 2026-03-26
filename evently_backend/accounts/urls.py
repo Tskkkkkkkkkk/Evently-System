@@ -13,15 +13,12 @@ from .views import (
     CreateVenueEventView,
     OwnerEventsView,
     OrganizerEventsView,
-<<<<<<< HEAD
 
     AdminVenueOwnersView,
     AdminVenueOwnerDetailView,
     AdminVenuesView,
     AdminVenueDetailView,
     AdminStatsView,
-=======
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 )
 
 urlpatterns = [
@@ -34,7 +31,6 @@ urlpatterns = [
     path("venues/<slug:slug>/events/", CreateVenueEventView.as_view(), name="venue-events"),
     path("geocode/", GeocodeView.as_view(), name="geocode"),
     path("owner/venues/", OwnerVenuesView.as_view(), name="owner-venues"),
-<<<<<<< HEAD
     path("owner/venues/upload-image/", VenueImageUploadView.as_view(), name="owner-venue-upload-image"),
     path("owner/venues/<slug:slug>/", OwnerVenueDetailView.as_view(), name="owner-venue-detail"),
     path("owner/events/", OwnerEventsView.as_view(), name="owner-events"),
@@ -46,10 +42,4 @@ urlpatterns = [
     path("admin-api/owners/<str:user_id>/", AdminVenueOwnerDetailView.as_view(), name="admin-owner-detail"),
     path("admin-api/venues/", AdminVenuesView.as_view(), name="admin-venues"),
     path("admin-api/venues/<str:venue_id>/", AdminVenueDetailView.as_view(), name="admin-venue-detail"),
-=======
-    path("owner/venues/<slug:slug>/", OwnerVenueDetailView.as_view(), name="owner-venue-detail"),
-    path("owner/venues/upload-image/", VenueImageUploadView.as_view(), name="owner-venue-upload-image"),
-    path("owner/events/", OwnerEventsView.as_view(), name="owner-events"),
-    path("organizer/events/", OrganizerEventsView.as_view(), name="organizer-events"),
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 ]

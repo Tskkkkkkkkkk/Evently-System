@@ -4,11 +4,7 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-<<<<<<< HEAD
 
-=======
-# Load .env from project root so EMAIL_* and other vars can be set without exporting
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 try:
     from dotenv import load_dotenv
     load_dotenv(BASE_DIR / ".env")
@@ -28,28 +24,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
  
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
 
-=======
-    # Third-party
-    'corsheaders',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    # Local
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     'accounts',
 ]
 
 MIDDLEWARE = [
-<<<<<<< HEAD
     'corsheaders.middleware.CorsMiddleware',        
-=======
-    'corsheaders.middleware.CorsMiddleware',        # must be first
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -64,11 +48,7 @@ ROOT_URLCONF = "evently_backend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-<<<<<<< HEAD
         "DIRS": [BASE_DIR / "frontend" / "build"],  
-=======
-        "DIRS": [BASE_DIR / "frontend" / "build"],   # ← React build folder
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -95,11 +75,7 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
-<<<<<<< HEAD
         "rest_framework.permissions.AllowAny",   
-=======
-        "rest_framework.permissions.AllowAny",   # views override with IsAuthenticated where needed
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     ),
 }
 
@@ -111,15 +87,9 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-<<<<<<< HEAD
 
 MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017")
 MONGO_DB_NAME = os.environ.get("MONGO_DB_NAME", "evently")
-=======
-# PyMongo helper (profiles, etc.)
-MONGO_URI = "mongodb://localhost:27017"
-MONGO_DB_NAME = "evently"
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -143,15 +113,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 CORS_ALLOWED_ORIGINS = [
-<<<<<<< HEAD
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:3002",
     "http://127.0.0.1:3002",
-=======
-    "http://localhost:3000",   # React dev server
-    "http://127.0.0.1:3000",
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -161,8 +126,8 @@ if os.environ.get("EMAIL_HOST"):
     EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
     EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
     EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "true").lower() in ("1", "true", "yes")
-    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
-    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+    EMAIL_HOST_USER = os.environ.get("samayrarijal@gmail.com", "")
+    EMAIL_HOST_PASSWORD = os.environ.get("hqqijupxofxyolbn")
     DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER or "noreply@evently.local")
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

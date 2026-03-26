@@ -34,7 +34,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const [invitationResult,setInvitationResult]= useState(null);
   const [selectedDate,    setSelectedDate]    = useState('');
 
-
   const [activeSlide,     setActiveSlide]     = useState(0);
   const [lightboxOpen,    setLightboxOpen]    = useState(false);
   const [lightboxIndex,   setLightboxIndex]   = useState(0);
@@ -56,7 +55,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
     return () => clearTimeout(t);
   }, [venue]);
 
-
   const getImages = (v) => {
     if (!v) return [];
     if (v.images?.length) return v.images;
@@ -70,7 +68,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
     setActiveSlide(i => (i - 1 + images.length) % images.length), [images.length]);
   const nextSlide = useCallback(() =>
     setActiveSlide(i => (i + 1) % images.length), [images.length]);
-
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -90,6 +87,20 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
     setSubmitError('');
     setInvitationResult(null);
     setSelectedDate('');
+  };
+
+  // Redirect to login with a message that only event organisers can book
+  const handleBookNow = () => {
+    if (!user) {
+      window.location.href = `/login?redirect=${encodeURIComponent(`/venues/${slug}`)}&reason=organizer_only`;
+      return;
+    }
+    const userType = user.user_type || user.userType;
+    if (userType !== 'event_organizer' && userType !== 'organizer') {
+      window.location.href = `/signup?redirect=${encodeURIComponent(`/venues/${slug}`)}&reason=organizer_only`;
+      return;
+    }
+    openBookModal();
   };
 
   const today = new Date().toISOString().slice(0, 10);
@@ -147,11 +158,9 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
           <>
             <section className={styles.sectionGrid}>
 
-      
               <div className={styles.imageWrap}>
                 {images.length > 0 ? (
                   <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: 16, overflow: 'hidden', background: '#f0ede8' }}>
-             
                     <div
                       style={{
                         width: '100%', height: '100%', minHeight: 320,
@@ -162,7 +171,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                       onClick={() => { setLightboxIndex(activeSlide); setLightboxOpen(true); }}
                     />
 
-              
                     {images.length > 1 && (
                       <>
                         <button onClick={e => { e.stopPropagation(); prevSlide(); }} style={{
@@ -178,7 +186,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>›</button>
 
-                     
                         <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
                           {images.map((_, i) => (
                             <button key={i} onClick={e => { e.stopPropagation(); setActiveSlide(i); }} style={{
@@ -190,7 +197,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                           ))}
                         </div>
 
-             
                         <div style={{
                           position: 'absolute', top: 12, right: 12,
                           background: 'rgba(0,0,0,0.5)', color: 'white',
@@ -221,11 +227,9 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                   </div>
                 )}
                 <div className={styles.bookingActions}>
-                  <button type="button" className={styles.btnPrimary} onClick={() => {
-                    if (!user) { window.location.href = `/login?redirect=${encodeURIComponent(`/venues/${slug}`)}`; return; }
-                    openBookModal();
-                  }}>Book Now</button>
-                 
+                  <button type="button" className={styles.btnPrimary} onClick={handleBookNow}>
+                    Book Now
+                  </button>
                 </div>
                 <div className={styles.paymentSection}>
                   <p className={styles.paymentTitle}>Payment Methods</p>
@@ -240,7 +244,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
               </div>
             </section>
 
-      
             {images.length > 1 && (
               <section style={{ maxWidth: 900, margin: '0 auto 24px', padding: '0 0' }}>
                 <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888', marginBottom: 10 }}>
@@ -316,7 +319,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
             </section>
           </>
         )}
-
 
         {lightboxOpen && images.length > 0 && (
           <div onClick={() => setLightboxOpen(false)} style={{
@@ -490,15 +492,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <label className={styles.modalLabel}>Edit text</label>
                     <input className={styles.modalInput} placeholder="Invitation message" value={eventForm.invitation_text} onChange={e => setEventForm({ ...eventForm, invitation_text: e.target.value })} />
                   </div>
-                  <div className={styles.modalField}>
-                    <label className={styles.modalLabel}>Change theme</label>
-                    <div className={styles.themeChipsWrap}>
-                      {THEME_OPTIONS.map(t => (
-                        <span key={t} className={eventForm.invitation_theme === t ? `${styles.themeChip} ${styles.themeChipSelected}` : styles.themeChip}
-                          onClick={() => setEventForm({ ...eventForm, invitation_theme: t })}>{t}</span>
-                      ))}
-                    </div>
-                  </div>
+                 
                   <div className={styles.modalActions}>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`} onClick={() => setBookStep('event-schedule')}>Back</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => setBookStep('invite-guests')}>Continue</button>
@@ -526,7 +520,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
               {bookStep === 'done' && (
                 <>
                   <h2 className={styles.modalTitle}>All set!</h2>
-                  <p className={styles.doneIcon}>✓</p>
+                
                   <p className={styles.doneText}>
                     Your event has been created and the venue owner has been notified.
                     {invitationResult?.invitations_sent > 0 && (
@@ -537,6 +531,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                   <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary} ${styles.btnFull}`} onClick={closeBookModal}>Done</button>
                 </>
               )}
+
             </div>
           </div>
         )}

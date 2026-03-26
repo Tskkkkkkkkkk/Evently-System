@@ -14,11 +14,26 @@ function Signup({ onSignupSuccess }) {
     password_confirm: '',
   });
   const [error, setError] = useState('');
+  const [passwordMatchError, setPasswordMatchError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    const updated = { ...formData, [name]: value };
+    setFormData(updated);
     setError('');
+
+    // Real-time password match check
+    if (name === 'password' || name === 'password_confirm') {
+      const pass = name === 'password' ? value : updated.password;
+      const confirm = name === 'password_confirm' ? value : updated.password_confirm;
+
+      if (confirm.length > 0 && pass !== confirm) {
+        setPasswordMatchError('Passwords do not match.');
+      } else {
+        setPasswordMatchError('');
+      }
+    }
   };
 
   const getDashboardPath = (userType) => {
@@ -42,7 +57,7 @@ function Signup({ onSignupSuccess }) {
     }
 
     if (formData.password !== formData.password_confirm) {
-      setError('Passwords do not match.');
+      setPasswordMatchError('Passwords do not match.');
       setLoading(false);
       return;
     }
@@ -58,7 +73,6 @@ function Signup({ onSignupSuccess }) {
         onSignupSuccess(response.data.user);
       }
 
-     
       navigate(getDashboardPath(response.data.user.user_type));
       
     } catch (err) {
@@ -137,7 +151,6 @@ function Signup({ onSignupSuccess }) {
                 <option value="">Select user type</option>
                 <option value="event_organizer">Event Organiser</option>
                 <option value="venue_owner">Venue Owner</option>
-            
               </select>
             </div>
 
@@ -166,9 +179,16 @@ function Signup({ onSignupSuccess }) {
                 required
                 placeholder="Confirm your password"
               />
+              {passwordMatchError && (
+                <span className={styles.fieldError}>{passwordMatchError}</span>
+              )}
             </div>
 
-            <button type="submit" className={styles.button} disabled={loading}>
+            <button
+              type="submit"
+              className={styles.button}
+              disabled={loading || !!passwordMatchError}
+            >
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
           </form>
