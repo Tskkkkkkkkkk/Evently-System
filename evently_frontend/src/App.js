@@ -9,6 +9,8 @@ import VenueDetail from './VenueDetail';
 import VenueOwnerDashboard from './VenueOwnerDashboard';
 import AdminDashboard from './AdminDashboard';
 import EventOrganizerDashboard from './EventOrganizerDashboard';
+import PaymentSuccess from './paymentsuccess';
+import PaymentFailure from './paymentfailure';
 import './App.css';
 
 function App() {
@@ -51,6 +53,9 @@ function App() {
         <Route path="/signup" element={<Signup onSignupSuccess={handleLogin} />} />
         <Route path="/venues" element={<Venues user={user} onLogout={handleLogout} />} />
         <Route path="/venues/:slug" element={<VenueDetail user={user} onLogout={handleLogout} />} />
+    
+<Route path="/payment/success/" element={<PaymentSuccess user={user} onLogout={handleLogout} />} />
+<Route path="/payment/failure/" element={<PaymentFailure user={user} onLogout={handleLogout} />} />
 
         <Route
           path="/owner"

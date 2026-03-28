@@ -4,6 +4,7 @@ import os
 import re
 import uuid
 import urllib.request
+import secrets
 from io import BytesIO
 from urllib.parse import urlencode
 from django.contrib.auth import get_user_model
@@ -22,18 +23,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from slugify import slugify
 from evently_backend.mongo_client import mongo_db, is_mongo_connected
 from .serializers import LoginSerializer, RegisterSerializer, VenueSerializer
-<<<<<<< HEAD
 from .permissions import IsAdmin
-=======
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
+import hmac, hashlib, base64, uuid
+from django.conf import settings
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 
 User = get_user_model()
 
 
-<<<<<<< HEAD
-=======
-# ── helpers ──────────────────────────────────────────────────────────────────
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 
 def _split_full_name(full_name: str):
     parts = (full_name or "").strip().split()
@@ -70,10 +68,6 @@ def _unique_slug(name: str, existing_id=None) -> str:
 
 
 def _venue_out(doc: dict) -> dict:
-<<<<<<< HEAD
-=======
-    """Serialize a MongoDB venue document for API output."""
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     if doc is None:
         return {}
     doc["id"] = str(doc.pop("_id", ""))
@@ -81,10 +75,6 @@ def _venue_out(doc: dict) -> dict:
 
 
 def _event_out(doc: dict) -> dict:
-<<<<<<< HEAD
-=======
-    """Serialize a MongoDB event document for API output."""
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     if doc is None:
         return {}
     doc = dict(doc)
@@ -93,10 +83,6 @@ def _event_out(doc: dict) -> dict:
 
 
 def _normalize_emails(emails) -> list:
-<<<<<<< HEAD
-=======
-    """Return list of valid, normalized email addresses."""
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     if not emails:
         return []
     out = []
@@ -111,13 +97,6 @@ def _normalize_emails(emails) -> list:
 
 
 def _send_event_invitations(doc: dict) -> tuple:
-<<<<<<< HEAD
-=======
-    """
-    Send invitation emails to guest_emails with event details.
-    Returns (sent_count, error_message or None).
-    """
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     guests = _normalize_emails(doc.get("guest_emails") or [])
     if not guests:
         return 0, None
@@ -169,21 +148,11 @@ def _send_event_invitations(doc: dict) -> tuple:
     except Exception as e:
         logger.exception("Invitation emails failed: %s", e)
         err_str = str(e)
-<<<<<<< HEAD
         if "535" in err_str or "Password not accepted" in err_str or "BadCredentials" in err_str:
             err_str = "Email server authentication failed. Please check the server's email configuration."
         return sent, err_str
 
 
-=======
-        # Don't expose raw SMTP/auth errors to the client
-        if "535" in err_str or "Password not accepted" in err_str or "BadCredentials" in err_str:
-            err_str = "Email server authentication failed. Please check the server's email configuration (e.g. Gmail App Password)."
-        return sent, err_str
-
-
-# ── auth views ───────────────────────────────────────────────────────────────
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 
 class HomeView(APIView):
     permission_classes = [AllowAny]
@@ -191,11 +160,7 @@ class HomeView(APIView):
     def get(self, request):
         mongo_ok = is_mongo_connected()
         return Response({
-<<<<<<< HEAD
             "status": "Evently API is running",
-=======
-            "status": "Evently API is running 🎉",
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
             "mongodb": "connected" if mongo_ok else "disconnected",
         })
 
@@ -239,7 +204,6 @@ class RegisterView(APIView):
                 },
                 upsert=True,
             )
-<<<<<<< HEAD
         except Exception as e:
             logger.error("Failed to save user profile to MongoDB: %s", e)
 
@@ -255,23 +219,6 @@ class RegisterView(APIView):
         }
         return Response(
             {**tokens, "user": user_data},
-=======
-        except Exception:
-            pass
-
-        tokens = _tokens_for_user(user)
-        return Response(
-            {
-                **tokens,
-                "user": {
-                    "id": user.id,
-                    "username": user.username,
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                },
-            },
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
             status=status.HTTP_201_CREATED,
         )
 
@@ -286,20 +233,8 @@ class LoginView(APIView):
         email = serializer.validated_data["email"].lower().strip()
         password = serializer.validated_data["password"]
 
-<<<<<<< HEAD
         user = User.objects.filter(email=email).first()
         if not user or not user.check_password(password):
-=======
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            return Response(
-                {"detail": "Invalid email or password."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        if not user.check_password(password):
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
             return Response(
                 {"detail": "Invalid email or password."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -323,22 +258,14 @@ class LoginView(APIView):
         return Response({**tokens, "user": user_data}, status=status.HTTP_200_OK)
 
 
-<<<<<<< HEAD
 
-=======
-# ── public venue views ────────────────────────────────────────────────────────
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 
 class VenuesView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
         try:
-<<<<<<< HEAD
             base = {"is_active": True, "status": "approved"}
-=======
-            base = {"is_active": True}
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
             and_parts = []
 
             q = (request.query_params.get("q") or "").strip()
@@ -397,10 +324,6 @@ class VenueDetailView(APIView):
 
 
 class GeocodeView(APIView):
-<<<<<<< HEAD
-=======
-    """GET ?q=address, city, Nepal - returns { lat, lon } from Nominatim (for venue map)."""
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -418,18 +341,10 @@ class GeocodeView(APIView):
                 first = data[0]
                 return Response({"lat": float(first["lat"]), "lon": float(first["lon"])})
             return Response({"detail": "No results."}, status=status.HTTP_404_NOT_FOUND)
-<<<<<<< HEAD
         except Exception:
             return Response({"detail": "Geocoding failed."}, status=status.HTTP_502_BAD_GATEWAY)
 
 
-=======
-        except Exception as e:
-            return Response({"detail": "Geocoding failed."}, status=status.HTTP_502_BAD_GATEWAY)
-
-
-# ── owner venue views (authenticated) ────────────────────────────────────────
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 
 class OwnerVenuesView(APIView):
     permission_classes = [IsAuthenticated]
@@ -462,10 +377,7 @@ class OwnerVenuesView(APIView):
                 "owner_id": str(request.user.id),
                 "images": [],
                 "is_active": True,
-<<<<<<< HEAD
                 "status": "pending",
-=======
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
                 "created_at": timezone.now(),
                 "updated_at": timezone.now(),
             }
@@ -477,15 +389,9 @@ class OwnerVenuesView(APIView):
             result = mongo_db["venues"].insert_one(doc)
             doc["_id"] = result.inserted_id
             return Response(_venue_out(doc), status=status.HTTP_201_CREATED)
-<<<<<<< HEAD
         except Exception:
             return Response(
                 {"detail": "MongoDB is not running. Start MongoDB to add venues."},
-=======
-        except Exception as e:
-            return Response(
-                {"detail": "MongoDB is not running. Start MongoDB to add venues. (Run: mongod --dbpath <path>)"},
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
                 status=status.HTTP_503_SERVICE_UNAVAILABLE,
             )
 
@@ -554,39 +460,20 @@ class VenueImageUploadView(APIView):
         try:
             data = image_file.read()
             if not data:
-<<<<<<< HEAD
                 return Response({"detail": "Uploaded file is empty."}, status=status.HTTP_400_BAD_REQUEST)
             img = Image.open(BytesIO(data))
             img.load()
         except Exception:
-=======
-                return Response(
-                    {"detail": "Uploaded file is empty."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            img = Image.open(BytesIO(data))
-            img.load()
-        except Exception as e:
-            logger.warning("Venue image upload: invalid image file: %s", e)
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
             return Response(
                 {"detail": "Invalid or unsupported image. Use JPEG, PNG or GIF."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-<<<<<<< HEAD
-=======
-        # Convert to RGB for JPEG (e.g. PNG with transparency -> JPEG)
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
         if img.mode in ("RGBA", "P"):
             img = img.convert("RGB")
         elif img.mode != "RGB":
             img = img.convert("RGB")
 
-<<<<<<< HEAD
-=======
-        # Optional: resize if very large (max 1200px on longest side)
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
         max_size = 1200
         w, h = img.size
         if w > max_size or h > max_size:
@@ -603,17 +490,8 @@ class VenueImageUploadView(APIView):
 
         try:
             img.save(filepath, "JPEG", quality=85, optimize=True)
-<<<<<<< HEAD
         except Exception:
             return Response({"detail": "Failed to save image."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-=======
-        except Exception as e:
-            logger.exception("Venue image save failed: %s", e)
-            return Response(
-                {"detail": "Failed to save image."},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 
         rel_url = f"{settings.MEDIA_URL}venue_images/{filename}"
         image_url = request.build_absolute_uri(rel_url) if request else rel_url
@@ -632,16 +510,9 @@ class VenueImageUploadView(APIView):
         return Response({"image_url": image_url}, status=status.HTTP_201_CREATED)
 
 
-<<<<<<< HEAD
 
 
 class CreateVenueEventView(APIView):
-=======
-# ── venue events (bookings / host an event) ───────────────────────────────────
-
-class CreateVenueEventView(APIView):
-    """POST: Create an event/booking for a venue. Data appears on venue owner dashboard."""
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     permission_classes = [AllowAny]
 
     def post(self, request, slug):
@@ -656,20 +527,10 @@ class CreateVenueEventView(APIView):
         event_date = (data.get("event_date") or "").strip()
         if event_date:
             try:
-<<<<<<< HEAD
                 existing = mongo_db["events"].find_one({"venue_slug": slug, "event_date": event_date})
                 if existing:
                     return Response(
                         {"detail": "This venue is already booked for the selected date."},
-=======
-                existing = mongo_db["events"].find_one({
-                    "venue_slug": slug,
-                    "event_date": event_date,
-                })
-                if existing:
-                    return Response(
-                        {"detail": "This venue is already booked for the selected date. Please choose another date."},
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
                         status=status.HTTP_400_BAD_REQUEST,
                     )
             except Exception:
@@ -702,10 +563,6 @@ class CreateVenueEventView(APIView):
             result = mongo_db["events"].insert_one(doc)
             doc["_id"] = result.inserted_id
 
-<<<<<<< HEAD
-=======
-            # Send invitation emails to guests if any
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
             response_data = _event_out(doc)
             guests = _normalize_emails(doc.get("guest_emails") or [])
             if guests:
@@ -713,7 +570,6 @@ class CreateVenueEventView(APIView):
                 response_data["invitations_sent"] = sent
                 if err:
                     response_data["invitation_error"] = err
-<<<<<<< HEAD
 
             return Response(response_data, status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -721,20 +577,6 @@ class CreateVenueEventView(APIView):
 
 
 class OwnerEventsView(APIView):
-=======
-                    logger.warning("Invitation send failed (event created): %s", err)
-
-            return Response(response_data, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response(
-                {"detail": "Could not save event. " + str(e)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-
-class OwnerEventsView(APIView):
-    """GET: List events for venues owned by the current user (venue owner dashboard)."""
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -747,10 +589,6 @@ class OwnerEventsView(APIView):
 
 
 class OrganizerEventsView(APIView):
-<<<<<<< HEAD
-=======
-    """GET: List events created by the current user (event organizer dashboard)."""
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -759,7 +597,6 @@ class OrganizerEventsView(APIView):
             events.sort(key=lambda e: (e.get("event_date") or "", e.get("event_time") or ""), reverse=True)
             return Response([_event_out(e) for e in events])
         except Exception:
-<<<<<<< HEAD
             return Response([])
 
 
@@ -892,6 +729,47 @@ class AdminStatsView(APIView):
             })
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-=======
-            return Response([])
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
+
+
+ESEWA_SECRET = getattr(settings, "ESEWA_SECRET", "8gBm/:&EnhH.1/q")   # move to settings.py in prod
+ESEWA_PRODUCT_CODE = getattr(settings, "ESEWA_PRODUCT_CODE", "EPAYTEST")
+
+def generate_esewa_signature(total_amount, transaction_uuid, product_code, secret):
+    message = f"total_amount={total_amount},transaction_uuid={transaction_uuid},product_code={product_code}"
+    signature = hmac.new(
+        secret.encode("utf-8"),
+        message.encode("utf-8"),
+        hashlib.sha256,
+    ).digest()
+    return base64.b64encode(signature).decode()
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def initiate_esewa_payment(request):
+    venue_slug = request.data.get("venue_slug", "")
+    amount = str(request.data.get("amount", "0"))
+    transaction_uuid = str(uuid.uuid4())
+
+    signature = generate_esewa_signature(
+        total_amount=amount,
+        transaction_uuid=transaction_uuid,
+        product_code=ESEWA_PRODUCT_CODE,
+        secret=ESEWA_SECRET,
+    )
+
+    base_url = getattr(settings, "FRONTEND_URL", "http://localhost:5173")
+
+    return Response({
+        "amount":                    amount,
+        "tax_amount":                "0",
+        "total_amount":              amount,
+        "transaction_uuid":          transaction_uuid,
+        "product_code":              ESEWA_PRODUCT_CODE,
+        "product_service_charge":    "0",
+        "product_delivery_charge":   "0",
+        "success_url":               f"{base_url}/payment/success/",
+        "failure_url":               f"{base_url}/payment/failure/",
+        "signed_field_names":        "total_amount,transaction_uuid,product_code",
+        "signature":                 signature,
+        "esewa_url":                 "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
+    })

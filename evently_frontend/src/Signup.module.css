@@ -95,7 +95,12 @@
   font-size: 13px;
   border: 1px solid #fecaca;
 }
-
+.fieldError {
+  color: #e53e3e;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: block;
+}
 .button {
   background: #111827;
   color: #fff;

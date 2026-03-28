@@ -5,7 +5,7 @@ import styles from './Venues.module.css';
 
 const CAPACITY_OPTIONS = ['Any Size', 'Up to 100', '100 - 300', '300 - 500', '500+'];
 const PRICE_OPTIONS = ['Any Price', 'Below 50,000', '50,000 - 80,000', '80,000+'];
-const AVAILABILITY_OPTIONS = ['All', 'Available'];
+
 
 const mapCapacity = (v) => ({ 'Up to 100': '0-100', '100 - 300': '100-300', '300 - 500': '300-500', '500+': '500plus' }[v] || 'any');
 const mapPrice = (v) => ({ 'Below 50,000': '0-50000', '50,000 - 80,000': '50000-80000', '80,000+': '80000plus' }[v] || 'any');
@@ -17,7 +17,7 @@ export default function VenuesPage({ user, onLogout }) {
   const [location, setLocation] = useState(getParam('location') || '');
   const [capacity, setCapacity] = useState('Any Size');
   const [price, setPrice] = useState('Any Price');
-  const [availability, setAvailability] = useState('All');
+
   const [category, setCategory] = useState(getParam('category') || getParam('type'));
   const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ export default function VenuesPage({ user, onLogout }) {
       if (cap && cap !== 'any') params.capacity_range = cap;
       const pr = mapPrice(price);
       if (pr && pr !== 'any') params.price_range = pr;
-      if (availability && availability !== 'All') params.availability = availability;
+     
       if (category?.trim()) params.event_type = category.trim();
 
       const res = await api.get('/venues/', { params });
@@ -44,12 +44,12 @@ export default function VenuesPage({ user, onLogout }) {
     }
   };
 
-  useEffect(() => { fetchVenues(); }, [location, capacity, price, availability, category]);
+  useEffect(() => { fetchVenues(); }, [location, capacity, price,  category]);
 
   const filters = [
     { label: 'Capacity', value: capacity, setter: setCapacity, options: CAPACITY_OPTIONS },
     { label: 'Price Range', value: price, setter: setPrice, options: PRICE_OPTIONS },
-    { label: 'Availability', value: availability, setter: setAvailability, options: AVAILABILITY_OPTIONS },
+   
   ];
 
   return (

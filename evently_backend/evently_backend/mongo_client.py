@@ -1,18 +1,11 @@
 """MongoDB client for Evently. Uses Django settings (MONGO_URI, MONGO_DB_NAME)."""
 import os
-<<<<<<< HEAD
 import certifi
-=======
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 from django.conf import settings
 from pymongo import MongoClient
 from pymongo.database import Database
 
-<<<<<<< HEAD
 
-=======
-# .env overrides: MONGODB_URI, MONGODB_DB (loaded by settings via dotenv)
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
 _default_uri = os.environ.get("MONGODB_URI") or getattr(settings, "MONGO_URI", "mongodb://localhost:27017/")
 _db_name = os.environ.get("MONGODB_DB") or getattr(settings, "MONGO_DB_NAME", "evently")
 
@@ -23,16 +16,12 @@ _db = None
 def _get_client():
     global _client
     if _client is None:
-<<<<<<< HEAD
         _client = MongoClient(
             _default_uri,
             tls=True,
             tlsCAFile=certifi.where(),
             serverSelectionTimeoutMS=3000,
         )
-=======
-        _client = MongoClient(_default_uri, serverSelectionTimeoutMS=3000)
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab
     return _client
 
 
@@ -57,8 +46,4 @@ class _MongoDbProxy:
         return get_db()[name]
 
 
-<<<<<<< HEAD
 mongo_db = _MongoDbProxy()
-=======
-mongo_db = _MongoDbProxy()
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab

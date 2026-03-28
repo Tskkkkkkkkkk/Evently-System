@@ -18,26 +18,50 @@ const emptyEventForm = {
   guest_emails: '',
 };
 
+
+const redirectToEsewa = (paymentData) => {
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = paymentData.esewa_url;
+
+  const fields = [
+    'amount', 'tax_amount', 'total_amount', 'transaction_uuid',
+    'product_code', 'product_service_charge', 'product_delivery_charge',
+    'success_url', 'failure_url', 'signed_field_names', 'signature',
+  ];
+
+  fields.forEach((key) => {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = key;
+    input.value = paymentData[key];
+    form.appendChild(input);
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+};
+
+
 export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const { slug: slugParam } = useParams();
   const slug = slugParam || slugProp;
 
-  const [venue,           setVenue]           = useState(null);
-  const [loading,         setLoading]         = useState(true);
-  const [showMap,         setShowMap]         = useState(false);
-  const [error,           setError]           = useState('');
-  const [payment,         setPayment]         = useState('eSewa');
-  const [bookStep,        setBookStep]        = useState(null);
-  const [eventForm,       setEventForm]       = useState(emptyEventForm);
-  const [submitLoading,   setSubmitLoading]   = useState(false);
-  const [submitError,     setSubmitError]     = useState('');
-  const [invitationResult,setInvitationResult]= useState(null);
-  const [selectedDate,    setSelectedDate]    = useState('');
+  const [venue,            setVenue]            = useState(null);
+  const [loading,          setLoading]          = useState(true);
+  const [showMap,          setShowMap]          = useState(false);
+  const [error,            setError]            = useState('');
+  const [payment,          setPayment]          = useState('eSewa');
+  const [bookStep,         setBookStep]         = useState(null);
+  const [eventForm,        setEventForm]        = useState(emptyEventForm);
+  const [submitLoading,    setSubmitLoading]    = useState(false);
+  const [submitError,      setSubmitError]      = useState('');
+  const [invitationResult, setInvitationResult] = useState(null);
+  const [selectedDate,     setSelectedDate]     = useState('');
 
-
-  const [activeSlide,     setActiveSlide]     = useState(0);
-  const [lightboxOpen,    setLightboxOpen]    = useState(false);
-  const [lightboxIndex,   setLightboxIndex]   = useState(0);
+  const [activeSlide,  setActiveSlide]  = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex,setLightboxIndex]= useState(0);
 
   useEffect(() => {
     if (!slug) { setLoading(false); setError('Venue not found.'); return; }
@@ -56,7 +80,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
     return () => clearTimeout(t);
   }, [venue]);
 
-
   const getImages = (v) => {
     if (!v) return [];
     if (v.images?.length) return v.images;
@@ -71,19 +94,18 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const nextSlide = useCallback(() =>
     setActiveSlide(i => (i + 1) % images.length), [images.length]);
 
-
   useEffect(() => {
     if (!lightboxOpen) return;
     const handler = (e) => {
-      if (e.key === 'ArrowLeft') setLightboxIndex(i => (i - 1 + images.length) % images.length);
+      if (e.key === 'ArrowLeft')  setLightboxIndex(i => (i - 1 + images.length) % images.length);
       if (e.key === 'ArrowRight') setLightboxIndex(i => (i + 1) % images.length);
-      if (e.key === 'Escape') setLightboxOpen(false);
+      if (e.key === 'Escape')     setLightboxOpen(false);
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [lightboxOpen, images.length]);
 
-  const openBookModal = () => setBookStep('host-prompt');
+  const openBookModal  = () => setBookStep('host-prompt');
   const closeBookModal = () => {
     setBookStep(null);
     setEventForm(emptyEventForm);
@@ -92,7 +114,41 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
     setSelectedDate('');
   };
 
+  const handleBookNow = () => {
+    if (!user) {
+      window.location.href = `/login?redirect=${encodeURIComponent(`/venues/${slug}`)}&reason=organizer_only`;
+      return;
+    }
+    const userType = user.user_type || user.userType;
+    if (userType !== 'event_organizer' && userType !== 'organizer') {
+      window.location.href = `/signup?redirect=${encodeURIComponent(`/venues/${slug}`)}&reason=organizer_only`;
+      return;
+    }
+    openBookModal();
+  };
+
   const today = new Date().toISOString().slice(0, 10);
+
+ 
+  const initiatePayment = async (fallbackStep) => {
+    if (payment === 'eSewa') {
+      try {
+        const payRes = await api.post('/initiate-esewa-payment/', {
+          venue_slug: slug,
+          amount: venue.total ?? venue.price,
+        });
+        redirectToEsewa(payRes.data); 
+      } catch (e) {
+        setSubmitError('Could not initiate eSewa payment. Please try again.');
+        setSubmitLoading(false);
+      }
+    } else {
+    
+      setBookStep(fallbackStep);
+      setSubmitLoading(false);
+    }
+  };
+
 
   const submitSkipBooking = async () => {
     if (!selectedDate) return;
@@ -106,10 +162,9 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
         expected_guests: 0, additional_requirements: '',
         guest_emails: [], invitation_text: '', invitation_theme: 'Modern',
       });
-      setBookStep('booking-done');
+      await initiatePayment('booking-done');
     } catch (e) {
       setSubmitError(e.response?.data?.detail || 'That date is already taken. Please pick another.');
-    } finally {
       setSubmitLoading(false);
     }
   };
@@ -124,11 +179,13 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
         expected_guests: parseInt(eventForm.expected_guests, 10) || 0,
         guest_emails: emails,
       });
-      setInvitationResult({ invitations_sent: res.data.invitations_sent, invitation_error: res.data.invitation_error });
-      setBookStep('done');
+      setInvitationResult({
+        invitations_sent: res.data.invitations_sent,
+        invitation_error: res.data.invitation_error,
+      });
+      await initiatePayment('done');
     } catch (e) {
       setSubmitError(e.response?.data?.detail || 'Could not save event. Try again.');
-    } finally {
       setSubmitLoading(false);
     }
   };
@@ -147,11 +204,9 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
           <>
             <section className={styles.sectionGrid}>
 
-      
               <div className={styles.imageWrap}>
                 {images.length > 0 ? (
                   <div style={{ position: 'relative', width: '100%', height: '100%', borderRadius: 16, overflow: 'hidden', background: '#f0ede8' }}>
-             
                     <div
                       style={{
                         width: '100%', height: '100%', minHeight: 320,
@@ -162,7 +217,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                       onClick={() => { setLightboxIndex(activeSlide); setLightboxOpen(true); }}
                     />
 
-              
                     {images.length > 1 && (
                       <>
                         <button onClick={e => { e.stopPropagation(); prevSlide(); }} style={{
@@ -178,7 +232,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>›</button>
 
-                     
                         <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
                           {images.map((_, i) => (
                             <button key={i} onClick={e => { e.stopPropagation(); setActiveSlide(i); }} style={{
@@ -190,7 +243,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                           ))}
                         </div>
 
-             
                         <div style={{
                           position: 'absolute', top: 12, right: 12,
                           background: 'rgba(0,0,0,0.5)', color: 'white',
@@ -221,17 +273,21 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                   </div>
                 )}
                 <div className={styles.bookingActions}>
-                  <button type="button" className={styles.btnPrimary} onClick={() => {
-                    if (!user) { window.location.href = `/login?redirect=${encodeURIComponent(`/venues/${slug}`)}`; return; }
-                    openBookModal();
-                  }}>Book Now</button>
-                 
+                  <button type="button" className={styles.btnPrimary} onClick={handleBookNow}>
+                    Book Now
+                  </button>
                 </div>
                 <div className={styles.paymentSection}>
                   <p className={styles.paymentTitle}>Payment Methods</p>
-                  {['eSewa', 'Khalti'].map(method => (
+                  {['eSewa'].map(method => (
                     <label key={method} className={styles.radioLabel}>
-                      <input type="radio" name="payment" value={method} checked={payment === method} onChange={() => setPayment(method)} />
+                      <input
+                        type="radio"
+                        name="payment"
+                        value={method}
+                        checked={payment === method}
+                        onChange={() => setPayment(method)}
+                      />
                       {method}
                     </label>
                   ))}
@@ -240,7 +296,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
               </div>
             </section>
 
-      
             {images.length > 1 && (
               <section style={{ maxWidth: 900, margin: '0 auto 24px', padding: '0 0' }}>
                 <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888', marginBottom: 10 }}>
@@ -317,7 +372,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
           </>
         )}
 
-
+    
         {lightboxOpen && images.length > 0 && (
           <div onClick={() => setLightboxOpen(false)} style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)',
@@ -356,6 +411,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
           </div>
         )}
 
+    
         {bookStep && venue && (
           <div className={styles.modalOverlay} onClick={e => e.target === e.currentTarget && closeBookModal()}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
@@ -367,41 +423,54 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <p className={styles.bookingDetailsTitle}>Booking Details</p>
                     <p className={styles.modalText}>Venue: {venue.name}</p>
                     <p className={styles.modalText}>Total: Rs {fmt(venue.price)}</p>
+                    <p className={styles.modalText}>Payment: {payment}</p>
                   </div>
                   <div className={styles.hostPromptBox}>
                     <p className={styles.hostPromptTitle}>Want to host an Event?</p>
                   </div>
                   <div className={styles.modalActionsCenter}>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => setBookStep('create-event')}>Yes</button>
-                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`} onClick={() => setBookStep('skip-pick-date')}>Skip</button>
+                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={() => setBookStep('skip-pick-date')}>Skip</button>
                   </div>
                 </>
               )}
 
+              
               {bookStep === 'skip-pick-date' && (
                 <>
                   <h2 className={styles.modalTitle}>Reserve a date</h2>
                   <div className={styles.modalField}>
                     <label className={styles.modalLabel}>Date</label>
-                    <input type="date" className={styles.modalInput} min={today} value={selectedDate} onChange={e => setSelectedDate(e.target.value)} />
+                    <input
+                      type="date"
+                      className={styles.modalInput}
+                      min={today}
+                      value={selectedDate}
+                      onChange={e => setSelectedDate(e.target.value)}
+                    />
                   </div>
                   {submitError && <p className={styles.modalError}>{submitError}</p>}
                   <div className={styles.modalActions}>
-                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`} onClick={closeBookModal} disabled={submitLoading}>Cancel</button>
+                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={closeBookModal}    disabled={submitLoading}>Cancel</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={submitSkipBooking} disabled={!selectedDate || submitLoading}>
-                      {submitLoading ? 'Reserving...' : 'Reserve this date'}
+                      {submitLoading
+                        ? (payment === 'eSewa' ? 'Redirecting to eSewa…' : 'Reserving...')
+                        : `Reserve & Pay with ${payment}`}
                     </button>
                   </div>
                 </>
               )}
 
+            
               {bookStep === 'booking-done' && (
                 <>
                   <h2 className={styles.modalTitle}>Booking Confirmed</h2>
+                  <p className={styles.modalText}>Your date has been reserved. Payment will be collected on arrival.</p>
                   <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary} ${styles.btnFull}`} onClick={closeBookModal}>Done</button>
                 </>
               )}
 
+              
               {bookStep === 'create-event' && (
                 <>
                   <h2 className={styles.modalTitle}>Host your Event</h2>
@@ -417,8 +486,11 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <label className={styles.modalLabel}>Event Theme</label>
                     <div className={styles.themeChipsWrap}>
                       {THEME_OPTIONS.map(t => (
-                        <span key={t} className={eventForm.event_theme === t ? `${styles.themeChip} ${styles.themeChipSelected}` : styles.themeChip}
-                          onClick={() => setEventForm({ ...eventForm, event_theme: t })}>{t}</span>
+                        <span
+                          key={t}
+                          className={eventForm.event_theme === t ? `${styles.themeChip} ${styles.themeChipSelected}` : styles.themeChip}
+                          onClick={() => setEventForm({ ...eventForm, event_theme: t })}
+                        >{t}</span>
                       ))}
                     </div>
                   </div>
@@ -427,12 +499,13 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <textarea className={styles.modalInput} rows={3} placeholder="Describe your event" value={eventForm.event_description} onChange={e => setEventForm({ ...eventForm, event_description: e.target.value })} />
                   </div>
                   <div className={styles.modalActions}>
-                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`} onClick={closeBookModal}>Cancel</button>
+                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={closeBookModal}>Cancel</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => setBookStep('event-schedule')}>Continue</button>
                   </div>
                 </>
               )}
 
+           
               {bookStep === 'event-schedule' && (
                 <>
                   <h2 className={styles.modalTitle}>Event Schedule</h2>
@@ -474,12 +547,13 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <textarea className={styles.modalInput} rows={2} value={eventForm.additional_requirements} onChange={e => setEventForm({ ...eventForm, additional_requirements: e.target.value })} />
                   </div>
                   <div className={styles.modalActions}>
-                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`} onClick={() => setBookStep('create-event')}>Back</button>
+                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={() => setBookStep('create-event')}>Back</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => setBookStep('invitation-card')}>Continue</button>
                   </div>
                 </>
               )}
 
+          
               {bookStep === 'invitation-card' && (
                 <>
                   <h2 className={styles.modalTitle}>Your Invitation Card</h2>
@@ -490,43 +564,55 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <label className={styles.modalLabel}>Edit text</label>
                     <input className={styles.modalInput} placeholder="Invitation message" value={eventForm.invitation_text} onChange={e => setEventForm({ ...eventForm, invitation_text: e.target.value })} />
                   </div>
-                  <div className={styles.modalField}>
-                    <label className={styles.modalLabel}>Change theme</label>
-                    <div className={styles.themeChipsWrap}>
-                      {THEME_OPTIONS.map(t => (
-                        <span key={t} className={eventForm.invitation_theme === t ? `${styles.themeChip} ${styles.themeChipSelected}` : styles.themeChip}
-                          onClick={() => setEventForm({ ...eventForm, invitation_theme: t })}>{t}</span>
-                      ))}
-                    </div>
-                  </div>
                   <div className={styles.modalActions}>
-                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`} onClick={() => setBookStep('event-schedule')}>Back</button>
+                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={() => setBookStep('event-schedule')}>Back</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => setBookStep('invite-guests')}>Continue</button>
                   </div>
                 </>
               )}
 
+       
               {bookStep === 'invite-guests' && (
                 <>
                   <h2 className={styles.modalTitle}>Invite Guests</h2>
                   <div className={styles.modalField}>
-                    <label className={styles.modalLabel}>Guest emails</label>
+                    <label className={styles.modalLabel}>Guest emails (comma or newline separated)</label>
                     <textarea className={styles.modalInput} rows={4} value={eventForm.guest_emails} onChange={e => setEventForm({ ...eventForm, guest_emails: e.target.value })} />
                   </div>
+
+                  <div style={{
+                    background: '#f9f6f1', border: '1px solid #e8e2d9',
+                    borderRadius: 10, padding: '12px 16px', marginBottom: 12,
+                  }}>
+                    <p style={{ margin: 0, fontSize: 13, color: '#666', fontFamily: "'DM Sans', sans-serif" }}>
+                      Payment method: <strong>{payment}</strong>
+                    </p>
+                    <p style={{ margin: '4px 0 0', fontSize: 13, color: '#666', fontFamily: "'DM Sans', sans-serif" }}>
+                      Amount: <strong>Rs {fmt(venue.total ?? venue.price)}</strong>
+                    </p>
+                    {payment === 'eSewa' && (
+                      <p style={{ margin: '6px 0 0', fontSize: 12, color: '#888', fontFamily: "'DM Sans', sans-serif" }}>
+                        You will be redirected to eSewa to complete your payment.
+                      </p>
+                    )}
+                  </div>
+
                   {submitError && <p className={styles.modalError}>{submitError}</p>}
                   <div className={styles.modalActions}>
-                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`} onClick={() => setBookStep('invitation-card')}>Back</button>
+                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={() => setBookStep('invitation-card')} disabled={submitLoading}>Back</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} disabled={submitLoading} onClick={submitEvent}>
-                      {submitLoading ? 'Saving...' : 'Send invites & Confirm'}
+                      {submitLoading
+                        ? (payment === 'eSewa' ? 'Redirecting to eSewa…' : 'Saving...')
+                        : (payment === 'eSewa' ? 'Confirm & Pay with eSewa' : 'Send invites & Confirm')}
                     </button>
                   </div>
                 </>
               )}
 
+            
               {bookStep === 'done' && (
                 <>
                   <h2 className={styles.modalTitle}>All set!</h2>
-                  <p className={styles.doneIcon}>✓</p>
                   <p className={styles.doneText}>
                     Your event has been created and the venue owner has been notified.
                     {invitationResult?.invitations_sent > 0 && (
@@ -537,6 +623,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                   <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary} ${styles.btnFull}`} onClick={closeBookModal}>Done</button>
                 </>
               )}
+
             </div>
           </div>
         )}
