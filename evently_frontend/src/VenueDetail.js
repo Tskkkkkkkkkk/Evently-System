@@ -59,9 +59,15 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const [invitationResult, setInvitationResult] = useState(null);
   const [selectedDate,     setSelectedDate]     = useState('');
 
+<<<<<<< HEAD
   const [activeSlide,  setActiveSlide]  = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex,setLightboxIndex]= useState(0);
+=======
+  const [activeSlide,     setActiveSlide]     = useState(0);
+  const [lightboxOpen,    setLightboxOpen]    = useState(false);
+  const [lightboxIndex,   setLightboxIndex]   = useState(0);
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
 
   useEffect(() => {
     if (!slug) { setLoading(false); setError('Venue not found.'); return; }
@@ -114,6 +120,10 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
     setSelectedDate('');
   };
 
+<<<<<<< HEAD
+=======
+  // Redirect to login with a message that only event organisers can book
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
   const handleBookNow = () => {
     if (!user) {
       window.location.href = `/login?redirect=${encodeURIComponent(`/venues/${slug}`)}&reason=organizer_only`;
@@ -372,7 +382,10 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
           </>
         )}
 
+<<<<<<< HEAD
     
+=======
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
         {lightboxOpen && images.length > 0 && (
           <div onClick={() => setLightboxOpen(false)} style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)',
@@ -564,6 +577,10 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <label className={styles.modalLabel}>Edit text</label>
                     <input className={styles.modalInput} placeholder="Invitation message" value={eventForm.invitation_text} onChange={e => setEventForm({ ...eventForm, invitation_text: e.target.value })} />
                   </div>
+<<<<<<< HEAD
+=======
+                 
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
                   <div className={styles.modalActions}>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={() => setBookStep('event-schedule')}>Back</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => setBookStep('invite-guests')}>Continue</button>
@@ -613,6 +630,10 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
               {bookStep === 'done' && (
                 <>
                   <h2 className={styles.modalTitle}>All set!</h2>
+<<<<<<< HEAD
+=======
+                
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
                   <p className={styles.doneText}>
                     Your event has been created and the venue owner has been notified.
                     {invitationResult?.invitations_sent > 0 && (

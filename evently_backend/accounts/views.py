@@ -24,10 +24,13 @@ from slugify import slugify
 from evently_backend.mongo_client import mongo_db, is_mongo_connected
 from .serializers import LoginSerializer, RegisterSerializer, VenueSerializer
 from .permissions import IsAdmin
+<<<<<<< HEAD
 import hmac, hashlib, base64, uuid
 from django.conf import settings
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
+=======
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
 
 User = get_user_model()
 
@@ -728,6 +731,7 @@ class AdminStatsView(APIView):
                 "total_bookings": total_bookings,
             })
         except Exception as e:
+<<<<<<< HEAD
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -773,3 +777,6 @@ def initiate_esewa_payment(request):
         "signature":                 signature,
         "esewa_url":                 "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
     })
+=======
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885

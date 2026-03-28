@@ -19,9 +19,12 @@ from .views import (
     AdminVenuesView,
     AdminVenueDetailView,
     AdminStatsView,
+<<<<<<< HEAD
     initiate_esewa_payment,
    
 
+=======
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
 )
 
 
@@ -46,6 +49,9 @@ urlpatterns = [
     path("admin-api/owners/<str:user_id>/", AdminVenueOwnerDetailView.as_view(), name="admin-owner-detail"),
     path("admin-api/venues/", AdminVenuesView.as_view(), name="admin-venues"),
     path("admin-api/venues/<str:venue_id>/", AdminVenueDetailView.as_view(), name="admin-venue-detail"),
+<<<<<<< HEAD
     path("initiate-esewa-payment/", initiate_esewa_payment, name="initiate-esewa-payment"),
   
+=======
+>>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
 ]
