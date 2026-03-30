@@ -12,7 +12,7 @@ import EventOrganizerDashboard from './EventOrganizerDashboard';
 import PaymentSuccess from './paymentsuccess';
 import PaymentFailure from './paymentfailure';
 import './App.css';
-
+import RSVPPage from './RSVPpage';
 function App() {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);

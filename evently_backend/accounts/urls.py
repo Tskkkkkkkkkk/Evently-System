@@ -19,12 +19,12 @@ from .views import (
     AdminVenuesView,
     AdminVenueDetailView,
     AdminStatsView,
-<<<<<<< HEAD
     initiate_esewa_payment,
-   
+      EsewaPaymentSuccessView,
+    EsewaPaymentFailureView,
+    RSVPResponseView,
+    EventRSVPDetailView,
 
-=======
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
 )
 
 
@@ -49,9 +49,12 @@ urlpatterns = [
     path("admin-api/owners/<str:user_id>/", AdminVenueOwnerDetailView.as_view(), name="admin-owner-detail"),
     path("admin-api/venues/", AdminVenuesView.as_view(), name="admin-venues"),
     path("admin-api/venues/<str:venue_id>/", AdminVenueDetailView.as_view(), name="admin-venue-detail"),
-<<<<<<< HEAD
+   
+    # urls.py
+   path("esewa/success/", EsewaPaymentSuccessView.as_view(), name="esewa-success"),
+    path("esewa/failure/", EsewaPaymentFailureView.as_view(), name="esewa-failure"),
     path("initiate-esewa-payment/", initiate_esewa_payment, name="initiate-esewa-payment"),
-  
-=======
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
+
+    path("rsvp/<str:token>/",                          RSVPResponseView.as_view(),    name="rsvp-response"),
+    path("organizer/events/<str:event_id>/rsvp/",      EventRSVPDetailView.as_view(), name="event-rsvp-detail"),
 ]

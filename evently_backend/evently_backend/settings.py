@@ -133,6 +133,5 @@ else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     DEFAULT_FROM_EMAIL = "noreply@evently.local"
 
-FRONTEND_URL = "http://localhost:5173"   # change to https://yourdomain.com in production
-ESEWA_SECRET = "8gBm/:&EnhH.1/q"        # sandbox key — replace in prod
-ESEWA_PRODUCT_CODE = "EPAYTEST"          # your merchant code in prod
+BACKEND_URL  = "http://localhost:8000"   
+FRONTEND_URL = "http://localhost:5173"   

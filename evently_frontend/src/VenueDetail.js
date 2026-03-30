@@ -14,7 +14,7 @@ const emptyEventForm = {
   event_date: '', event_time: '', dress_code: '',
   host_name: '', host_contact: '', host_email: '',
   expected_guests: '', additional_requirements: '',
-  invitation_text: 'You are invited!', invitation_theme: 'Modern',
+  invitation_text: 'You are invited!',
   guest_emails: '',
 };
 
@@ -59,15 +59,9 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const [invitationResult, setInvitationResult] = useState(null);
   const [selectedDate,     setSelectedDate]     = useState('');
 
-<<<<<<< HEAD
   const [activeSlide,  setActiveSlide]  = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex,setLightboxIndex]= useState(0);
-=======
-  const [activeSlide,     setActiveSlide]     = useState(0);
-  const [lightboxOpen,    setLightboxOpen]    = useState(false);
-  const [lightboxIndex,   setLightboxIndex]   = useState(0);
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
 
   useEffect(() => {
     if (!slug) { setLoading(false); setError('Venue not found.'); return; }
@@ -120,10 +114,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
     setSelectedDate('');
   };
 
-<<<<<<< HEAD
-=======
-  // Redirect to login with a message that only event organisers can book
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
   const handleBookNow = () => {
     if (!user) {
       window.location.href = `/login?redirect=${encodeURIComponent(`/venues/${slug}`)}&reason=organizer_only`;
@@ -160,24 +150,36 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   };
 
 
-  const submitSkipBooking = async () => {
-    if (!selectedDate) return;
-    setSubmitLoading(true);
-    setSubmitError('');
-    try {
-      await api.post(`/venues/${slug}/events/`, {
-        event_name: 'Booking', event_type: '', event_theme: '', event_description: '',
-        event_date: selectedDate, event_time: '', dress_code: '',
-        host_name: '', host_contact: '', host_email: '',
-        expected_guests: 0, additional_requirements: '',
-        guest_emails: [], invitation_text: '', invitation_theme: 'Modern',
-      });
-      await initiatePayment('booking-done');
-    } catch (e) {
-      setSubmitError(e.response?.data?.detail || 'That date is already taken. Please pick another.');
-      setSubmitLoading(false);
-    }
-  };
+  // replace your submitSkipBooking and submitEvent functions
+
+const submitSkipBooking = async () => {
+  if (!selectedDate) return;
+  setSubmitLoading(true);
+  setSubmitError('');
+  try {
+    // step 1 — create pending booking, get transaction_uuid back
+    const bookingRes = await api.post(`/venues/${slug}/events/`, {
+      event_name: 'Booking', event_type: '', event_theme: '',
+      event_description: '', event_date: selectedDate, event_time: '',
+      dress_code: '', host_name: '', host_contact: '', host_email: '',
+      expected_guests: 0, additional_requirements: '',
+      guest_emails: [], invitation_text: '',
+    });
+
+    // step 2 — initiate payment with the same transaction_uuid
+    const payRes = await api.post('/initiate-esewa-payment/', {
+      venue_slug:       slug,
+      amount:           venue.total ?? venue.price,
+      transaction_uuid: bookingRes.data.transaction_uuid,  // ← link them
+    });
+
+    redirectToEsewa(payRes.data);   // leaves the page
+  } catch (e) {
+    setSubmitError(e.response?.data?.detail || 'That date is already taken. Please pick another.');
+    setSubmitLoading(false);
+  }
+};
+
 
   const submitEvent = async () => {
     setSubmitLoading(true);
@@ -382,10 +384,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
           </>
         )}
 
-<<<<<<< HEAD
     
-=======
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
         {lightboxOpen && images.length > 0 && (
           <div onClick={() => setLightboxOpen(false)} style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)',
@@ -577,10 +576,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <label className={styles.modalLabel}>Edit text</label>
                     <input className={styles.modalInput} placeholder="Invitation message" value={eventForm.invitation_text} onChange={e => setEventForm({ ...eventForm, invitation_text: e.target.value })} />
                   </div>
-<<<<<<< HEAD
-=======
-                 
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
                   <div className={styles.modalActions}>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={() => setBookStep('event-schedule')}>Back</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => setBookStep('invite-guests')}>Continue</button>
@@ -630,10 +625,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
               {bookStep === 'done' && (
                 <>
                   <h2 className={styles.modalTitle}>All set!</h2>
-<<<<<<< HEAD
-=======
-                
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
                   <p className={styles.doneText}>
                     Your event has been created and the venue owner has been notified.
                     {invitationResult?.invitations_sent > 0 && (
