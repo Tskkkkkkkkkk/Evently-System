@@ -80,7 +80,10 @@
   font-size: 12px;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -109,7 +112,10 @@
   color: white;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
 .search-input {
   width: 100%;
   max-width: 380px;
@@ -269,6 +275,10 @@
   justify-content: flex-end;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
 .empty-state {
   text-align: center;
   padding: 50px 0;
@@ -286,6 +296,10 @@
   font-size: 14px;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -380,6 +394,10 @@
   white-space: nowrap;
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
 .loading-text {
   color: #888;
   font-size: 14px;

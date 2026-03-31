@@ -32,7 +32,11 @@ function EventRSVPStats({ eventId }) {
           display: 'flex', alignItems: 'center', gap: 6,
         }}
       >
+<<<<<<< HEAD
          {open ? 'Hide' : 'View'} RSVP responses
+=======
+        📋 {open ? 'Hide' : 'View'} RSVP responses
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
       </button>
 
       {open && (
@@ -201,7 +205,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                     boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
                   }}
                 >
+<<<<<<< HEAD
            
+=======
+                  {/* ── Event header row ── */}
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
                   <div
                     style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', cursor: 'pointer' }}
                     onClick={() => setSelectedEvent(ev)}
@@ -230,7 +238,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                     </span>
                   </div>
 
+<<<<<<< HEAD
                   {/*  RSVP section  */}
+=======
+                  {/* ── RSVP section (only if guests were invited) ── */}
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
                   {ev.guest_emails?.length > 0 && (
                     <EventRSVPStats eventId={ev.id} />
                   )}
@@ -251,7 +263,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
           </div>
         )}
 
+<<<<<<< HEAD
         {/*Event detail modal  */}
+=======
+        {/* ── Event detail modal ── */}
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
         {selectedEvent && (
           <div className="confirm-overlay" onClick={() => setSelectedEvent(null)}>
             <div className="confirm-box" style={{ textAlign: 'left', padding: 28 }} onClick={e => e.stopPropagation()}>
