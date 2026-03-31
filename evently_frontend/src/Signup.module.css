@@ -23,6 +23,39 @@
   display: flex;
   justify-content: center;
 }
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordWrapper input {
+  padding: 11px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  width: 100%;
+}
+.passwordWrapper input:focus,
+.passwordWrapper select:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 1px #111827;
+}
+.toggleText {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #738394;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.toggleText:hover {
+  color: #151616;
+}
 
 .card {
   background: #fff;

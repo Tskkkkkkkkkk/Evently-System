@@ -32,8 +32,8 @@ const redirectToEsewa = (paymentData) => {
 
   fields.forEach((key) => {
     const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key;
+    input.type  = 'hidden';
+    input.name  = key;
     input.value = paymentData[key];
     form.appendChild(input);
   });
@@ -42,32 +42,24 @@ const redirectToEsewa = (paymentData) => {
   form.submit();
 };
 
-
 export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const { slug: slugParam } = useParams();
   const slug = slugParam || slugProp;
 
-  const [venue,            setVenue]            = useState(null);
-  const [loading,          setLoading]          = useState(true);
-  const [showMap,          setShowMap]          = useState(false);
-  const [error,            setError]            = useState('');
-  const [payment,          setPayment]          = useState('eSewa');
-  const [bookStep,         setBookStep]         = useState(null);
-  const [eventForm,        setEventForm]        = useState(emptyEventForm);
-  const [submitLoading,    setSubmitLoading]    = useState(false);
-  const [submitError,      setSubmitError]      = useState('');
-  const [invitationResult, setInvitationResult] = useState(null);
-  const [selectedDate,     setSelectedDate]     = useState('');
+  const [venue,         setVenue]         = useState(null);
+  const [loading,       setLoading]       = useState(true);
+  const [showMap,       setShowMap]       = useState(false);
+  const [error,         setError]         = useState('');
+  const [payment,       setPayment]       = useState('eSewa');
+  const [bookStep,      setBookStep]      = useState(null);
+  const [eventForm,     setEventForm]     = useState(emptyEventForm);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [submitError,   setSubmitError]   = useState('');
+  const [selectedDate,  setSelectedDate]  = useState('');
 
-<<<<<<< HEAD
-  const [activeSlide,  setActiveSlide]  = useState(0);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex,setLightboxIndex]= useState(0);
-=======
-  const [activeSlide,     setActiveSlide]     = useState(0);
-  const [lightboxOpen,    setLightboxOpen]    = useState(false);
-  const [lightboxIndex,   setLightboxIndex]   = useState(0);
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
+  const [activeSlide,   setActiveSlide]   = useState(0);
+  const [lightboxOpen,  setLightboxOpen]  = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   useEffect(() => {
     if (!slug) { setLoading(false); setError('Venue not found.'); return; }
@@ -116,14 +108,9 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
     setBookStep(null);
     setEventForm(emptyEventForm);
     setSubmitError('');
-    setInvitationResult(null);
     setSelectedDate('');
   };
 
-<<<<<<< HEAD
-=======
-  // Redirect to login with a message that only event organisers can book
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
   const handleBookNow = () => {
     if (!user) {
       window.location.href = `/login?redirect=${encodeURIComponent(`/venues/${slug}`)}&reason=organizer_only`;
@@ -138,41 +125,41 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   };
 
   const today = new Date().toISOString().slice(0, 10);
-
- 
-  const initiatePayment = async (fallbackStep) => {
-    if (payment === 'eSewa') {
-      try {
-        const payRes = await api.post('/initiate-esewa-payment/', {
-          venue_slug: slug,
-          amount: venue.total ?? venue.price,
-        });
-        redirectToEsewa(payRes.data); 
-      } catch (e) {
-        setSubmitError('Could not initiate eSewa payment. Please try again.');
-        setSubmitLoading(false);
-      }
-    } else {
-    
-      setBookStep(fallbackStep);
-      setSubmitLoading(false);
-    }
+  const goToDashboard = () => {
+    window.location.href = '/organizer/dashboard';
   };
-
 
   const submitSkipBooking = async () => {
     if (!selectedDate) return;
     setSubmitLoading(true);
     setSubmitError('');
     try {
-      await api.post(`/venues/${slug}/events/`, {
-        event_name: 'Booking', event_type: '', event_theme: '', event_description: '',
-        event_date: selectedDate, event_time: '', dress_code: '',
-        host_name: '', host_contact: '', host_email: '',
+      const bookingRes = await api.post(`/venues/${slug}/events/`, {
+        event_name: 'Booking', event_type: '', event_theme: '',
+        event_description: '', event_date: selectedDate, event_time: '',
+        dress_code: '', host_name: '', host_contact: '', host_email: '',
         expected_guests: 0, additional_requirements: '',
         guest_emails: [], invitation_text: '', invitation_theme: 'Modern',
       });
-      await initiatePayment('booking-done');
+
+      if (!bookingRes.data.transaction_uuid) {
+        setSubmitError('Booking failed — no transaction ID returned.');
+        setSubmitLoading(false);
+        return;
+      }
+
+      const payRes = await api.post('/initiate-esewa-payment/', {
+        venue_slug:       slug,
+        amount:           venue.total ?? venue.price,
+        transaction_uuid: bookingRes.data.transaction_uuid,
+      });
+
+      if (payment === 'eSewa') {
+        redirectToEsewa(payRes.data);
+      } else {
+        
+        goToDashboard();
+      }
     } catch (e) {
       setSubmitError(e.response?.data?.detail || 'That date is already taken. Please pick another.');
       setSubmitLoading(false);
@@ -182,18 +169,33 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const submitEvent = async () => {
     setSubmitLoading(true);
     setSubmitError('');
-    const emails = (eventForm.guest_emails || '').split(/[\n,]+/).map(e => e.trim()).filter(Boolean);
+    const emails = (eventForm.guest_emails || '')
+      .split(/[\n,]+/).map(e => e.trim()).filter(Boolean);
     try {
-      const res = await api.post(`/venues/${slug}/events/`, {
+      const bookingRes = await api.post(`/venues/${slug}/events/`, {
         ...eventForm,
         expected_guests: parseInt(eventForm.expected_guests, 10) || 0,
-        guest_emails: emails,
+        guest_emails:    emails,
       });
-      setInvitationResult({
-        invitations_sent: res.data.invitations_sent,
-        invitation_error: res.data.invitation_error,
+
+      if (!bookingRes.data.transaction_uuid) {
+        setSubmitError('Booking failed — no transaction ID returned.');
+        setSubmitLoading(false);
+        return;
+      }
+
+      const payRes = await api.post('/initiate-esewa-payment/', {
+        venue_slug:       slug,
+        amount:           venue.total ?? venue.price,
+        transaction_uuid: bookingRes.data.transaction_uuid,
       });
-      await initiatePayment('done');
+
+      if (payment === 'eSewa') {
+        redirectToEsewa(payRes.data);
+      } else {
+        // non-eSewa: go straight to organizer dashboard
+        goToDashboard();
+      }
     } catch (e) {
       setSubmitError(e.response?.data?.detail || 'Could not save event. Try again.');
       setSubmitLoading(false);
@@ -226,7 +228,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                       }}
                       onClick={() => { setLightboxIndex(activeSlide); setLightboxOpen(true); }}
                     />
-
                     {images.length > 1 && (
                       <>
                         <button onClick={e => { e.stopPropagation(); prevSlide(); }} style={{
@@ -241,7 +242,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                           borderRadius: '50%', width: 36, height: 36, fontSize: 18,
                           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}>›</button>
-
                         <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 6 }}>
                           {images.map((_, i) => (
                             <button key={i} onClick={e => { e.stopPropagation(); setActiveSlide(i); }} style={{
@@ -252,7 +252,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                             }} />
                           ))}
                         </div>
-
                         <div style={{
                           position: 'absolute', top: 12, right: 12,
                           background: 'rgba(0,0,0,0.5)', color: 'white',
@@ -382,10 +381,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
           </>
         )}
 
-<<<<<<< HEAD
-    
-=======
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
+ 
         {lightboxOpen && images.length > 0 && (
           <div onClick={() => setLightboxOpen(false)} style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.92)',
@@ -395,7 +391,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
               position: 'absolute', top: 20, right: 24, background: 'none', border: 'none',
               color: 'white', fontSize: 32, cursor: 'pointer',
             }}>×</button>
-
             {images.length > 1 && (
               <>
                 <button onClick={e => { e.stopPropagation(); setLightboxIndex(i => (i - 1 + images.length) % images.length); }} style={{
@@ -410,25 +405,24 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                 }}>›</button>
               </>
             )}
-
             <img
               src={mediaUrl(images[lightboxIndex])}
               alt="venue"
               onClick={e => e.stopPropagation()}
               style={{ maxWidth: '90vw', maxHeight: '85vh', objectFit: 'contain', borderRadius: 8 }}
             />
-
             <div style={{ position: 'absolute', bottom: 20, color: 'rgba(255,255,255,0.7)', fontFamily: "'DM Sans', sans-serif", fontSize: 14 }}>
               {lightboxIndex + 1} / {images.length}
             </div>
           </div>
         )}
 
-    
+       
         {bookStep && venue && (
           <div className={styles.modalOverlay} onClick={e => e.target === e.currentTarget && closeBookModal()}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
 
+           
               {bookStep === 'host-prompt' && (
                 <>
                   <h2 className={styles.modalTitle}>Booking Confirmation</h2>
@@ -448,7 +442,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                 </>
               )}
 
-              
               {bookStep === 'skip-pick-date' && (
                 <>
                   <h2 className={styles.modalTitle}>Reserve a date</h2>
@@ -466,24 +459,13 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                   <div className={styles.modalActions}>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={closeBookModal}    disabled={submitLoading}>Cancel</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={submitSkipBooking} disabled={!selectedDate || submitLoading}>
-                      {submitLoading
-                        ? (payment === 'eSewa' ? 'Redirecting to eSewa…' : 'Reserving...')
-                        : `Reserve & Pay with ${payment}`}
+                      {submitLoading ? 'Redirecting to eSewa…' : `Reserve & Pay with ${payment}`}
                     </button>
                   </div>
                 </>
               )}
 
-            
-              {bookStep === 'booking-done' && (
-                <>
-                  <h2 className={styles.modalTitle}>Booking Confirmed</h2>
-                  <p className={styles.modalText}>Your date has been reserved. Payment will be collected on arrival.</p>
-                  <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary} ${styles.btnFull}`} onClick={closeBookModal}>Done</button>
-                </>
-              )}
-
-              
+        
               {bookStep === 'create-event' && (
                 <>
                   <h2 className={styles.modalTitle}>Host your Event</h2>
@@ -518,14 +500,14 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                 </>
               )}
 
-           
+     
               {bookStep === 'event-schedule' && (
                 <>
                   <h2 className={styles.modalTitle}>Event Schedule</h2>
                   <div className={styles.scheduleGrid}>
                     <div className={styles.modalField}>
                       <label className={styles.modalLabel}>Event Date</label>
-                      <input type="date" className={styles.modalInput} value={eventForm.event_date} onChange={e => setEventForm({ ...eventForm, event_date: e.target.value })} />
+                      <input type="date" className={styles.modalInput} min={today} value={eventForm.event_date} onChange={e => setEventForm({ ...eventForm, event_date: e.target.value })} />
                     </div>
                     <div className={styles.modalField}>
                       <label className={styles.modalLabel}>Event Time</label>
@@ -566,7 +548,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                 </>
               )}
 
-          
+           
               {bookStep === 'invitation-card' && (
                 <>
                   <h2 className={styles.modalTitle}>Your Invitation Card</h2>
@@ -577,10 +559,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <label className={styles.modalLabel}>Edit text</label>
                     <input className={styles.modalInput} placeholder="Invitation message" value={eventForm.invitation_text} onChange={e => setEventForm({ ...eventForm, invitation_text: e.target.value })} />
                   </div>
-<<<<<<< HEAD
-=======
-                 
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
                   <div className={styles.modalActions}>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={() => setBookStep('event-schedule')}>Back</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={() => setBookStep('invite-guests')}>Continue</button>
@@ -588,7 +566,6 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                 </>
               )}
 
-       
               {bookStep === 'invite-guests' && (
                 <>
                   <h2 className={styles.modalTitle}>Invite Guests</h2>
@@ -597,20 +574,11 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                     <textarea className={styles.modalInput} rows={4} value={eventForm.guest_emails} onChange={e => setEventForm({ ...eventForm, guest_emails: e.target.value })} />
                   </div>
 
-                  <div style={{
-                    background: '#f9f6f1', border: '1px solid #e8e2d9',
-                    borderRadius: 10, padding: '12px 16px', marginBottom: 12,
-                  }}>
-                    <p style={{ margin: 0, fontSize: 13, color: '#666', fontFamily: "'DM Sans', sans-serif" }}>
-                      Payment method: <strong>{payment}</strong>
-                    </p>
-                    <p style={{ margin: '4px 0 0', fontSize: 13, color: '#666', fontFamily: "'DM Sans', sans-serif" }}>
-                      Amount: <strong>Rs {fmt(venue.total ?? venue.price)}</strong>
-                    </p>
+                  <div className={styles.paymentSummaryBox}>
+                    <p className={styles.modalText}>Payment method: <strong>{payment}</strong></p>
+                    <p className={styles.modalText}>Amount: <strong>Rs {fmt(venue.total ?? venue.price)}</strong></p>
                     {payment === 'eSewa' && (
-                      <p style={{ margin: '6px 0 0', fontSize: 12, color: '#888', fontFamily: "'DM Sans', sans-serif" }}>
-                        You will be redirected to eSewa to complete your payment.
-                      </p>
+                      <p className={styles.modalTextSmall}>You will be redirected to eSewa to complete your payment.</p>
                     )}
                   </div>
 
@@ -618,30 +586,9 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                   <div className={styles.modalActions}>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={() => setBookStep('invitation-card')} disabled={submitLoading}>Back</button>
                     <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} disabled={submitLoading} onClick={submitEvent}>
-                      {submitLoading
-                        ? (payment === 'eSewa' ? 'Redirecting to eSewa…' : 'Saving...')
-                        : (payment === 'eSewa' ? 'Confirm & Pay with eSewa' : 'Send invites & Confirm')}
+                      {submitLoading ? 'Redirecting to eSewa…' : 'Confirm & Pay with eSewa'}
                     </button>
                   </div>
-                </>
-              )}
-
-            
-              {bookStep === 'done' && (
-                <>
-                  <h2 className={styles.modalTitle}>All set!</h2>
-<<<<<<< HEAD
-=======
-                
->>>>>>> 0f5246a90de1628950508a784b7ca14cfff50885
-                  <p className={styles.doneText}>
-                    Your event has been created and the venue owner has been notified.
-                    {invitationResult?.invitations_sent > 0 && (
-                      <> Invitation emails sent to {invitationResult.invitations_sent} guest{invitationResult.invitations_sent !== 1 ? 's' : ''}.</>
-                    )}
-                    {invitationResult?.invitation_error && <> Invitation emails could not be sent.</>}
-                  </p>
-                  <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary} ${styles.btnFull}`} onClick={closeBookModal}>Done</button>
                 </>
               )}
 

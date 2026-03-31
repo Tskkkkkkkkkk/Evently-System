@@ -13,6 +13,10 @@ function Signup({ onSignupSuccess }) {
     password: '',
     password_confirm: '',
   });
+
+const [showPassword, setShowPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [error, setError] = useState('');
   const [passwordMatchError, setPasswordMatchError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,7 +27,6 @@ function Signup({ onSignupSuccess }) {
     setFormData(updated);
     setError('');
 
-    // Real-time password match check
     if (name === 'password' || name === 'password_confirm') {
       const pass = name === 'password' ? value : updated.password;
       const confirm = name === 'password_confirm' ? value : updated.password_confirm;
@@ -128,16 +131,21 @@ function Signup({ onSignupSuccess }) {
             </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="phone">Phone Number</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Enter your phone number"
-              />
-            </div>
+  <label htmlFor="phone">Phone Number</label>
+  <input
+    type="tel"
+    id="phone"
+    name="phone"
+    value={formData.phone}
+    onChange={(e) => {
+      const value = e.target.value.replace(/\D/g, '');
+      handleChange({ ...e, target: { ...e.target, name: 'phone', value } });
+    }}
+    placeholder="Enter your phone number"
+    maxLength={10}
+    inputMode="numeric"
+  />
+</div>
 
             <div className={styles.formGroup}>
               <label htmlFor="user_type">I am a...</label>
@@ -154,44 +162,64 @@ function Signup({ onSignupSuccess }) {
               </select>
             </div>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                minLength="8"
-                placeholder="At least 8 characters"
-              />
-            </div>
 
             <div className={styles.formGroup}>
-              <label htmlFor="password_confirm">Confirm Password</label>
-              <input
-                type="password"
-                id="password_confirm"
-                name="password_confirm"
-                value={formData.password_confirm}
-                onChange={handleChange}
-                required
-                placeholder="Confirm your password"
-              />
-              {passwordMatchError && (
-                <span className={styles.fieldError}>{passwordMatchError}</span>
-              )}
-            </div>
+<label htmlFor="password">Password</label>
+<div className={styles.passwordWrapper}>
+  <input
+    type={showPassword ? "text" : "password"}
+    id="password"
+    name="password"
+    value={formData.password}
+    onChange={handleChange}
+    required
+    placeholder="At least 8 characters"
+  />
 
-            <button
-              type="submit"
-              className={styles.button}
-              disabled={loading || !!passwordMatchError}
-            >
-              {loading ? 'Creating Account...' : 'Sign Up'}
-            </button>
-          </form>
+  <button
+    type="button"
+    className={styles.toggleText}
+    onClick={() => setShowPassword(!showPassword)}
+  >
+    {showPassword ? "Hide" : "Show"}
+  </button>
+</div>
+
+<label htmlFor="password_confirm">Confirm Password</label>
+<div className={styles.passwordWrapper}>
+  <input
+    type={showConfirmPassword ? "text" : "password"}
+    id="password_confirm"
+    name="password_confirm"
+    value={formData.password_confirm}
+    onChange={handleChange}
+    required
+    placeholder="Confirm your password"
+  />
+
+  <button
+    type="button"
+    className={styles.toggleText}
+    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+  >
+    {showConfirmPassword ? "Hide" : "Show"}
+  </button>
+</div>
+</div>
+
+{passwordMatchError && (
+  <span className={styles.fieldError}>{passwordMatchError}</span>
+)}
+
+
+<button
+  type="submit"
+  className={styles.button}
+  disabled={loading || !!passwordMatchError}
+>
+  {loading ? "Creating Account..." : "Sign Up"}
+</button>
+</form>
 
           <div className={styles.footer}>
             <p>

@@ -67,6 +67,34 @@
   gap: 6px;
 }
 
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordWrapper input {
+  width: 100%;
+  padding: 10px 50px 10px 10px; /* space for text */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.toggleText {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: #738394;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.toggleText:hover {
+  color: #151616;
+}
+
 .formGroup label {
   color: #374151;
   font-size: 13px;
