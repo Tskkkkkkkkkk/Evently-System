@@ -7,6 +7,10 @@ function Login({ onLoginSuccess }) {
     email: "",
     password: "",
   });
+
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false);
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -94,20 +98,33 @@ function Login({ onLoginSuccess }) {
               />
             </div>
             <div className={styles.formGroup}>
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={data.password}
-                onChange={handleChange}
-                required
-                placeholder="Enter your password"
-              />
-            </div>
-            <button type="submit" className={styles.button} disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
-            </button>
+
+  <label htmlFor="password">Password</label>
+
+  <div className={styles.passwordWrapper}>
+    <input
+      type={showPassword ? "text" : "password"}
+      id="password"
+      name="password"
+      value={data.password}
+      onChange={handleChange}
+      required
+      placeholder="Enter your password"
+    />
+
+    <button
+      type="button"
+      className={styles.toggleText}
+      onClick={() => setShowPassword(!showPassword)}
+    >
+      {showPassword ? "Hide" : "Show"}
+    </button>
+  </div>
+</div>
+
+<button type="submit" className={styles.button} disabled={loading}>
+  {loading ? "Logging in..." : "Login"}
+</button>
           </form>
           <div className={styles.footer}>
             <p>

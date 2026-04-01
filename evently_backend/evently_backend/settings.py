@@ -15,7 +15,7 @@ SECRET_KEY = "django-insecure-ace2euik^y_6akq!i-qk#81clf0@pp+zg4$0u7clt0eervhe22
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -117,6 +117,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:3002",
     "http://127.0.0.1:3002",
+    "http://localhost:5173",
+    "http://localhost:5173",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -133,6 +135,14 @@ else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     DEFAULT_FROM_EMAIL = "noreply@evently.local"
 
-FRONTEND_URL = "http://localhost:5173"   # change to https://yourdomain.com in production
-ESEWA_SECRET = "8gBm/:&EnhH.1/q"        # sandbox key — replace in prod
-ESEWA_PRODUCT_CODE = "EPAYTEST"          # your merchant code in prod
+# settings.py
+BACKEND_URL  = os.environ.get("BACKEND_URL",  "https://poikilitic-unsublimed-marlys.ngrok-free.dev")
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000") 
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "poikilitic-unsublimed-marlys.ngrok-free.dev",
+]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173", "http://localhost:8000"]
+
+

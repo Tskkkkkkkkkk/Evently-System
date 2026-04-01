@@ -345,6 +345,24 @@
   justify-content: center;
 }
 
+.modalText {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.modalTextSmall {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+
+.modalError {
+  color: #b91c1c;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
 .themeChip {
   display: inline-block;
   padding: 8px 16px;
@@ -389,15 +407,11 @@
   color: #7C4A3D;
 }
 
-.modalText {
-  font-size: 14px;
-  color: #6b7280;
-  margin-bottom: 16px;
-}
-
-.modalError {
-  color: #b91c1c;
-  font-size: 13px;
+.paymentSummaryBox {
+  background: #f9f6f1;
+  border: 1px solid #e8e2d9;
+  border-radius: 10px;
+  padding: 12px 16px;
   margin-bottom: 12px;
 }
 
@@ -435,18 +449,6 @@
 .themeChipsWrap {
   flex-wrap: wrap;
   display: flex;
-}
-
-.doneIcon {
-  color: #16a34a;
-  font-size: 32px;
-  margin-bottom: 16px;
-}
-
-.doneText {
-  font-size: 14px;
-  color: #6b7280;
-  margin-bottom: 24px;
 }
 
 .btnFull {

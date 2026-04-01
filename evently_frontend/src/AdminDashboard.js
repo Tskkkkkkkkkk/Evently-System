@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import api from './api';
 import Navbar from './Navbar';
 import './AdminDashboard.css';
@@ -20,6 +20,215 @@ const Modal = ({ title, onClose, children }) => (
     </div>
   </div>
 );
+
+
+ 
+
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+const MonthlyEvents = ({ venues, stats }) => {
+  const now = new Date();
+  const monthName = MONTH_NAMES[now.getMonth()];
+  const year = now.getFullYear();
+
+ 
+  const newVenuesThisMonth  = stats?.new_venues_this_month  ?? 0;
+  const newOwnersThisMonth  = stats?.new_owners_this_month  ?? 0;
+  const bookingsThisMonth   = stats?.bookings_this_month    ?? 0;
+  const pendingReviews      = venues.filter(v => !v.status || v.status === 'pending').length;
+
+  const events = [
+    ...(newVenuesThisMonth > 0 ? [{
+      type: 'venue',
+      label: `${newVenuesThisMonth} new venue listing${newVenuesThisMonth !== 1 ? 's' : ''} submitted`,
+      sub: 'Awaiting review or recently approved',
+      color: 'blue',
+    }] : []),
+    ...(newOwnersThisMonth > 0 ? [{
+      type: 'owner',
+      label: `${newOwnersThisMonth} new owner${newOwnersThisMonth !== 1 ? 's' : ''} registered`,
+      sub: 'New accounts this month',
+      color: 'green',
+    }] : []),
+    ...(bookingsThisMonth > 0 ? [{
+      type: 'booking',
+      label: `${bookingsThisMonth} booking${bookingsThisMonth !== 1 ? 's' : ''} made`,
+      sub: 'Reservations placed this month',
+      color: 'purple',
+    }] : []),
+    ...(pendingReviews > 0 ? [{
+      type: 'pending',
+      label: `${pendingReviews} venue${pendingReviews !== 1 ? 's' : ''} pending approval`,
+      sub: 'Action required',
+      color: 'amber',
+    }] : []),
+  ];
+
+
+  const showPlaceholder = events.length === 0;
+
+  return (
+    <div className="events-section">
+      <div className="events-header">
+        <h2 className="section-title" style={{ marginBottom: 0 }}>
+          {monthName} {year} — Activity
+        </h2>
+        <span className="events-badge">This month</span>
+      </div>
+
+      {showPlaceholder ? (
+        <div className="events-placeholder">
+          No activity data available for this month yet. Extend the <code>/admin-api/stats/</code> endpoint with <code>new_venues_this_month</code>, <code>new_owners_this_month</code>, and <code>bookings_this_month</code> to populate this section.
+        </div>
+      ) : (
+        <div className="events-list">
+          {events.map((ev, i) => (
+            <div key={i} className={`event-item event-${ev.color}`}>
+              <div className={`event-dot dot-${ev.color}`} />
+              <div>
+                <div className="event-label">{ev.label}</div>
+                <div className="event-sub">{ev.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+
+
+const StatsCharts = ({ venues, stats }) => {
+  const barRef  = useRef(null);
+  const donutRef = useRef(null);
+  const barChart  = useRef(null);
+  const donutChart = useRef(null);
+
+  const approved = venues.filter(v => v.status === 'approved').length;
+  const pending  = venues.filter(v => !v.status || v.status === 'pending').length;
+  const rejected = venues.filter(v => v.status === 'rejected').length;
+
+ 
+  const monthly = stats?.monthly_bookings ?? Array(6).fill(0);
+  const now = new Date();
+  const labels = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
+    return MONTH_NAMES[d.getMonth()];
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js';
+    script.onload = () => buildCharts();
+    document.head.appendChild(script);
+    return () => { script.remove(); };
+  }, []);
+
+  useEffect(() => {
+    if (window.Chart) buildCharts();
+  }, [venues, stats]);
+
+  const buildCharts = () => {
+    if (!window.Chart) return;
+
+    if (barChart.current)  { barChart.current.destroy();  barChart.current = null; }
+    if (donutChart.current){ donutChart.current.destroy(); donutChart.current = null; }
+
+    if (barRef.current) {
+      barChart.current = new window.Chart(barRef.current, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Bookings',
+            data: monthly,
+            backgroundColor: '#1a1a1a',
+            borderRadius: 6,
+            borderSkipped: false,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 12, family: 'DM Sans' } } },
+            y: { grid: { color: '#f3f4f6' }, ticks: { font: { size: 12, family: 'DM Sans' }, stepSize: 1 }, beginAtZero: true },
+          },
+        },
+      });
+    }
+
+    if (donutRef.current && (approved + pending + rejected) > 0) {
+      donutChart.current = new window.Chart(donutRef.current, {
+        type: 'doughnut',
+        data: {
+          labels: ['Approved', 'Pending', 'Rejected'],
+          datasets: [{
+            data: [approved, pending, rejected],
+            backgroundColor: ['#16a34a', '#d97706', '#dc2626'],
+            borderWidth: 0,
+            hoverOffset: 4,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '68%',
+          plugins: { legend: { display: false } },
+        },
+      });
+    }
+  };
+
+  const total = approved + pending + rejected;
+
+  return (
+    <div className="charts-grid">
+      {/* Booking trend */}
+      <div className="chart-card">
+        <div className="chart-card-header">
+          <span className="chart-card-title">Booking trend</span>
+          <span className="chart-card-sub">Last 6 months</span>
+        </div>
+        <div style={{ position: 'relative', height: 180 }}>
+          <canvas ref={barRef} />
+        </div>
+      </div>
+
+      {/* Venue status breakdown */}
+      <div className="chart-card">
+        <div className="chart-card-header">
+          <span className="chart-card-title">Venue status</span>
+          <span className="chart-card-sub">{total} total</span>
+        </div>
+        <div className="donut-wrap">
+          <div style={{ position: 'relative', height: 160, width: 160, flexShrink: 0 }}>
+            {total > 0
+              ? <canvas ref={donutRef} />
+              : <div className="donut-empty">No venues yet</div>
+            }
+          </div>
+          <div className="donut-legend">
+            {[
+              { label: 'Approved', value: approved, color: '#16a34a' },
+              { label: 'Pending',  value: pending,  color: '#d97706' },
+              { label: 'Rejected', value: rejected, color: '#dc2626' },
+            ].map(item => (
+              <div key={item.label} className="legend-row">
+                <span className="legend-dot" style={{ background: item.color }} />
+                <span className="legend-label">{item.label}</span>
+                <span className="legend-value">{item.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 
 export default function AdminDashboard({ user, onLogout }) {
@@ -118,7 +327,7 @@ export default function AdminDashboard({ user, onLogout }) {
   ];
 
   const STATS = [
-    { label: 'Venue Owners',      value: stats?.total_owners   ?? owners.length,        sub: 'Registered',    subColor: '#16a34a' },
+    { label: 'Venue Owners',      value: stats?.total_owners   ?? owners.length,        sub: 'Registered',      subColor: '#16a34a' },
     { label: 'Total Venues',      value: stats?.total_venues   ?? venues.length,         sub: 'Active listings', subColor: '#16a34a' },
     { label: 'Pending Approvals', value: stats?.pending_venues ?? pendingVenues.length,  sub: 'Awaiting review', subColor: '#d97706' },
     { label: 'Total Bookings',    value: stats?.total_bookings ?? 0,                     sub: 'All time',        subColor: '#16a34a' },
@@ -149,7 +358,7 @@ export default function AdminDashboard({ user, onLogout }) {
               ))}
             </div>
 
-          
+        
             <div className="tabs">
               {TABS.map(t => (
                 <button
@@ -174,9 +383,15 @@ export default function AdminDashboard({ user, onLogout }) {
        
             {tab === 'overview' && (
               <div>
+               
+                <StatsCharts venues={venues} stats={stats} />
+
+           
+                <MonthlyEvents venues={venues} stats={stats} />
+
                 <h2 className="section-title">Pending Venue Approvals</h2>
                 {pendingVenues.length === 0 ? (
-                  <div className="empty-ok"> No pending venue approvals</div>
+                  <div className="empty-ok">No pending venue approvals</div>
                 ) : (
                   <div className="card-list" style={{ marginBottom: 32 }}>
                     {pendingVenues.map(v => (
@@ -243,7 +458,7 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             )}
 
-         
+          
             {tab === 'venues' && (
               <div className="card-list">
                 {filteredVenues.length === 0
@@ -271,7 +486,7 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             )}
 
-      
+           
             {tab === 'pending' && (
               <div>
                 {pendingVenues.length === 0
@@ -298,7 +513,7 @@ export default function AdminDashboard({ user, onLogout }) {
         )}
       </main>
 
-  
+      {/* Owner detail modal */}
       {selectedOwner && (
         <Modal title="Owner Details" onClose={() => setSelectedOwner(null)}>
           <div className="modal-grid">
@@ -323,7 +538,7 @@ export default function AdminDashboard({ user, onLogout }) {
         </Modal>
       )}
 
-  
+   
       {selectedVenue && (
         <Modal title="Venue Details" onClose={() => setSelectedVenue(null)}>
           <div className="modal-grid">
@@ -353,7 +568,7 @@ export default function AdminDashboard({ user, onLogout }) {
         </Modal>
       )}
 
-   
+      
       {confirmModal && (
         <Modal title="Confirm Action" onClose={() => setConfirmModal(null)}>
           <p className="modal-body">
@@ -376,7 +591,6 @@ export default function AdminDashboard({ user, onLogout }) {
         </Modal>
       )}
 
-   
       {toast && <div className="toast">{toast}</div>}
     </div>
   );

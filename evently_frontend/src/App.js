@@ -10,6 +10,7 @@ import VenueOwnerDashboard from './VenueOwnerDashboard';
 import AdminDashboard from './AdminDashboard';
 import EventOrganizerDashboard from './EventOrganizerDashboard';
 import PaymentSuccess from './paymentsuccess';
+import RSVPPage from './RSVPpage';
 import PaymentFailure from './paymentfailure';
 import './App.css';
 
