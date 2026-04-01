@@ -22,7 +22,11 @@ const Modal = ({ title, onClose, children }) => (
 );
 
 
+<<<<<<< HEAD
  
+=======
+
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
@@ -31,7 +35,10 @@ const MonthlyEvents = ({ venues, stats }) => {
   const monthName = MONTH_NAMES[now.getMonth()];
   const year = now.getFullYear();
 
+<<<<<<< HEAD
  
+=======
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
   const newVenuesThisMonth  = stats?.new_venues_this_month  ?? 0;
   const newOwnersThisMonth  = stats?.new_owners_this_month  ?? 0;
   const bookingsThisMonth   = stats?.bookings_this_month    ?? 0;
@@ -78,7 +85,11 @@ const MonthlyEvents = ({ venues, stats }) => {
 
       {showPlaceholder ? (
         <div className="events-placeholder">
+<<<<<<< HEAD
           No activity data available for this month yet. Extend the <code>/admin-api/stats/</code> endpoint with <code>new_venues_this_month</code>, <code>new_owners_this_month</code>, and <code>bookings_this_month</code> to populate this section.
+=======
+          No activity data available for this month yet.
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
         </div>
       ) : (
         <div className="events-list">
@@ -109,7 +120,11 @@ const StatsCharts = ({ venues, stats }) => {
   const pending  = venues.filter(v => !v.status || v.status === 'pending').length;
   const rejected = venues.filter(v => v.status === 'rejected').length;
 
+<<<<<<< HEAD
  
+=======
+  // Booking trend: use stats.monthly_bookings[] if available, else mock zeros
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
   const monthly = stats?.monthly_bookings ?? Array(6).fill(0);
   const now = new Date();
   const labels = Array.from({ length: 6 }, (_, i) => {
@@ -187,7 +202,11 @@ const StatsCharts = ({ venues, stats }) => {
 
   return (
     <div className="charts-grid">
+<<<<<<< HEAD
       {/* Booking trend */}
+=======
+ 
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       <div className="chart-card">
         <div className="chart-card-header">
           <span className="chart-card-title">Booking trend</span>
@@ -198,7 +217,10 @@ const StatsCharts = ({ venues, stats }) => {
         </div>
       </div>
 
+<<<<<<< HEAD
       {/* Venue status breakdown */}
+=======
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       <div className="chart-card">
         <div className="chart-card-header">
           <span className="chart-card-title">Venue status</span>
@@ -231,6 +253,10 @@ const StatsCharts = ({ venues, stats }) => {
 };
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 export default function AdminDashboard({ user, onLogout }) {
   const [tab, setTab] = useState('overview');
   const [owners, setOwners] = useState([]);
@@ -347,7 +373,7 @@ export default function AdminDashboard({ user, onLogout }) {
           <p className="loading-text">Loading…</p>
         ) : (
           <>
-         
+            {/* Stat cards */}
             <div className="stats-grid">
               {STATS.map((s, i) => (
                 <div key={i} className="stat-card">
@@ -358,7 +384,11 @@ export default function AdminDashboard({ user, onLogout }) {
               ))}
             </div>
 
+<<<<<<< HEAD
         
+=======
+            {/* Tabs */}
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             <div className="tabs">
               {TABS.map(t => (
                 <button
@@ -380,13 +410,20 @@ export default function AdminDashboard({ user, onLogout }) {
               />
             )}
 
-       
+            {/* Overview tab */}
             {tab === 'overview' && (
               <div>
+<<<<<<< HEAD
                
                 <StatsCharts venues={venues} stats={stats} />
 
            
+=======
+                {/* Charts */}
+                <StatsCharts venues={venues} stats={stats} />
+
+                {/* Monthly events */}
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
                 <MonthlyEvents venues={venues} stats={stats} />
 
                 <h2 className="section-title">Pending Venue Approvals</h2>
@@ -430,7 +467,7 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             )}
 
-          
+         
             {tab === 'owners' && (
               <div className="card-list">
                 {filteredOwners.length === 0
@@ -458,7 +495,11 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             )}
 
+<<<<<<< HEAD
           
+=======
+   
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             {tab === 'venues' && (
               <div className="card-list">
                 {filteredVenues.length === 0
@@ -486,7 +527,11 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             )}
 
+<<<<<<< HEAD
            
+=======
+            {/* Pending tab */}
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             {tab === 'pending' && (
               <div>
                 {pendingVenues.length === 0
@@ -513,7 +558,11 @@ export default function AdminDashboard({ user, onLogout }) {
         )}
       </main>
 
+<<<<<<< HEAD
       {/* Owner detail modal */}
+=======
+     
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       {selectedOwner && (
         <Modal title="Owner Details" onClose={() => setSelectedOwner(null)}>
           <div className="modal-grid">
@@ -538,7 +587,11 @@ export default function AdminDashboard({ user, onLogout }) {
         </Modal>
       )}
 
+<<<<<<< HEAD
    
+=======
+      {/* Venue detail modal */}
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       {selectedVenue && (
         <Modal title="Venue Details" onClose={() => setSelectedVenue(null)}>
           <div className="modal-grid">
@@ -568,7 +621,10 @@ export default function AdminDashboard({ user, onLogout }) {
         </Modal>
       )}
 
+<<<<<<< HEAD
       
+=======
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       {confirmModal && (
         <Modal title="Confirm Action" onClose={() => setConfirmModal(null)}>
           <p className="modal-body">

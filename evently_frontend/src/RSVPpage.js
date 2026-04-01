@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+// RSVPPage.jsx
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import api from './api';

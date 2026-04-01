@@ -32,7 +32,15 @@ function EventRSVPStats({ eventId }) {
           display: 'flex', alignItems: 'center', gap: 6,
         }}
       >
+<<<<<<< HEAD
          {open ? 'Hide' : 'View'} RSVP responses
+=======
+<<<<<<< HEAD
+         {open ? 'Hide' : 'View'} RSVP responses
+=======
+        📋 {open ? 'Hide' : 'View'} RSVP responses
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       </button>
 
       {open && (
@@ -48,7 +56,11 @@ function EventRSVPStats({ eventId }) {
 
           {!loading && stats && (
             <>
+<<<<<<< HEAD
              
+=======
+              {/* Summary tiles */}
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
               <div style={{ display: 'flex', borderBottom: '1px solid #f3f4f6' }}>
                 {[
                   { label: 'Attending',     value: stats.accepted, color: '#16a34a', bg: '#f0fdf4' },
@@ -76,7 +88,11 @@ function EventRSVPStats({ eventId }) {
                 ))}
               </div>
 
+<<<<<<< HEAD
              
+=======
+              {/* Progress bar */}
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
               {stats.total > 0 && (
                 <div style={{ padding: '10px 16px', borderBottom: '1px solid #f3f4f6' }}>
                   <div style={{
@@ -95,7 +111,11 @@ function EventRSVPStats({ eventId }) {
                 </div>
               )}
 
+<<<<<<< HEAD
              
+=======
+              {/* Guest list */}
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
               <div style={{ maxHeight: 240, overflowY: 'auto' }}>
                 {stats.guests.length === 0 ? (
                   <p style={{ padding: '14px 16px', fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888', margin: 0 }}>
@@ -201,7 +221,15 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                     boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
                   }}
                 >
+<<<<<<< HEAD
            
+=======
+<<<<<<< HEAD
+           
+=======
+                  {/* ── Event header row ── */}
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
                   <div
                     style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', cursor: 'pointer' }}
                     onClick={() => setSelectedEvent(ev)}
@@ -230,7 +258,15 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                     </span>
                   </div>
 
+<<<<<<< HEAD
                  
+=======
+<<<<<<< HEAD
+                  {/*  RSVP section  */}
+=======
+                  {/* ── RSVP section (only if guests were invited) ── */}
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
                   {ev.guest_emails?.length > 0 && (
                     <EventRSVPStats eventId={ev.id} />
                   )}
@@ -251,7 +287,15 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
           </div>
         )}
 
+<<<<<<< HEAD
       
+=======
+<<<<<<< HEAD
+        {/*Event detail modal  */}
+=======
+        {/* ── Event detail modal ── */}
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
         {selectedEvent && (
           <div className="confirm-overlay" onClick={() => setSelectedEvent(null)}>
             <div className="confirm-box" style={{ textAlign: 'left', padding: 28 }} onClick={e => e.stopPropagation()}>
@@ -324,7 +368,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                 )}
               </div>
 
+<<<<<<< HEAD
              
+=======
+              {/* RSVP inside modal too */}
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
               {selectedEvent.guest_emails?.length > 0 && (
                 <div style={{ marginTop: 24, borderTop: '1px solid #f3f4f6', paddingTop: 20 }}>
                   <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#444', marginBottom: 8 }}>

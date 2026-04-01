@@ -80,7 +80,14 @@
   font-size: 12px;
 }
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -109,7 +116,14 @@
   color: white;
 }
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 .search-input {
   width: 100%;
   max-width: 380px;
@@ -269,6 +283,13 @@
   justify-content: flex-end;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 .empty-state {
   text-align: center;
   padding: 50px 0;
@@ -286,6 +307,13 @@
   font-size: 14px;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -380,6 +408,13 @@
   white-space: nowrap;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
+>>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 .loading-text {
   color: #888;
   font-size: 14px;
