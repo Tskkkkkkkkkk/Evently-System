@@ -74,6 +74,7 @@
 }
 
 .brandTitle {
+    font-family: 'Playfair Display', serif;
   font-size: 32px;
   font-weight: 700;
   letter-spacing: 0.04em;

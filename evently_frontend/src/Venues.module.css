@@ -237,3 +237,82 @@
   font-family: 'DM Sans', sans-serif;
   font-size: 15px;
 }
+/* ─────────────────────────────────────────────────────────────────────────
+   ADD these rules to the bottom of your existing Venues.module.css.
+   Do not replace the whole file — just paste these at the end.
+───────────────────────────────────────────────────────────────────────── */
+
+/* Date input wrapper — positions the clear (×) button inside the input */
+.dateFilterWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Make date input look identical to the other filter selects, with room
+   for the clear button on the right when a date is chosen */
+.dateInput {
+  width: 100%;
+  padding-right: 28px; /* space for the × button */
+  cursor: pointer;
+}
+
+/* The × button that clears the chosen date */
+.clearDateBtn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  line-height: 1;
+  color: #aaa;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearDateBtn:hover {
+  color: #1a1a1a;
+}
+
+/* Row that sits between the filters and the venue grid:
+   results count on the left, active-date badge on the right */
+.resultsRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+/* The "Available on Apr 10, 2026 ×" pill */
+.dateBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+.dateBadge button {
+  background: none;
+  border: none;
+  color: #93c5fd;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.dateBadge button:hover {
+  color: #2563eb;
+}

@@ -28,11 +28,7 @@ export default function PaymentSuccess({ user, onLogout }) {
           )}
 
           <div className={styles.actions}>
-<<<<<<< HEAD
             <a href="/organizer" className={styles.btnPrimary}>View My Events</a>
-=======
-            <a href="/organizer/events" className={styles.btnPrimary}>View My Events</a>
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             <a href="/venues"           className={styles.btnOutline}>Browse Venues</a>
           </div>
         </div>
