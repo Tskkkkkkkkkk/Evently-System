@@ -13,7 +13,7 @@ import PaymentSuccess from './paymentsuccess';
 import RSVPPage from './RSVPpage';
 import PaymentFailure from './paymentfailure';
 import './App.css';
-import RSVPPage from './RSVPpage';
+
 function App() {
   const [user, setUser] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
@@ -91,7 +91,7 @@ function App() {
           }
         />
 
-        {/* Catch-all must always be last */}
+        
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

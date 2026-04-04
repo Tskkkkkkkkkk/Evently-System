@@ -1,6 +1,5 @@
 from django.test import TestCase
 
-<<<<<<< HEAD
 import requests
 
 BASE_URL = "http://127.0.0.1:8000/api"  
@@ -37,6 +36,3 @@ def test_rbac():
 
 if __name__ == "__main__":
     test_rbac()
-=======
-# Create your tests here.
->>>>>>> 02f52578c9b67241705c932a1541c99ec12516ab

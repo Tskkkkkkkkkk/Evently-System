@@ -51,11 +51,7 @@ function NotificationBell({ events }) {
       const eventDt  = new Date(`${ev.event_date}T${ev.event_time || '23:59'}:00`);
       const now      = new Date();
       const hoursAgo = (now - eventDt) / 36e5;
-<<<<<<< HEAD
     
-=======
-   
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       const upcoming = eventDt > now && eventDt - now < 24 * 36e5;
       const justDone = hoursAgo >= 0 && hoursAgo < 48;
       return upcoming || justDone;
@@ -149,11 +145,7 @@ function NotificationBell({ events }) {
         </div>
       )}
 
-<<<<<<< HEAD
   
-=======
-   
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       {open && (
         <div
           style={{ position: 'fixed', inset: 0, zIndex: 99 }}
@@ -165,10 +157,6 @@ function NotificationBell({ events }) {
 }
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 function DeleteEventModal({ event, onConfirm, onCancel, loading }) {
   return (
     <div className="confirm-overlay" onClick={onCancel}>
@@ -241,11 +229,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
   useEffect(() => { loadVenues(); loadEvents(); }, [loadVenues, loadEvents]);
 
-<<<<<<< HEAD
  
-=======
-  
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
   const filteredEvents = events.filter(ev => {
     if (eventFilter === 'upcoming')  return !isEventPast(ev);
     if (eventFilter === 'completed') return isEventPast(ev);
@@ -457,20 +441,6 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
       <Navbar user={user} onLogout={onLogout} transparent={false} />
 
       <main style={{ maxWidth: 900, margin: '0 auto', padding: '40px 24px 100px' }}>
-<<<<<<< HEAD
-=======
-
-   
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0 }}>
-            Venue Owner Dashboard
-          </h1>
-          <NotificationBell events={events} />
-        </div>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#888', marginBottom: 32 }}>
-          Manage your listed venues
-        </p>
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0 }}>
@@ -489,11 +459,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, margin: 0 }}>
                 Events
               </h2>
-<<<<<<< HEAD
               
-=======
-         
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
               <div style={{ display: 'flex', gap: 6 }}>
                 {[
                   { key: 'all',       label: `All (${events.length})` },
@@ -583,10 +549,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                     </div>
                   </div>
 
-<<<<<<< HEAD
                 
-=======
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
                   {isEventPast(ev) && (
                     <div style={{
                       marginTop: 12, padding: '10px 14px',
@@ -717,11 +680,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
         {loading && <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#888' }}>Loading venues…</p>}
 
-<<<<<<< HEAD
        
-=======
-        {/* ── venue cards ── */}
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
         {!loading && venues.map(v => (
           <div key={v.slug} style={{ background: 'white', borderRadius: 16, padding: 20, marginBottom: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 20, alignItems: 'start' }}>
@@ -755,6 +714,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                       {v.event_types.map(t => <span key={t} className="tag">{t}</span>)}
                     </div>
                   )}
+                 
                   {v.amenities?.length > 0 && (
                     <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#6b7280', marginTop: 4 }}>
                       Amenities: {v.amenities.join(', ')}
@@ -794,11 +754,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
           </div>
         )}
 
-<<<<<<< HEAD
         
-=======
-       
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
         {creating && (
           <div style={{ background: 'white', borderRadius: 20, padding: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginTop: 20 }}>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Add New Venue</h2>

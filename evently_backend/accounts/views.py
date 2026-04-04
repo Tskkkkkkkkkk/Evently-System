@@ -8,27 +8,12 @@ import secrets
 import base64
 import hashlib
 import hmac
-<<<<<<< HEAD
 import random
-=======
-<<<<<<< HEAD
-import random
-=======
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 from io import BytesIO
 from urllib.parse import urlencode
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-<<<<<<< HEAD
 from django.http import HttpResponseRedirect, HttpResponse
-=======
-<<<<<<< HEAD
-from django.http import HttpResponseRedirect, HttpResponse
-=======
-from django.http import HttpResponseRedirect
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 from PIL import Image
 
 logger = logging.getLogger(__name__)
@@ -52,12 +37,6 @@ from .permissions import IsAdmin
 
 User = get_user_model()
 
-<<<<<<< HEAD
-=======
-# ─────────────────────────────────────────────────────────────────────────────
-# General helpers
-# ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
 def _split_full_name(full_name: str):
     parts = (full_name or "").strip().split()
@@ -123,18 +102,8 @@ def _normalize_emails(emails) -> list:
 
 
 
-<<<<<<< HEAD
 
 def _generate_otp(email: str) -> str:
-=======
-<<<<<<< HEAD
-
-def _generate_otp(email: str) -> str:
-=======
-def _generate_otp(email: str) -> str:
-    import random
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
     otp = str(random.randint(100000, 999999))
     cache.set(f"otp:{email.lower().strip()}", otp, timeout=600)
     return otp
@@ -163,41 +132,18 @@ def _send_otp_email(email: str, otp: str):
     )
 
 
-<<<<<<< HEAD
 
-=======
-<<<<<<< HEAD
-=======
-# ─────────────────────────────────────────────────────────────────────────────
-# RSVP helpers
-# ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
 def _generate_rsvp_token(event_id: str, guest_email: str) -> str:
     token = secrets.token_urlsafe(32)
     mongo_db["rsvp_tokens"].update_one(
         {"event_id": event_id, "email": guest_email.lower().strip()},
         {"$set": {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             "event_id":     event_id,
             "email":        guest_email.lower().strip(),
             "token":        token,
             "status":       "pending",
             "created_at":   timezone.now(),
-<<<<<<< HEAD
-=======
-=======
-            "event_id":   event_id,
-            "email":      guest_email.lower().strip(),
-            "token":      token,
-            "status":     "pending",
-            "created_at": timezone.now(),
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             "responded_at": None,
         }},
         upsert=True,
@@ -205,16 +151,7 @@ def _generate_rsvp_token(event_id: str, guest_email: str) -> str:
     return token
 
 
-<<<<<<< HEAD
  
-=======
-<<<<<<< HEAD
-=======
-# ─────────────────────────────────────────────────────────────────────────────
-# Invitation emails  (called AFTER payment confirmed)
-# ─────────────────────────────────────────────────────────────────────────────
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
 def _send_event_invitations(doc: dict) -> tuple:
     guests = _normalize_emails(doc.get("guest_emails") or [])
@@ -233,15 +170,7 @@ def _send_event_invitations(doc: dict) -> tuple:
     host_email      = (doc.get("host_email") or "").strip()
 
     from_email   = getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@evently.local")
-<<<<<<< HEAD
     frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:5173")
-=======
-<<<<<<< HEAD
-    frontend_url = getattr(settings, "FRONTEND_URL", "https://poikilitic-unsublimed-marlys.ngrok-free.dev")
-=======
-    frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:5173")
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
     sent = 0
     err  = None
@@ -268,15 +197,7 @@ def _send_event_invitations(doc: dict) -> tuple:
                 "",
                 "── RSVP ──",
                 "Will you attend?",
-<<<<<<< HEAD
                 f"  Yes, I'll be there:   {accept_url}",
-=======
-<<<<<<< HEAD
-                f"  Yes, I'll be there:   {accept_url}",
-=======
-                f"  Yes, I'll be there:  {accept_url}",
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
                 f"  Sorry, can't make it: {decline_url}",
                 "",
                 "You can change your response anytime by clicking the links above.",
@@ -299,7 +220,6 @@ def _send_event_invitations(doc: dict) -> tuple:
         err = err_str
 
     return sent, err
-<<<<<<< HEAD
 
 
 
@@ -340,82 +260,8 @@ def _redirect_to_frontend(result: str, reason: str = ""):
         url += "?" + urlencode({"reason": reason})
     return _js_redirect(url)
 
-=======
-<<<<<<< HEAD
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
 
-
-
-ESEWA_SECRET       = getattr(settings, "ESEWA_SECRET", "8gBm/:&EnhH.1/q")
-ESEWA_PRODUCT_CODE = getattr(settings, "ESEWA_PRODUCT_CODE", "EPAYTEST")
-
-
-def generate_esewa_signature(total_amount, transaction_uuid, product_code, secret):
-    message   = f"total_amount={total_amount},transaction_uuid={transaction_uuid},product_code={product_code}"
-    signature = hmac.new(
-        secret.encode("utf-8"),
-        message.encode("utf-8"),
-        hashlib.sha256,
-    ).digest()
-    return base64.b64encode(signature).decode()
-
-
-def _js_redirect(url: str):
-    """
-    Serve a tiny HTML page that redirects via window.location.replace().
-    This bypasses the cross-origin frame block that occurs when eSewa
-    posts back from their domain and Django tries HttpResponseRedirect.
-    """
-    safe_url = json.dumps(url)
-    html = (
-        "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>Redirecting</title></head>"
-        "<body><script>window.location.replace(" + safe_url + ");</script></body></html>"
-    )
-    return HttpResponse(html, content_type="text/html")
-
-
-def _redirect_to_frontend(result: str, reason: str = ""):
-    frontend_url = getattr(settings, "FRONTEND_URL", "https://poikilitic-unsublimed-marlys.ngrok-free.dev")
-    path = "success" if result == "success" else "failure"
-    url  = f"{frontend_url}/payment/{path}/"
-    if reason:
-        from urllib.parse import urlencode as _ue
-        url += "?" + _ue({"reason": reason})
-    return _js_redirect(url)
-
-=======
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
-
-
-
-ESEWA_SECRET       = getattr(settings, "ESEWA_SECRET", "8gBm/:&EnhH.1/q")
-ESEWA_PRODUCT_CODE = getattr(settings, "ESEWA_PRODUCT_CODE", "EPAYTEST")
-
-
-def generate_esewa_signature(total_amount, transaction_uuid, product_code, secret):
-    message   = f"total_amount={total_amount},transaction_uuid={transaction_uuid},product_code={product_code}"
-    signature = hmac.new(
-        secret.encode("utf-8"),
-        message.encode("utf-8"),
-        hashlib.sha256,
-    ).digest()
-    return base64.b64encode(signature).decode()
-
-
-def _redirect_to_frontend(result: str, reason: str = ""):
-    frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:5173")
-    path = "success" if result == "success" else "failure"
-    url  = f"{frontend_url}/payment/{path}/"
-    if reason:
-        from urllib.parse import urlencode as _ue
-        url += "?" + _ue({"reason": reason})
-    return HttpResponseRedirect(url)
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Auth views
-# ─────────────────────────────────────────────────────────────────────────────
 
 class HomeView(APIView):
     permission_classes = [AllowAny]
@@ -438,19 +284,6 @@ class RegisterView(APIView):
 
         email = data["email"].lower().strip()
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-        # OTP gate
-        if not cache.get(f"email_verified:{email}"):
-            return Response(
-                {"detail": "Email not verified. Please verify with OTP first."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
-
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
         if User.objects.filter(email=email).exists():
             return Response(
                 {"email": ["This email is already registered."]},
@@ -534,13 +367,6 @@ class LoginView(APIView):
 
 
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-
-=======
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 class SendOTPView(APIView):
     permission_classes = [AllowAny]
 
@@ -580,15 +406,11 @@ class VerifyOTPView(APIView):
         )
 
 
-<<<<<<< HEAD
+# ─────────────────────────────────────────────────────────────────────────────
+# Replace your existing VenuesView class in views.py with this one.
+# Everything else in views.py stays the same.
+# ─────────────────────────────────────────────────────────────────────────────
 
-=======
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 class VenuesView(APIView):
     permission_classes = [AllowAny]
 
@@ -596,6 +418,8 @@ class VenuesView(APIView):
         try:
             base      = {"is_active": True, "status": "approved"}
             and_parts = []
+
+            # ── Existing filters ─────────────────────────────────────────
 
             q = (request.query_params.get("q") or "").strip()
             if q:
@@ -630,11 +454,49 @@ class VenuesView(APIView):
             if event_type:
                 and_parts.append({"event_types": event_type})
 
+            # ── Date availability filter ──────────────────────────────────
+            # If a date is provided, exclude venues that already have a
+            # confirmed booking (in the `events` collection) on that date.
+
+            date_str = (request.query_params.get("date") or "").strip()
+            if date_str:
+                try:
+                    # Validate the date format first
+                    from datetime import datetime
+                    datetime.strptime(date_str, "%Y-%m-%d")   # raises ValueError if bad format
+
+                    # Find all venue slugs that are booked on this date
+                    booked_slugs = mongo_db["events"].distinct(
+                        "venue_slug",
+                        {
+                            "event_date": date_str,   # stored as "YYYY-MM-DD" string
+                            "status":     "confirmed",
+                        },
+                    )
+
+                    # Also check pending_bookings so a date being processed
+                    # through eSewa is not shown as available
+                    pending_slugs = mongo_db["pending_bookings"].distinct(
+                        "venue_slug",
+                        {"event_date": date_str},
+                    )
+
+                    unavailable_slugs = list(set(booked_slugs) | set(pending_slugs))
+
+                    if unavailable_slugs:
+                        and_parts.append({"slug": {"$nin": unavailable_slugs}})
+
+                except ValueError:
+                    # Bad date format — ignore the filter rather than crash
+                    pass
+
+            # ── Build final query and return ─────────────────────────────
             if and_parts:
                 base["$and"] = and_parts
 
             venues = list(mongo_db["venues"].find(base))
             return Response([_venue_out(v) for v in venues])
+
         except Exception:
             return Response([])
 
@@ -693,10 +555,6 @@ class OwnerVenuesView(APIView):
         try:
             slug = _unique_slug(data["name"])
             doc  = {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
                 "name":           data["name"],
                 "description":    data.get("description") or "",
                 "address":        data.get("address") or "",
@@ -714,28 +572,6 @@ class OwnerVenuesView(APIView):
                 "status":         "pending",
                 "created_at":     timezone.now(),
                 "updated_at":     timezone.now(),
-<<<<<<< HEAD
-=======
-=======
-                "name":          data["name"],
-                "description":   data.get("description") or "",
-                "address":       data.get("address") or "",
-                "city":          data.get("city") or "",
-                "capacity":      data.get("capacity") or 0,
-                "price_per_hour": data.get("price_per_hour") or 0.0,
-                "price":         data.get("price") if data.get("price") is not None else data.get("price_per_hour"),
-                "image_url":     (data.get("image_url") or "").strip() or None,
-                "event_types":   data.get("event_types") or [],
-                "amenities":     data.get("amenities") or [],
-                "slug":          slug,
-                "owner_id":      str(request.user.id),
-                "images":        [],
-                "is_active":     True,
-                "status":        "pending",
-                "created_at":    timezone.now(),
-                "updated_at":    timezone.now(),
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             }
             if data.get("latitude")  is not None: doc["latitude"]  = float(data["latitude"])
             if data.get("longitude") is not None: doc["longitude"] = float(data["longitude"])
@@ -869,23 +705,16 @@ class VenueImageUploadView(APIView):
 
 
 
+
 class CreateVenueEventView(APIView):
     """
     Creates a pending_booking record.
-<<<<<<< HEAD
     Booking only moves to `events` after eSewa payment is verified.
-=======
-    The booking only moves to `events` after eSewa payment is verified.
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
     """
     permission_classes = [AllowAny]
 
     def post(self, request, slug):
         try:
-<<<<<<< HEAD
-=======
-           
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             venue = mongo_db["venues"].find_one({"slug": slug, "is_active": True, "status": "approved"})
         except Exception:
             return Response({"detail": "Service unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
@@ -895,14 +724,6 @@ class CreateVenueEventView(APIView):
         data       = request.data
         event_date = (data.get("event_date") or "").strip()
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-       
-=======
-        # check conflict against confirmed events only
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
         if event_date:
             try:
                 existing = mongo_db["events"].find_one({
@@ -938,13 +759,6 @@ class CreateVenueEventView(APIView):
                 "additional_requirements": (data.get("additional_requirements") or "").strip(),
                 "guest_emails":            list(data.get("guest_emails") or []),
                 "invitation_text":         (data.get("invitation_text") or "").strip(),
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-                "invitation_theme":        (data.get("invitation_theme") or "").strip(),
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
                 "status":                  "pending_payment",
                 "transaction_uuid":        transaction_uuid,
                 "booker_id":               str(request.user.id) if request.user.is_authenticated else None,
@@ -974,10 +788,6 @@ class OwnerEventsView(APIView):
 
 
 class OwnerEventDetailView(APIView):
-<<<<<<< HEAD
-=======
-    """DELETE /owner/events/<event_id>/ — venue owner removes an event"""
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
     permission_classes = [IsAuthenticated]
 
     def delete(self, request, event_id):
@@ -1007,221 +817,7 @@ class OrganizerEventsView(APIView):
             return Response([])
 
 
-<<<<<<< HEAD
     
-=======
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def initiate_esewa_payment(request):
-    amount           = str(request.data.get("amount", "0"))
-    transaction_uuid = request.data.get("transaction_uuid") or str(uuid.uuid4())
-
-    signature = generate_esewa_signature(
-        total_amount=amount,
-        transaction_uuid=transaction_uuid,
-        product_code=ESEWA_PRODUCT_CODE,
-        secret=ESEWA_SECRET,
-    )
-
-    backend_url = getattr(settings, "BACKEND_URL", "http://localhost:8000")
-
-    return Response({
-        "amount":                   amount,
-        "tax_amount":               "0",
-        "total_amount":             amount,
-        "transaction_uuid":         transaction_uuid,
-        "product_code":             ESEWA_PRODUCT_CODE,
-        "product_service_charge":   "0",
-        "product_delivery_charge":  "0",
-        "success_url":              f"{backend_url}/api/esewa/success/",
-        "failure_url":              f"{backend_url}/api/esewa/failure/",
-        "signed_field_names":       "total_amount,transaction_uuid,product_code",
-        "signature":                signature,
-        "esewa_url":                "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
-    })
-
-
-class EsewaPaymentSuccessView(APIView):
-    """
-    eSewa GET-redirects here after successful payment.
-    Query param: ?data=<base64-encoded JSON>
-    Verifies HMAC signature → moves pending_booking → events → sends invites.
-    """
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        encoded_data = request.query_params.get("data", "")
-        if not encoded_data:
-            return _redirect_to_frontend("failure", "No payment data received.")
-
-        try:
-            decoded      = base64.b64decode(encoded_data).decode("utf-8")
-            payment_data = json.loads(decoded)
-        except Exception:
-            return _redirect_to_frontend("failure", "Invalid payment data.")
-
-        # verify HMAC signature
-        signed_fields = payment_data.get("signed_field_names", "").split(",")
-        message       = ",".join(f"{f}={payment_data.get(f, '')}" for f in signed_fields)
-        expected_sig  = base64.b64encode(
-            hmac.new(
-                ESEWA_SECRET.encode("utf-8"),
-                message.encode("utf-8"),
-                hashlib.sha256,
-            ).digest()
-        ).decode()
-
-        if payment_data.get("signature") != expected_sig:
-            return _redirect_to_frontend("failure", "Payment signature mismatch.")
-
-        if payment_data.get("status") != "COMPLETE":
-            return _redirect_to_frontend("failure", "Payment not completed.")
-
-        transaction_uuid = payment_data.get("transaction_uuid", "")
-
-        try:
-            booking = mongo_db["pending_bookings"].find_one({"transaction_uuid": transaction_uuid})
-            if not booking:
-                return _redirect_to_frontend("failure", "Booking not found.")
-
-            doc = dict(booking)
-            doc.pop("_id", None)
-            doc["status"]           = "confirmed"
-            doc["payment_status"]   = "paid"
-            doc["transaction_code"] = payment_data.get("transaction_code", "")
-            doc["transaction_uuid"] = transaction_uuid
-            doc["paid_at"]          = timezone.now()
-
-            result   = mongo_db["events"].insert_one(doc)
-            doc["_id"] = result.inserted_id
-
-            # send invitations now that payment is confirmed
-            guests = _normalize_emails(doc.get("guest_emails") or [])
-            if guests:
-                _send_event_invitations(doc)
-
-            mongo_db["pending_bookings"].delete_one({"transaction_uuid": transaction_uuid})
-
-            frontend_url = getattr(settings, "FRONTEND_URL", "http://localhost:5173")
-            return HttpResponseRedirect(
-                f"{frontend_url}/payment/success/"
-                f"?transaction_code={payment_data.get('transaction_code', '')}"
-                f"&amount={payment_data.get('total_amount', '')}"
-                f"&event_id={str(result.inserted_id)}"
-            )
-
-        except Exception as e:
-            logger.exception("Error confirming booking: %s", e)
-            return _redirect_to_frontend("failure", "Could not confirm booking.")
-
-
-class EsewaPaymentFailureView(APIView):
-    """eSewa redirects here on failure — clean up the pending booking."""
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        transaction_uuid = request.query_params.get("transaction_uuid", "")
-        if transaction_uuid:
-            try:
-                mongo_db["pending_bookings"].delete_one({"transaction_uuid": transaction_uuid})
-            except Exception:
-                pass
-        return _redirect_to_frontend("failure")
-
-
-class RSVPResponseView(APIView):
-    """GET /rsvp/<token>/?response=accepted|declined"""
-    permission_classes = [AllowAny]
-
-    def get(self, request, token):
-        response_value = (request.query_params.get("response") or "").strip().lower()
-        if response_value not in ("accepted", "declined"):
-            return Response({"detail": "Invalid RSVP response."}, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            record = mongo_db["rsvp_tokens"].find_one({"token": token})
-        except Exception:
-            return Response({"detail": "Service unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
-
-        if not record:
-            return Response({"detail": "Invalid or expired RSVP link."}, status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            mongo_db["rsvp_tokens"].update_one(
-                {"token": token},
-                {"$set": {"status": response_value, "responded_at": timezone.now()}},
-            )
-
-            # update summary counts on the event document
-            event_id  = record.get("event_id")
-            all_rsvps = list(mongo_db["rsvp_tokens"].find({"event_id": event_id}))
-            mongo_db["events"].update_one(
-                {"_id": ObjectId(event_id)},
-                {"$set": {
-                    "rsvp_accepted": sum(1 for r in all_rsvps if r.get("status") == "accepted"),
-                    "rsvp_declined": sum(1 for r in all_rsvps if r.get("status") == "declined"),
-                    "rsvp_pending":  sum(1 for r in all_rsvps if r.get("status") == "pending"),
-                }},
-            )
-
-            event_name = ""
-            try:
-                ev = mongo_db["events"].find_one({"_id": ObjectId(event_id)})
-                if ev:
-                    event_name = ev.get("event_name", "")
-            except Exception:
-                pass
-
-            return Response({
-                "status":     response_value,
-                "event_name": event_name,
-                "email":      record.get("email"),
-            })
-
-        except Exception as e:
-            logger.exception("RSVP update failed: %s", e)
-            return Response({"detail": "Could not save response."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-class EventRSVPDetailView(APIView):
-    """GET /organizer/events/<event_id>/rsvp/"""
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, event_id):
-        try:
-            event = mongo_db["events"].find_one({
-                "_id":       ObjectId(event_id),
-                "booker_id": str(request.user.id),
-            })
-        except Exception:
-            return Response({"detail": "Event not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        if not event:
-            return Response({"detail": "Event not found."}, status=status.HTTP_404_NOT_FOUND)
-
-        try:
-            rsvps  = list(mongo_db["rsvp_tokens"].find({"event_id": event_id}))
-            guests = [
-                {
-                    "email":        r.get("email"),
-                    "status":       r.get("status", "pending"),
-                    "responded_at": str(r.get("responded_at") or ""),
-                }
-                for r in rsvps
-            ]
-            return Response({
-                "event_id":   event_id,
-                "event_name": event.get("event_name", ""),
-                "total":      len(guests),
-                "accepted":   sum(1 for g in guests if g["status"] == "accepted"),
-                "declined":   sum(1 for g in guests if g["status"] == "declined"),
-                "pending":    sum(1 for g in guests if g["status"] == "pending"),
-                "guests":     guests,
-            })
-        except Exception as e:
-            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -1238,7 +834,6 @@ def initiate_esewa_payment(request):
 
     backend_url = getattr(settings, "BACKEND_URL", None)
     if not backend_url:
-<<<<<<< HEAD
         raise ValueError(
             "BACKEND_URL must be set in settings.py to your public ngrok URL. "
             "eSewa cannot reach localhost."
@@ -1257,23 +852,6 @@ def initiate_esewa_payment(request):
         "signed_field_names":      "total_amount,transaction_uuid,product_code",
         "signature":               signature,
         "esewa_url":               "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
-=======
-        raise ValueError("BACKEND_URL must be set in settings.py to your public ngrok/server URL — eSewa cannot reach localhost.")
-
-    return Response({
-        "amount":                   amount,
-        "tax_amount":               "0",
-        "total_amount":             amount,
-        "transaction_uuid":         transaction_uuid,
-        "product_code":             ESEWA_PRODUCT_CODE,
-        "product_service_charge":   "0",
-        "product_delivery_charge":  "0",
-        "success_url":              f"{backend_url}/api/esewa/success/",
-        "failure_url":              f"{backend_url}/api/esewa/failure/",
-        "signed_field_names":       "total_amount,transaction_uuid,product_code",
-        "signature":                signature,
-        "esewa_url":                "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
     })
 
 
@@ -1281,11 +859,7 @@ class EsewaPaymentSuccessView(APIView):
     """
     eSewa GET-redirects here after successful payment.
     Verifies HMAC → moves pending_booking → events → sends invites.
-<<<<<<< HEAD
     Then JS-redirects the browser to the frontend payment/success page.
-=======
-    Then redirects user to the frontend organizer events page.
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
     """
     permission_classes = [AllowAny]
 
@@ -1306,11 +880,7 @@ class EsewaPaymentSuccessView(APIView):
         logger.info("eSewa payment data: %s", payment_data)
 
         signed_fields = payment_data.get("signed_field_names", "").split(",")
-<<<<<<< HEAD
         message = ",".join(
-=======
-        message       = ",".join(
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             f"{f.strip()}={payment_data.get(f.strip(), '')}"
             for f in signed_fields
         )
@@ -1340,10 +910,6 @@ class EsewaPaymentSuccessView(APIView):
                 logger.error("No pending booking for uuid: %s", transaction_uuid)
                 return _redirect_to_frontend("failure", "Booking not found.")
 
-<<<<<<< HEAD
-=======
-            
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             doc = dict(booking)
             doc.pop("_id", None)
             doc["status"]           = "confirmed"
@@ -1355,27 +921,17 @@ class EsewaPaymentSuccessView(APIView):
             result     = mongo_db["events"].insert_one(doc)
             doc["_id"] = result.inserted_id
 
-<<<<<<< HEAD
-=======
-   
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
             guests = _normalize_emails(doc.get("guest_emails") or [])
             if guests:
                 _send_event_invitations(doc)
 
             mongo_db["pending_bookings"].delete_one({"transaction_uuid": transaction_uuid})
 
-<<<<<<< HEAD
             frontend_url     = getattr(settings, "FRONTEND_URL", "http://localhost:5173")
             transaction_code = payment_data.get("transaction_code", "")
             amount           = payment_data.get("total_amount", "")
             qs               = urlencode({"transaction_code": transaction_code, "amount": amount})
             return _js_redirect(f"{frontend_url}/payment/success/?{qs}")
-=======
-          
-            frontend_url = getattr(settings, "FRONTEND_URL", "https://poikilitic-unsublimed-marlys.ngrok-free.dev")
-            return _js_redirect(f"{frontend_url}/organizer/events")
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
         except Exception as e:
             logger.exception("Error confirming booking: %s", e)
@@ -1383,10 +939,6 @@ class EsewaPaymentSuccessView(APIView):
 
 
 class EsewaPaymentFailureView(APIView):
-<<<<<<< HEAD
-=======
-    """eSewa redirects here on failure — clean up the pending booking."""
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
     permission_classes = [AllowAny]
 
     def get(self, request):
@@ -1400,13 +952,7 @@ class EsewaPaymentFailureView(APIView):
 
 
 
-<<<<<<< HEAD
 class RSVPResponseView(APIView):
-=======
-
-class RSVPResponseView(APIView):
-    """GET /rsvp/<token>/?response=accepted|declined"""
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
     permission_classes = [AllowAny]
 
     def get(self, request, token):
@@ -1459,10 +1005,6 @@ class RSVPResponseView(APIView):
 
 
 class EventRSVPDetailView(APIView):
-<<<<<<< HEAD
-=======
-    """GET /organizer/events/<event_id>/rsvp/"""
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
     permission_classes = [IsAuthenticated]
 
     def get(self, request, event_id):
@@ -1499,11 +1041,6 @@ class EventRSVPDetailView(APIView):
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
 class AdminVenueOwnersView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
@@ -1565,7 +1102,6 @@ class AdminVenuesView(APIView):
 
     def get(self, request):
         try:
-       
             venues = list(mongo_db["venues"].find({"is_active": True}))
             result = []
             for v in venues:
@@ -1574,15 +1110,7 @@ class AdminVenuesView(APIView):
                     owner_name = f"{owner.first_name} {owner.last_name}".strip() or owner.username
                 except Exception:
                     owner_name = v.get("owner_id") or "Unknown"
-<<<<<<< HEAD
                 v_out               = _venue_out(dict(v))
-=======
-<<<<<<< HEAD
-                v_out               = _venue_out(dict(v))
-=======
-                v_out              = _venue_out(dict(v))
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
                 v_out["owner_name"] = owner_name
                 result.append(v_out)
             return Response(result)
@@ -1623,27 +1151,285 @@ class AdminStatsView(APIView):
 
     def get(self, request):
         try:
-            return Response({
-<<<<<<< HEAD
-                "total_owners":   mongo_db["user_profiles"].count_documents({"user_type": "venue_owner"}),
-                "total_venues":   mongo_db["venues"].count_documents({"is_active": True, "status": "approved"}),
-                "pending_venues": mongo_db["venues"].count_documents({"is_active": True, "status": "pending"}),
-                "total_bookings": mongo_db["events"].count_documents({"status": "confirmed"}),
-=======
-<<<<<<< HEAD
+            now = timezone.now()
+
          
-                "total_owners":   mongo_db["user_profiles"].count_documents({"user_type": "venue_owner"}),
-                "total_venues":   mongo_db["venues"].count_documents({"is_active": True, "status": "approved"}),
-                "pending_venues": mongo_db["venues"].count_documents({"is_active": True, "status": "pending"}),
-   
-                "total_bookings": mongo_db["events"].count_documents({"status": "confirmed"}),
-=======
-                "total_owners":    mongo_db["user_profiles"].count_documents({"user_type": "venue_owner"}),
-                "total_venues":    mongo_db["venues"].count_documents({"is_active": True}),
-                "pending_venues":  mongo_db["venues"].count_documents({"is_active": True, "status": "pending"}),
-                "total_bookings":  mongo_db["events"].count_documents({}),
->>>>>>> 8f2dc803695dddd40ed5e58e1687c609c714502a
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
+            month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            if month_start.month == 12:
+                month_end = month_start.replace(year=month_start.year + 1, month=1)
+            else:
+                month_end = month_start.replace(month=month_start.month + 1)
+
+        
+            total_owners   = mongo_db["user_profiles"].count_documents({"user_type": "venue_owner"})
+            total_venues   = mongo_db["venues"].count_documents({"is_active": True, "status": "approved"})
+            pending_venues = mongo_db["venues"].count_documents({"is_active": True, "status": "pending"})
+            total_bookings = mongo_db["events"].count_documents({"status": "confirmed"})
+
+          
+            new_venues_this_month = mongo_db["venues"].count_documents({
+                "is_active":  True,
+                "created_at": {"$gte": month_start, "$lt": month_end},
             })
+
+           
+            approved_venues_this_month = mongo_db["venues"].count_documents({
+                "is_active":  True,
+                "status":     "approved",
+                "updated_at": {"$gte": month_start, "$lt": month_end},
+            })
+
+           
+            new_owners_this_month = 0
+            try:
+                owner_ids = [
+                    p["user_id"]
+                    for p in mongo_db["user_profiles"].find(
+                        {"user_type": "venue_owner"}, {"user_id": 1}
+                    )
+                ]
+                new_owners_this_month = User.objects.filter(
+                    id__in=owner_ids,
+                    date_joined__gte=month_start,
+                    date_joined__lt=month_end,
+                ).count()
+            except Exception:
+                pass
+
+         
+            bookings_this_month = mongo_db["events"].count_documents({
+                "status":     "confirmed",
+                "created_at": {"$gte": month_start, "$lt": month_end},
+            })
+
+           
+            all_venues = list(
+                mongo_db["venues"].find({"is_active": True, "status": "approved"})
+            )
+
+            venue_activity_this_month = []
+            for v in all_venues:
+                venue_slug = v.get("slug") or ""
+                venue_id   = str(v.get("_id", ""))
+
+            
+                owner_name = ""
+                try:
+                    owner = User.objects.get(id=v.get("owner_id"))
+                    owner_name = (
+                        f"{owner.first_name} {owner.last_name}".strip()
+                        or owner.username
+                    )
+                except Exception:
+                    owner_name = v.get("owner_id") or ""
+
+          
+                events_cursor = mongo_db["events"].find({
+                    "venue_slug": venue_slug,
+                    "status":     "confirmed",
+                    "created_at": {"$gte": month_start, "$lt": month_end},
+                })
+
+                events_this_month = []
+                for ev in events_cursor:
+                    events_this_month.append({
+                        "id":          str(ev.get("_id", "")),
+                        "event_name":  ev.get("event_name") or "",
+                        "event_type":  ev.get("event_type") or "",
+                        "event_date":  ev.get("event_date") or "",
+                        "event_time":  ev.get("event_time") or "",
+                        "host_name":   ev.get("host_name") or "",
+                        "host_email":  ev.get("host_email") or "",
+                        "status":      ev.get("status") or "confirmed",
+                        "expected_guests": ev.get("expected_guests") or 0,
+                    })
+
+                venue_activity_this_month.append({
+                    "venue_id":          venue_id,
+                    "name":              v.get("name") or "",
+                    "city":              v.get("city") or "",
+                    "owner_name":        owner_name,
+                    "events_this_month": events_this_month,   # list of event dicts
+                })
+
+         
+            monthly_bookings = []
+            for i in range(5, -1, -1):  
+                target_month = now.month - i
+                target_year  = now.year
+                while target_month <= 0:
+                    target_month += 12
+                    target_year  -= 1
+
+                m_start = now.replace(
+                    year=target_year, month=target_month, day=1,
+                    hour=0, minute=0, second=0, microsecond=0,
+                )
+                if m_start.month == 12:
+                    m_end = m_start.replace(year=m_start.year + 1, month=1)
+                else:
+                    m_end = m_start.replace(month=m_start.month + 1)
+
+                count = mongo_db["events"].count_documents({
+                    "status":     "confirmed",
+                    "created_at": {"$gte": m_start, "$lt": m_end},
+                })
+                monthly_bookings.append(count)
+
+            return Response({
+             
+                "total_owners":   total_owners,
+                "total_venues":   total_venues,
+                "pending_venues": pending_venues,
+                "total_bookings": total_bookings,
+
+              
+                "new_venues_this_month":      new_venues_this_month,
+                "approved_venues_this_month": approved_venues_this_month,
+                "new_owners_this_month":      new_owners_this_month,
+                "bookings_this_month":        bookings_this_month,
+
+              
+                "venue_activity_this_month":  venue_activity_this_month,
+
+              
+                "monthly_bookings": monthly_bookings,
+            })
+
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           
+
+class VenueReviewsView(APIView):
+    """
+    GET  /api/venues/<slug>/reviews/   – list all approved reviews for a venue
+    POST /api/venues/<slug>/reviews/   – event_organizer submits a review
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, slug):
+        try:
+            reviews = list(
+                mongo_db["venue_reviews"].find(
+                    {"venue_slug": slug},
+                    sort=[("created_at", -1)],
+                )
+            )
+            out = []
+            for r in reviews:
+                r["id"] = str(r.pop("_id", ""))
+                out.append(r)
+            return Response(out)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request, slug):
+       
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication required."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+      
+        try:
+            profile = mongo_db["user_profiles"].find_one({"user_id": str(request.user.id)})
+            user_type = (profile or {}).get("user_type", "")
+        except Exception:
+            user_type = ""
+
+        if user_type not in ("event_organizer", "organizer"):
+            return Response(
+                {"detail": "Only event organizers can leave reviews."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        
+        try:
+            venue = mongo_db["venues"].find_one(
+                {"slug": slug, "is_active": True, "status": "approved"}
+            )
+        except Exception:
+            return Response({"detail": "Service unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        if not venue:
+            return Response({"detail": "Venue not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    
+        rating = request.data.get("rating")
+        comment = (request.data.get("comment") or "").strip()
+
+        try:
+            rating = int(rating)
+            if not (1 <= rating <= 5):
+                raise ValueError
+        except (TypeError, ValueError):
+            return Response(
+                {"detail": "rating must be an integer between 1 and 5."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not comment:
+            return Response(
+                {"detail": "comment is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+       
+        reviewer_name = (
+            f"{request.user.first_name} {request.user.last_name}".strip()
+            or request.user.username
+        )
+
+        doc = {
+            "venue_slug":    slug,
+            "user_id":       str(request.user.id),
+            "reviewer_name": reviewer_name,
+            "rating":        rating,
+            "comment":       comment,
+            "created_at":    timezone.now(),
+        }
+
+        try:
+            result = mongo_db["venue_reviews"].update_one(
+                {"venue_slug": slug, "user_id": str(request.user.id)},
+                {"$set": doc},
+                upsert=True,
+            )
+          
+            saved = mongo_db["venue_reviews"].find_one(
+                {"venue_slug": slug, "user_id": str(request.user.id)}
+            )
+            saved["id"] = str(saved.pop("_id", ""))
+            return Response(saved, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class VenueReviewDeleteView(APIView):
+    """
+    DELETE /api/venues/<slug>/reviews/<review_id>/
+    An organizer can delete their own review.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, slug, review_id):
+        try:
+            review = mongo_db["venue_reviews"].find_one(
+                {"_id": ObjectId(review_id), "venue_slug": slug}
+            )
+        except Exception:
+            return Response({"detail": "Review not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if not review:
+            return Response({"detail": "Review not found."}, status=status.HTTP_404_NOT_FOUND)
+
+   
+        if str(review.get("user_id")) != str(request.user.id) and not request.user.is_staff:
+            return Response({"detail": "Not allowed."}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            mongo_db["venue_reviews"].delete_one({"_id": ObjectId(review_id)})
+            return Response(status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
