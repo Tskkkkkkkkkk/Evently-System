@@ -1145,7 +1145,6 @@ class AdminVenueDetailView(APIView):
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class AdminStatsView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
@@ -1153,6 +1152,7 @@ class AdminStatsView(APIView):
         try:
             now = timezone.now()
 
+<<<<<<< HEAD
          
             month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
             if month_start.month == 12:
@@ -1161,12 +1161,26 @@ class AdminStatsView(APIView):
                 month_end = month_start.replace(month=month_start.month + 1)
 
         
+=======
+           
+            month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            if month_start.month == 12:
+                month_end = month_start.replace(year=month_start.year + 1, month=1)
+            else:
+                month_end = month_start.replace(month=month_start.month + 1)
+
+         
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             total_owners   = mongo_db["user_profiles"].count_documents({"user_type": "venue_owner"})
             total_venues   = mongo_db["venues"].count_documents({"is_active": True, "status": "approved"})
             pending_venues = mongo_db["venues"].count_documents({"is_active": True, "status": "pending"})
             total_bookings = mongo_db["events"].count_documents({"status": "confirmed"})
 
+<<<<<<< HEAD
           
+=======
+           
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             new_venues_this_month = mongo_db["venues"].count_documents({
                 "is_active":  True,
                 "created_at": {"$gte": month_start, "$lt": month_end},
@@ -1196,13 +1210,22 @@ class AdminStatsView(APIView):
             except Exception:
                 pass
 
+<<<<<<< HEAD
          
+=======
+          
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             bookings_this_month = mongo_db["events"].count_documents({
                 "status":     "confirmed",
                 "created_at": {"$gte": month_start, "$lt": month_end},
             })
 
+<<<<<<< HEAD
            
+=======
+          
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             all_venues = list(
                 mongo_db["venues"].find({"is_active": True, "status": "approved"})
             )
@@ -1212,7 +1235,11 @@ class AdminStatsView(APIView):
                 venue_slug = v.get("slug") or ""
                 venue_id   = str(v.get("_id", ""))
 
+<<<<<<< HEAD
             
+=======
+           
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
                 owner_name = ""
                 try:
                     owner = User.objects.get(id=v.get("owner_id"))
@@ -1223,7 +1250,11 @@ class AdminStatsView(APIView):
                 except Exception:
                     owner_name = v.get("owner_id") or ""
 
+<<<<<<< HEAD
           
+=======
+    
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
                 events_cursor = mongo_db["events"].find({
                     "venue_slug": venue_slug,
                     "status":     "confirmed",
@@ -1252,9 +1283,15 @@ class AdminStatsView(APIView):
                     "events_this_month": events_this_month,   # list of event dicts
                 })
 
+<<<<<<< HEAD
          
             monthly_bookings = []
             for i in range(5, -1, -1):  
+=======
+  
+            monthly_bookings = []
+            for i in range(5, -1, -1):   # oldest → newest
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
                 target_month = now.month - i
                 target_year  = now.year
                 while target_month <= 0:
@@ -1283,12 +1320,17 @@ class AdminStatsView(APIView):
                 "pending_venues": pending_venues,
                 "total_bookings": total_bookings,
 
+<<<<<<< HEAD
               
+=======
+   
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
                 "new_venues_this_month":      new_venues_this_month,
                 "approved_venues_this_month": approved_venues_this_month,
                 "new_owners_this_month":      new_owners_this_month,
                 "bookings_this_month":        bookings_this_month,
 
+<<<<<<< HEAD
               
                 "venue_activity_this_month":  venue_activity_this_month,
 
@@ -1431,5 +1473,13 @@ class VenueReviewDeleteView(APIView):
         try:
             mongo_db["venue_reviews"].delete_one({"_id": ObjectId(review_id)})
             return Response(status=status.HTTP_204_NO_CONTENT)
+=======
+                "venue_activity_this_month":  venue_activity_this_month,
+
+               
+                "monthly_bookings": monthly_bookings,
+            })
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

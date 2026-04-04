@@ -6,13 +6,21 @@ import './AdminDashboard.css';
 
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+<<<<<<< HEAD
 
+=======
+/* ── Status Badge ─────────────────────────────────────────────────────── */
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
 const StatusBadge = ({ status }) => {
   const cls = status || 'pending';
   return <span className={`badge badge-${cls}`}>{cls}</span>;
 };
 
+<<<<<<< HEAD
 
+=======
+/* ── Modal ────────────────────────────────────────────────────────────── */
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
 const Modal = ({ title, onClose, children }) => (
   <div className="modal-overlay" onClick={onClose}>
     <div className="modal-box" onClick={e => e.stopPropagation()}>
@@ -26,7 +34,11 @@ const Modal = ({ title, onClose, children }) => (
 );
 
 
+<<<<<<< HEAD
 
+=======
+/* ── Per-Venue Activity Modal ─────────────────────────────────────────── */
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
 const VenueActivityModal = ({ venue, onClose }) => {
   const events = venue.events_this_month || [];
   return (
@@ -65,6 +77,7 @@ const VenueActivityModal = ({ venue, onClose }) => {
         <button className="btn btn-outline btn-lg" onClick={onClose}>Close</button>
       </div>
     </Modal>
+<<<<<<< HEAD
   );
 };
 
@@ -204,11 +217,152 @@ const MonthlyEvents = ({ venues, stats }) => {
         />
       )}
     </>
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
   );
 };
 
 
+/* ── Monthly Events — platform totals + per-venue breakdown ───────────── */
+const MonthlyEvents = ({ venues, stats }) => {
+  const now       = new Date();
+  const monthName = MONTH_NAMES[now.getMonth()];
+  const year      = now.getFullYear();
 
+  const [expandedVenues, setExpandedVenues] = useState(false);
+  const [selectedVenueActivity, setSelectedVenueActivity] = useState(null);
+
+  const newVenuesThisMonth  = stats?.new_venues_this_month      ?? 0;
+  const approvedThisMonth   = stats?.approved_venues_this_month ?? 0;
+  const newOwnersThisMonth  = stats?.new_owners_this_month      ?? 0;
+  const bookingsThisMonth   = stats?.bookings_this_month        ?? 0;
+  const pendingReviews      = venues.filter(v => !v.status || v.status === 'pending').length;
+
+  // Venues that have at least one event this month
+  const venueActivity = stats?.venue_activity_this_month ?? [];
+  const activeVenues  = venueActivity.filter(v => (v.events_this_month?.length ?? 0) > 0);
+
+  const isDataAvailable =
+    stats?.new_venues_this_month      !== undefined ||
+    stats?.approved_venues_this_month !== undefined ||
+    stats?.new_owners_this_month      !== undefined ||
+    stats?.bookings_this_month        !== undefined;
+
+  const summaryEvents = [
+    ...(newVenuesThisMonth > 0 ? [{
+      label: `${newVenuesThisMonth} new venue listing${newVenuesThisMonth !== 1 ? 's' : ''} submitted`,
+      sub:   'Awaiting review or recently approved',
+     
+    }] : []),
+    ...(approvedThisMonth > 0 ? [{
+      label: `${approvedThisMonth} venue${approvedThisMonth !== 1 ? 's' : ''} approved this month`,
+      sub:   'Now live on the platform',
+   
+    }] : []),
+    ...(newOwnersThisMonth > 0 ? [{
+      label: `${newOwnersThisMonth} new owner${newOwnersThisMonth !== 1 ? 's' : ''} registered`,
+      sub:   'New accounts this month',
+      
+    }] : []),
+    ...(bookingsThisMonth > 0 ? [{
+      label: `${bookingsThisMonth} booking${bookingsThisMonth !== 1 ? 's' : ''} confirmed`,
+      sub:   'Reservations placed this month',
+
+    }] : []),
+    ...(pendingReviews > 0 ? [{
+      label: `${pendingReviews} venue${pendingReviews !== 1 ? 's' : ''} pending approval`,
+      sub:   'Action required',
+      
+    }] : []),
+  ];
+
+  return (
+    <>
+      <div className="events-section">
+        <div className="events-header">
+          <h2 className="section-title" style={{ marginBottom: 0 }}>
+            {monthName} {year} — Activity
+          </h2>
+          <span className="events-badge">This month</span>
+        </div>
+
+        {!isDataAvailable ? (
+          <div className="events-placeholder">
+            No activity data yet. Make sure the backend returns{' '}
+            <code>new_venues_this_month</code>, <code>approved_venues_this_month</code>,{' '}
+            <code>new_owners_this_month</code>, <code>bookings_this_month</code>, and{' '}
+            <code>venue_activity_this_month</code> from <code>/admin-api/stats/</code>.
+          </div>
+        ) : summaryEvents.length === 0 && activeVenues.length === 0 ? (
+          <div className="events-empty">No activity recorded for {monthName} {year} yet.</div>
+        ) : (
+          <>
+            {/* Platform-wide summary pills */}
+            {summaryEvents.length > 0 && (
+              <div className="events-list" style={{ marginBottom: activeVenues.length > 0 ? 20 : 0 }}>
+                {summaryEvents.map((ev, i) => (
+                  <div key={i} className={`event-item event-${ev.color}`}>
+                    <span className="event-icon">{ev.icon}</span>
+                    <div>
+                      <div className="event-label">{ev.label}</div>
+                      <div className="event-sub">{ev.sub}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Per-venue breakdown */}
+            {activeVenues.length > 0 && (
+              <div className="venue-activity-section">
+                <button
+                  className="venue-activity-toggle"
+                  onClick={() => setExpandedVenues(p => !p)}
+                >
+                  <span> Activity by venue ({activeVenues.length} active)</span>
+                  <span className="toggle-arrow">{expandedVenues ? '▲' : '▼'}</span>
+                </button>
+
+                {expandedVenues && (
+                  <div className="venue-activity-grid">
+                    {activeVenues.map((v, i) => {
+                      const count = v.events_this_month?.length ?? 0;
+                      return (
+                        <div key={i} className="venue-activity-card">
+                          <div className="vac-top">
+                            <span className="vac-name">{v.name}</span>
+                            <span className="vac-count">{count} event{count !== 1 ? 's' : ''}</span>
+                          </div>
+                          <div className="vac-meta">{v.city}{v.owner_name ? ` · ${v.owner_name}` : ''}</div>
+                          <button
+                            className="btn btn-outline vac-btn"
+                            onClick={() => setSelectedVenueActivity(v)}
+                          >
+                            View events
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      {selectedVenueActivity && (
+        <VenueActivityModal
+          venue={selectedVenueActivity}
+          onClose={() => setSelectedVenueActivity(null)}
+        />
+      )}
+    </>
+  );
+};
+
+
+/* ── Stats Charts — pure CSS bar + conic-gradient donut (no Chart.js) ── */
 const StatsCharts = ({ venues, stats }) => {
   const approved = venues.filter(v => v.status === 'approved').length;
   const pending  = venues.filter(v => !v.status || v.status === 'pending').length;
@@ -242,7 +396,11 @@ const StatsCharts = ({ venues, stats }) => {
 
   return (
     <div className="charts-grid">
+<<<<<<< HEAD
 
+=======
+      {/* Bar chart */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
       <div className="chart-card">
         <div className="chart-card-header">
           <span className="chart-card-title">Booking trend</span>
@@ -261,7 +419,11 @@ const StatsCharts = ({ venues, stats }) => {
         </div>
       </div>
 
+<<<<<<< HEAD
  
+=======
+      {/* Donut chart */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
       <div className="chart-card">
         <div className="chart-card-header">
           <span className="chart-card-title">Venue status</span>
@@ -291,6 +453,10 @@ const StatsCharts = ({ venues, stats }) => {
 };
 
 
+<<<<<<< HEAD
+=======
+/* ── Admin Dashboard ──────────────────────────────────────────────────── */
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
 export default function AdminDashboard({ user, onLogout }) {
   const [tab, setTab] = useState('overview');
   const [owners, setOwners] = useState([]);
@@ -416,7 +582,11 @@ export default function AdminDashboard({ user, onLogout }) {
               ))}
             </div>
 
+<<<<<<< HEAD
       
+=======
+            {/* Tabs */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             <div className="tabs">
               {TABS.map(t => (
                 <button
@@ -438,7 +608,11 @@ export default function AdminDashboard({ user, onLogout }) {
               />
             )}
 
+<<<<<<< HEAD
        
+=======
+            {/* ── Overview */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             {tab === 'overview' && (
               <div>
                 <StatsCharts venues={venues} stats={stats} />
@@ -513,7 +687,11 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             )}
 
+<<<<<<< HEAD
       
+=======
+            {/* ── Venues */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             {tab === 'venues' && (
               <div className="card-list">
                 {filteredVenues.length === 0
@@ -541,6 +719,10 @@ export default function AdminDashboard({ user, onLogout }) {
               </div>
             )}
 
+<<<<<<< HEAD
+=======
+            {/* ── Pending */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             {tab === 'pending' && (
               <div>
                 {pendingVenues.length === 0
@@ -567,7 +749,11 @@ export default function AdminDashboard({ user, onLogout }) {
         )}
       </main>
 
+<<<<<<< HEAD
 
+=======
+      {/* Owner detail modal */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
       {selectedOwner && (
         <Modal title="Owner Details" onClose={() => setSelectedOwner(null)}>
           <div className="modal-grid">
@@ -592,7 +778,11 @@ export default function AdminDashboard({ user, onLogout }) {
         </Modal>
       )}
 
+<<<<<<< HEAD
       
+=======
+      {/* Venue detail modal */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
       {selectedVenue && (
         <Modal title="Venue Details" onClose={() => setSelectedVenue(null)}>
           <div className="modal-grid">
@@ -622,7 +812,11 @@ export default function AdminDashboard({ user, onLogout }) {
         </Modal>
       )}
 
+<<<<<<< HEAD
      
+=======
+      {/* Confirm modal */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
       {confirmModal && (
         <Modal title="Confirm Action" onClose={() => setConfirmModal(null)}>
           <p className="modal-body">

@@ -26,6 +26,7 @@ from .views import (
     EsewaPaymentFailureView,
     RSVPResponseView,
     EventRSVPDetailView,
+<<<<<<< HEAD
 
 )
 from django.http import HttpResponseRedirect
@@ -35,6 +36,11 @@ from django.urls import path
 from django.urls import path
 from . import views
 
+=======
+)
+from django.http import HttpResponseRedirect
+from django.urls import path
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("accounts/register/",          RegisterView.as_view(),       name="register"),
@@ -76,6 +82,7 @@ path("payment/failure/", lambda request: HttpResponseRedirect(
 path("payment/success/", lambda request: HttpResponseRedirect(
     "http://localhost:5173/payment/success/?" + request.META.get("QUERY_STRING", "")
 ), name="payment-success-passthrough"),
+<<<<<<< HEAD
 
     path('venues/',                                   views.VenuesView.as_view()),
     path('venues/<slug:slug>/',                       views.VenueDetailView.as_view()),
@@ -85,8 +92,13 @@ path("payment/success/", lambda request: HttpResponseRedirect(
     path('venues/<slug:slug>/reviews/',               views.VenueReviewsView.as_view()),
     path('venues/<slug:slug>/reviews/<str:review_id>/', views.VenueReviewDeleteView.as_view()),
 
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
 ]
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55

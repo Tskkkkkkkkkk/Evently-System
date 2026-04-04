@@ -92,6 +92,7 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const [activeSlide,   setActiveSlide]   = useState(0);
   const [lightboxOpen,  setLightboxOpen]  = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+<<<<<<< HEAD
 
   const [reviews,        setReviews]        = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
@@ -104,6 +105,8 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   const isOrganizer = user && (
     user.user_type === 'event_organizer' || user.user_type === 'organizer'
   );
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
 
   useEffect(() => {
     if (!slug) { setLoading(false); setError('Venue not found.'); return; }
@@ -175,8 +178,16 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
   };
 
   const today = new Date().toISOString().slice(0, 10);
+<<<<<<< HEAD
   const goToDashboard = () => { window.location.href = '/organizer/dashboard'; };
 
+=======
+
+  const goToDashboard = () => {
+    window.location.href = '/organizer/dashboard';
+  };
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
   const submitSkipBooking = async () => {
     if (!skipForm.event_date) { setSubmitError('Please select a date.'); return; }
     setSubmitLoading(true); setSubmitError('');
@@ -197,8 +208,18 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
         venue_slug: slug, amount: venue.total ?? venue.price,
         transaction_uuid: bookingRes.data.transaction_uuid,
       });
+<<<<<<< HEAD
       if (payment === 'eSewa') redirectToEsewa(payRes.data);
       else goToDashboard();
+=======
+
+      if (payment === 'eSewa') {
+        redirectToEsewa(payRes.data);
+      } else {
+     
+        goToDashboard();
+      }
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
     } catch (e) {
       setSubmitError(e.response?.data?.detail || 'That date is already taken. Please pick another.');
       setSubmitLoading(false);
@@ -512,7 +533,11 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
           <div className={styles.modalOverlay} onClick={e => e.target === e.currentTarget && closeBookModal()}>
             <div className={styles.modal} onClick={e => e.stopPropagation()}>
 
+<<<<<<< HEAD
           
+=======
+        
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
               {bookStep === 'host-prompt' && (
                 <>
                   <h2 className={styles.modalTitle}>Booking Confirmation</h2>
@@ -580,7 +605,35 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                 </>
               )}
 
+<<<<<<< HEAD
        
+=======
+              {/* Step 2a: skip — just pick a date */}
+              {bookStep === 'skip-pick-date' && (
+                <>
+                  <h2 className={styles.modalTitle}>Reserve a date</h2>
+                  <div className={styles.modalField}>
+                    <label className={styles.modalLabel}>Date</label>
+                    <input
+                      type="date"
+                      className={styles.modalInput}
+                      min={today}
+                      value={selectedDate}
+                      onChange={e => setSelectedDate(e.target.value)}
+                    />
+                  </div>
+                  {submitError && <p className={styles.modalError}>{submitError}</p>}
+                  <div className={styles.modalActions}>
+                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnGhost}`}   onClick={closeBookModal}    disabled={submitLoading}>Cancel</button>
+                    <button type="button" className={`${styles.modalBtn} ${styles.modalBtnPrimary}`} onClick={submitSkipBooking} disabled={!selectedDate || submitLoading}>
+                      {submitLoading ? 'Redirecting to eSewa…' : `Reserve & Pay with ${payment}`}
+                    </button>
+                  </div>
+                </>
+              )}
+
+            
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
               {bookStep === 'create-event' && (
                 <>
                   <h2 className={styles.modalTitle}>Host your Event</h2>
@@ -616,6 +669,10 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                 </>
               )}
 
+<<<<<<< HEAD
+=======
+    
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
               {bookStep === 'event-schedule' && (
                 <>
                   <h2 className={styles.modalTitle}>Event Schedule</h2>
@@ -690,7 +747,11 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                 </>
               )}
 
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
               {bookStep === 'invite-guests' && (
                 <>
                   <h2 className={styles.modalTitle}>Invite Guests</h2>
@@ -717,6 +778,10 @@ export default function VenueDetailPage({ slug: slugProp, user, onLogout }) {
                   </div>
                 </>
               )}
+<<<<<<< HEAD
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
             </div>
           </div>
         )}
