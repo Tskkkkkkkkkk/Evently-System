@@ -340,7 +340,11 @@ function EventRSVPStats({ eventId }) {
           gap: 6,
         }}
       >
+<<<<<<< HEAD
         {open ? 'Hide' : 'View'} RSVP responses
+=======
+         {open ? 'Hide' : 'View'} RSVP responses
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
       </button>
 
       {/* Expanded RSVP panel */}
@@ -362,7 +366,11 @@ function EventRSVPStats({ eventId }) {
           {/* Stats loaded successfully */}
           {!loading && stats && (
             <>
+<<<<<<< HEAD
               {/* Summary row: 4 count boxes */}
+=======
+             
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
               <div style={{ display: 'flex', borderBottom: '1px solid #f3f4f6' }}>
                 {[
                   { label: 'Attending',     value: stats.accepted, color: '#16a34a', bg: '#f0fdf4' },
@@ -386,7 +394,11 @@ function EventRSVPStats({ eventId }) {
                 ))}
               </div>
 
+<<<<<<< HEAD
               {/* Progress bar — green/red/yellow proportional to responses */}
+=======
+             
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
               {stats.total > 0 && (
                 <div style={{ padding: '10px 16px', borderBottom: '1px solid #f3f4f6' }}>
                   <div style={{ height: 7, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden', display: 'flex' }}>
@@ -402,7 +414,11 @@ function EventRSVPStats({ eventId }) {
                 </div>
               )}
 
+<<<<<<< HEAD
               {/* Per-guest list */}
+=======
+             
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
               <div style={{ maxHeight: 240, overflowY: 'auto' }}>
                 {stats.guests.length === 0 ? (
                   <p style={{ padding: '14px 16px', fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888', margin: 0 }}>
@@ -542,6 +558,7 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
               My Events
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+<<<<<<< HEAD
               {events.map((ev) => {
                 // Calculate days until this event so we can show a countdown pill
                 const days = daysUntil(ev.event_date);
@@ -614,6 +631,51 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                   </div>
                 );
               })}
+=======
+              {events.map((ev) => (
+                <div
+                  key={ev.id}
+                  style={{
+                    background: 'white', borderRadius: 16, padding: 20,
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                  }}
+                >
+           
+                  <div
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', cursor: 'pointer' }}
+                    onClick={() => setSelectedEvent(ev)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={e => e.key === 'Enter' && setSelectedEvent(ev)}
+                  >
+                    <div>
+                      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700, marginBottom: 6 }}>
+                        {ev.event_name || 'Unnamed Event'}
+                      </div>
+                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginBottom: 4 }}>
+                        {ev.venue_name} · {ev.event_date || '—'}{ev.event_time ? ` at ${ev.event_time}` : ''}
+                      </div>
+                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888' }}>
+                        Host: {ev.host_name || '—'}{ev.expected_guests ? ` · ${ev.expected_guests} expected guests` : ''}
+                      </div>
+                      {ev.event_type && (
+                        <span className="tag" style={{ marginTop: 8, display: 'inline-block' }}>
+                          {ev.event_type}
+                        </span>
+                      )}
+                    </div>
+                    <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#1a1a1a', fontWeight: 500, flexShrink: 0, marginLeft: 16 }}>
+                      View details →
+                    </span>
+                  </div>
+
+                 
+                  {ev.guest_emails?.length > 0 && (
+                    <EventRSVPStats eventId={ev.id} />
+                  )}
+                </div>
+              ))}
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
             </div>
           </section>
         )}
@@ -630,7 +692,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
           </div>
         )}
 
+<<<<<<< HEAD
         {/* ── Event detail modal ─────────────────────────────────────────── */}
+=======
+      
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
         {selectedEvent && (
           <div className="confirm-overlay" onClick={() => setSelectedEvent(null)}>
             <div className="confirm-box" style={{ textAlign: 'left', padding: 28 }} onClick={e => e.stopPropagation()}>
@@ -706,7 +772,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                 )}
               </div>
 
+<<<<<<< HEAD
               {/* RSVP tracker inside modal too */}
+=======
+             
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
               {selectedEvent.guest_emails?.length > 0 && (
                 <div style={{ marginTop: 24, borderTop: '1px solid #f3f4f6', paddingTop: 20 }}>
                   <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#444', marginBottom: 8 }}>

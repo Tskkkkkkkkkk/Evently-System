@@ -406,6 +406,14 @@ class VerifyOTPView(APIView):
         )
 
 
+<<<<<<< HEAD
+=======
+# ─────────────────────────────────────────────────────────────────────────────
+# Replace your existing VenuesView class in views.py with this one.
+# Everything else in views.py stays the same.
+# ─────────────────────────────────────────────────────────────────────────────
+
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 class VenuesView(APIView):
     permission_classes = [AllowAny]
 
@@ -414,7 +422,12 @@ class VenuesView(APIView):
             base      = {"is_active": True, "status": "approved"}
             and_parts = []
 
+<<<<<<< HEAD
      
+=======
+            # ── Existing filters ─────────────────────────────────────────
+
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
             q = (request.query_params.get("q") or "").strip()
             if q:
                 regex = {"$regex": q, "$options": "i"}
@@ -448,15 +461,29 @@ class VenuesView(APIView):
             if event_type:
                 and_parts.append({"event_types": event_type})
 
+<<<<<<< HEAD
          
+=======
+            # ── Date availability filter ──────────────────────────────────
+            # If a date is provided, exclude venues that already have a
+            # confirmed booking (in the `events` collection) on that date.
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 
             date_str = (request.query_params.get("date") or "").strip()
             if date_str:
                 try:
+<<<<<<< HEAD
                     from datetime import datetime
                     datetime.strptime(date_str, "%Y-%m-%d")  
 
                   
+=======
+                    # Validate the date format first
+                    from datetime import datetime
+                    datetime.strptime(date_str, "%Y-%m-%d")   # raises ValueError if bad format
+
+                    # Find all venue slugs that are booked on this date
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
                     booked_slugs = mongo_db["events"].distinct(
                         "venue_slug",
                         {
@@ -465,7 +492,12 @@ class VenuesView(APIView):
                         },
                     )
 
+<<<<<<< HEAD
                    
+=======
+                    # Also check pending_bookings so a date being processed
+                    # through eSewa is not shown as available
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
                     pending_slugs = mongo_db["pending_bookings"].distinct(
                         "venue_slug",
                         {"event_date": date_str},
@@ -480,7 +512,11 @@ class VenuesView(APIView):
                     # Bad date format — ignore the filter rather than crash
                     pass
 
+<<<<<<< HEAD
          
+=======
+            # ── Build final query and return ─────────────────────────────
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
             if and_parts:
                 base["$and"] = and_parts
 
@@ -1135,7 +1171,6 @@ class AdminVenueDetailView(APIView):
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 class AdminStatsView(APIView):
     permission_classes = [IsAuthenticated, IsAdmin]
 
@@ -1143,6 +1178,10 @@ class AdminStatsView(APIView):
         try:
             now = timezone.now()
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
          
             month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
             if month_start.month == 12:
@@ -1151,11 +1190,25 @@ class AdminStatsView(APIView):
                 month_end = month_start.replace(month=month_start.month + 1)
 
         
+<<<<<<< HEAD
+=======
+=======
+           
+            month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            if month_start.month == 12:
+                month_end = month_start.replace(year=month_start.year + 1, month=1)
+            else:
+                month_end = month_start.replace(month=month_start.month + 1)
+
+         
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
             total_owners   = mongo_db["user_profiles"].count_documents({"user_type": "venue_owner"})
             total_venues   = mongo_db["venues"].count_documents({"is_active": True, "status": "approved"})
             pending_venues = mongo_db["venues"].count_documents({"is_active": True, "status": "pending"})
             total_bookings = mongo_db["events"].count_documents({"status": "confirmed"})
 
+<<<<<<< HEAD
           
             new_venues_this_month = mongo_db["venues"].count_documents({
                 "is_active":  True,
@@ -1504,7 +1557,313 @@ class AdminStatsView(APIView):
                 "total_bookings": mongo_db["events"].count_documents({"status": "confirmed"}),
             
                 "total_users":    mongo_db["user_profiles"].count_documents({"user_type": "event_organizer"}),
+=======
+<<<<<<< HEAD
+          
+=======
+           
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+            new_venues_this_month = mongo_db["venues"].count_documents({
+                "is_active":  True,
+                "created_at": {"$gte": month_start, "$lt": month_end},
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
             })
+
+           
+            approved_venues_this_month = mongo_db["venues"].count_documents({
+                "is_active":  True,
+                "status":     "approved",
+                "updated_at": {"$gte": month_start, "$lt": month_end},
+            })
+
+           
+            new_owners_this_month = 0
+            try:
+                owner_ids = [
+                    p["user_id"]
+                    for p in mongo_db["user_profiles"].find(
+                        {"user_type": "venue_owner"}, {"user_id": 1}
+                    )
+                ]
+                new_owners_this_month = User.objects.filter(
+                    id__in=owner_ids,
+                    date_joined__gte=month_start,
+                    date_joined__lt=month_end,
+                ).count()
+            except Exception:
+                pass
+
+<<<<<<< HEAD
+         
+=======
+          
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+            bookings_this_month = mongo_db["events"].count_documents({
+                "status":     "confirmed",
+                "created_at": {"$gte": month_start, "$lt": month_end},
+            })
+
+<<<<<<< HEAD
+           
+=======
+          
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+            all_venues = list(
+                mongo_db["venues"].find({"is_active": True, "status": "approved"})
+            )
+
+            venue_activity_this_month = []
+            for v in all_venues:
+                venue_slug = v.get("slug") or ""
+                venue_id   = str(v.get("_id", ""))
+
+<<<<<<< HEAD
+            
+=======
+           
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+                owner_name = ""
+                try:
+                    owner = User.objects.get(id=v.get("owner_id"))
+                    owner_name = (
+                        f"{owner.first_name} {owner.last_name}".strip()
+                        or owner.username
+                    )
+                except Exception:
+                    owner_name = v.get("owner_id") or ""
+
+<<<<<<< HEAD
+          
+=======
+    
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+                events_cursor = mongo_db["events"].find({
+                    "venue_slug": venue_slug,
+                    "status":     "confirmed",
+                    "created_at": {"$gte": month_start, "$lt": month_end},
+                })
+
+                events_this_month = []
+                for ev in events_cursor:
+                    events_this_month.append({
+                        "id":          str(ev.get("_id", "")),
+                        "event_name":  ev.get("event_name") or "",
+                        "event_type":  ev.get("event_type") or "",
+                        "event_date":  ev.get("event_date") or "",
+                        "event_time":  ev.get("event_time") or "",
+                        "host_name":   ev.get("host_name") or "",
+                        "host_email":  ev.get("host_email") or "",
+                        "status":      ev.get("status") or "confirmed",
+                        "expected_guests": ev.get("expected_guests") or 0,
+                    })
+
+                venue_activity_this_month.append({
+                    "venue_id":          venue_id,
+                    "name":              v.get("name") or "",
+                    "city":              v.get("city") or "",
+                    "owner_name":        owner_name,
+                    "events_this_month": events_this_month,   # list of event dicts
+                })
+
+<<<<<<< HEAD
+         
+            monthly_bookings = []
+            for i in range(5, -1, -1):  
+=======
+  
+            monthly_bookings = []
+            for i in range(5, -1, -1):   # oldest → newest
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+                target_month = now.month - i
+                target_year  = now.year
+                while target_month <= 0:
+                    target_month += 12
+                    target_year  -= 1
+
+                m_start = now.replace(
+                    year=target_year, month=target_month, day=1,
+                    hour=0, minute=0, second=0, microsecond=0,
+                )
+                if m_start.month == 12:
+                    m_end = m_start.replace(year=m_start.year + 1, month=1)
+                else:
+                    m_end = m_start.replace(month=m_start.month + 1)
+
+                count = mongo_db["events"].count_documents({
+                    "status":     "confirmed",
+                    "created_at": {"$gte": m_start, "$lt": m_end},
+                })
+                monthly_bookings.append(count)
+
+            return Response({
+             
+                "total_owners":   total_owners,
+                "total_venues":   total_venues,
+                "pending_venues": pending_venues,
+                "total_bookings": total_bookings,
+
+<<<<<<< HEAD
+              
+=======
+   
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+                "new_venues_this_month":      new_venues_this_month,
+                "approved_venues_this_month": approved_venues_this_month,
+                "new_owners_this_month":      new_owners_this_month,
+                "bookings_this_month":        bookings_this_month,
+
+<<<<<<< HEAD
+              
+                "venue_activity_this_month":  venue_activity_this_month,
+
+              
+                "monthly_bookings": monthly_bookings,
+            })
+
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           
+
+class VenueReviewsView(APIView):
+    """
+    GET  /api/venues/<slug>/reviews/   – list all approved reviews for a venue
+    POST /api/venues/<slug>/reviews/   – event_organizer submits a review
+    """
+    permission_classes = [AllowAny]
+
+    def get(self, request, slug):
+        try:
+            reviews = list(
+                mongo_db["venue_reviews"].find(
+                    {"venue_slug": slug},
+                    sort=[("created_at", -1)],
+                )
+            )
+            out = []
+            for r in reviews:
+                r["id"] = str(r.pop("_id", ""))
+                out.append(r)
+            return Response(out)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request, slug):
+       
+        if not request.user.is_authenticated:
+            return Response(
+                {"detail": "Authentication required."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+      
+        try:
+            profile = mongo_db["user_profiles"].find_one({"user_id": str(request.user.id)})
+            user_type = (profile or {}).get("user_type", "")
+        except Exception:
+            user_type = ""
+
+        if user_type not in ("event_organizer", "organizer"):
+            return Response(
+                {"detail": "Only event organizers can leave reviews."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        
+        try:
+            venue = mongo_db["venues"].find_one(
+                {"slug": slug, "is_active": True, "status": "approved"}
+            )
+        except Exception:
+            return Response({"detail": "Service unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+
+        if not venue:
+            return Response({"detail": "Venue not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    
+        rating = request.data.get("rating")
+        comment = (request.data.get("comment") or "").strip()
+
+        try:
+            rating = int(rating)
+            if not (1 <= rating <= 5):
+                raise ValueError
+        except (TypeError, ValueError):
+            return Response(
+                {"detail": "rating must be an integer between 1 and 5."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not comment:
+            return Response(
+                {"detail": "comment is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+       
+        reviewer_name = (
+            f"{request.user.first_name} {request.user.last_name}".strip()
+            or request.user.username
+        )
+
+        doc = {
+            "venue_slug":    slug,
+            "user_id":       str(request.user.id),
+            "reviewer_name": reviewer_name,
+            "rating":        rating,
+            "comment":       comment,
+            "created_at":    timezone.now(),
+        }
+
+        try:
+            result = mongo_db["venue_reviews"].update_one(
+                {"venue_slug": slug, "user_id": str(request.user.id)},
+                {"$set": doc},
+                upsert=True,
+            )
+          
+            saved = mongo_db["venue_reviews"].find_one(
+                {"venue_slug": slug, "user_id": str(request.user.id)}
+            )
+            saved["id"] = str(saved.pop("_id", ""))
+            return Response(saved, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class VenueReviewDeleteView(APIView):
+    """
+    DELETE /api/venues/<slug>/reviews/<review_id>/
+    An organizer can delete their own review.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, slug, review_id):
+        try:
+            review = mongo_db["venue_reviews"].find_one(
+                {"_id": ObjectId(review_id), "venue_slug": slug}
+            )
+        except Exception:
+            return Response({"detail": "Review not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if not review:
+            return Response({"detail": "Review not found."}, status=status.HTTP_404_NOT_FOUND)
+
+   
+        if str(review.get("user_id")) != str(request.user.id) and not request.user.is_staff:
+            return Response({"detail": "Not allowed."}, status=status.HTTP_403_FORBIDDEN)
+
+        try:
+            mongo_db["venue_reviews"].delete_one({"_id": ObjectId(review_id)})
+            return Response(status=status.HTTP_204_NO_CONTENT)
+=======
+                "venue_activity_this_month":  venue_activity_this_month,
+
+               
+                "monthly_bookings": monthly_bookings,
+            })
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

@@ -38,7 +38,14 @@ export default function VenuesPage({ user, onLogout }) {
       const pr = mapPrice(price);
       if (pr !== 'any') params.price_range = pr;
 
+<<<<<<< HEAD
      
+=======
+<<<<<<< HEAD
+     
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
       if (date) params.date = date;
 
       const res = await api.get('/venues/', { params });
@@ -50,7 +57,14 @@ export default function VenuesPage({ user, onLogout }) {
     }
   };
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
   useEffect(() => { fetchVenues(); }, [location, capacity, price, category, date]);
 
   return (
@@ -68,7 +82,15 @@ export default function VenuesPage({ user, onLogout }) {
           </div>
         )}
 
+<<<<<<< HEAD
        
+=======
+<<<<<<< HEAD
+       
+=======
+        
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
         <div className={styles.searchBar}>
           <input
             type="text"
@@ -81,9 +103,21 @@ export default function VenuesPage({ user, onLogout }) {
           <button type="button" className={styles.searchBtn} onClick={fetchVenues}>Search</button>
         </div>
 
+<<<<<<< HEAD
 
         <div className={styles.filters}>
       
+=======
+<<<<<<< HEAD
+
+        <div className={styles.filters}>
+      
+=======
+       
+        <div className={styles.filters}>
+          {/* Location */}
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
           <div>
             <div className={styles.filterLabel}>Location</div>
             <input
@@ -96,7 +130,15 @@ export default function VenuesPage({ user, onLogout }) {
             />
           </div>
 
+<<<<<<< HEAD
           
+=======
+<<<<<<< HEAD
+          
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
           <div>
             <div className={styles.filterLabel}>Capacity</div>
             <select className={styles.filterSelect} value={capacity} onChange={(e) => setCapacity(e.target.value)}>
@@ -104,6 +146,13 @@ export default function VenuesPage({ user, onLogout }) {
             </select>
           </div>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+  
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
           <div>
             <div className={styles.filterLabel}>Price Range</div>
             <select className={styles.filterSelect} value={price} onChange={(e) => setPrice(e.target.value)}>
@@ -111,7 +160,15 @@ export default function VenuesPage({ user, onLogout }) {
             </select>
           </div>
 
+<<<<<<< HEAD
  
+=======
+<<<<<<< HEAD
+ 
+=======
+   
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
           <div>
             <div className={styles.filterLabel}>Available Date</div>
             <div className={styles.dateFilterWrap}>
@@ -136,6 +193,10 @@ export default function VenuesPage({ user, onLogout }) {
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
        
         <div className={styles.resultsRow}>
           <p className={styles.resultsCount}>
@@ -151,7 +212,28 @@ export default function VenuesPage({ user, onLogout }) {
             </span>
           )}
         </div>
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 
+        <div className={styles.resultsRow}>
+          <p className={styles.resultsCount}>
+            {loading
+              ? 'Loading venues…'
+              : `${venues.length} venue${venues.length !== 1 ? 's' : ''} found${category ? ` for "${category}"` : ''}`
+            }
+          </p>
+          {date && !loading && (
+            <span className={styles.dateBadge}>
+              Available on {new Date(date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              <button type="button" onClick={() => setDate('')}>×</button>
+            </span>
+          )}
+        </div>
+
+  
         <div className={styles.grid}>
           {!loading && venues.map((v) => (
             <a key={v.id || v.slug} href={`/venues/${v.slug}`} className={styles.venueCard}>

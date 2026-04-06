@@ -144,6 +144,10 @@ function NotificationBell({ events }) {
         </div>
       )}
 
+<<<<<<< HEAD
+=======
+  
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
       {open && (
         <div
           style={{ position: 'fixed', inset: 0, zIndex: 99 }}
@@ -227,6 +231,10 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
   useEffect(() => { loadVenues(); loadEvents(); }, [loadVenues, loadEvents]);
 
+<<<<<<< HEAD
+=======
+ 
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
   const filteredEvents = events.filter(ev => {
     if (eventFilter === 'upcoming')  return !isEventPast(ev);
     if (eventFilter === 'completed') return isEventPast(ev);
@@ -452,6 +460,10 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, margin: 0 }}>
                 Events
               </h2>
+<<<<<<< HEAD
+=======
+              
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
               <div style={{ display: 'flex', gap: 6 }}>
                 {[
                   { key: 'all',       label: `All (${events.length})` },
@@ -518,6 +530,18 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                         )}
                       </div>
 
+<<<<<<< HEAD
+=======
+                
+                  {isEventPast(ev) && (
+                    <div style={{
+                      marginTop: 12, padding: '10px 14px',
+                      background: '#fffbeb', borderRadius: 10,
+                      border: '1px solid #fef3c7',
+                      fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#92400e',
+                      display: 'flex', alignItems: 'center', gap: 8,
+                    }}>
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
                      
                       <div style={{ display: 'flex', gap: 8, flexShrink: 0, marginLeft: 16, alignItems: 'center' }}>
                         <button
@@ -646,6 +670,10 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
         {loading && <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#888' }}>Loading venues…</p>}
 
+<<<<<<< HEAD
+=======
+       
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
         {!loading && venues.map(v => (
           <div key={v.slug} style={{ background: 'white', borderRadius: 16, padding: 20, marginBottom: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 20, alignItems: 'start' }}>
@@ -679,6 +707,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                       {v.event_types.map(t => <span key={t} className="tag">{t}</span>)}
                     </div>
                   )}
+                 
                   {v.amenities?.length > 0 && (
                     <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#6b7280', marginTop: 4 }}>
                       Amenities: {v.amenities.join(', ')}
@@ -718,6 +747,10 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
           </div>
         )}
 
+<<<<<<< HEAD
+=======
+        
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
         {creating && (
           <div style={{ background: 'white', borderRadius: 20, padding: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginTop: 20 }}>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Add New Venue</h2>

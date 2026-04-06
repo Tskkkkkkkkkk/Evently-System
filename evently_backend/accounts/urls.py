@@ -26,8 +26,12 @@ from .views import (
     EsewaPaymentFailureView,
     RSVPResponseView,
     EventRSVPDetailView,
+<<<<<<< HEAD
     AdminUsersView,
      AdminUserDetailView,
+=======
+<<<<<<< HEAD
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 
 )
 from django.http import HttpResponseRedirect
@@ -37,6 +41,14 @@ from django.urls import path
 from django.urls import path
 from . import views
 
+<<<<<<< HEAD
+=======
+=======
+)
+from django.http import HttpResponseRedirect
+from django.urls import path
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("accounts/register/",          RegisterView.as_view(),       name="register"),
@@ -78,6 +90,10 @@ path("payment/failure/", lambda request: HttpResponseRedirect(
 path("payment/success/", lambda request: HttpResponseRedirect(
     "http://localhost:5173/payment/success/?" + request.META.get("QUERY_STRING", "")
 ), name="payment-success-passthrough"),
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 
     path('venues/',                                   views.VenuesView.as_view()),
     path('venues/<slug:slug>/',                       views.VenueDetailView.as_view()),
@@ -86,11 +102,24 @@ path("payment/success/", lambda request: HttpResponseRedirect(
 
     path('venues/<slug:slug>/reviews/',               views.VenueReviewsView.as_view()),
     path('venues/<slug:slug>/reviews/<str:review_id>/', views.VenueReviewDeleteView.as_view()),
+<<<<<<< HEAD
     path("admin-api/users/",              AdminUsersView.as_view(),      name="admin-users"),
     path("admin-api/users/<str:user_id>/", AdminUserDetailView.as_view(), name="admin-user-detail"),
 
+=======
+
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 ]
 
 
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa

@@ -51,7 +51,15 @@
   color: #888;
   font-size: 14px;
 }
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 /* ── Stat cards ───────────────────────────────────────────────────────── */
 .stats-grid {
   display: grid;
@@ -84,7 +92,15 @@
   font-size: 12px;
 }
 
+<<<<<<< HEAD
 /* ── Tabs ─────────────────────────────────────────────────────────────── */
+=======
+<<<<<<< HEAD
+/* ── Tabs ─────────────────────────────────────────────────────────────── */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -113,7 +129,15 @@
   color: white;
 }
 
+<<<<<<< HEAD
 /* ── Search ───────────────────────────────────────────────────────────── */
+=======
+<<<<<<< HEAD
+/* ── Search ───────────────────────────────────────────────────────────── */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .search-input {
   width: 100%;
   max-width: 380px;
@@ -164,7 +188,15 @@
   border-left: 4px solid #d97706;
 }
 
+<<<<<<< HEAD
 /* ── Owner table ──────────────────────────────────────────────────────── */
+=======
+<<<<<<< HEAD
+/* ── Owner table ──────────────────────────────────────────────────────── */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .owner-table {
   background: white;
   border-radius: 14px;
@@ -200,6 +232,13 @@
 .badge-pending   { background: #fffbeb; color: #d97706; border-color: #fde68a; }
 .badge-suspended,
 .badge-rejected  { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 
 /* ── Buttons ──────────────────────────────────────────────────────────── */
 .btn {
@@ -227,7 +266,15 @@
   justify-content: flex-end;
 }
 
+<<<<<<< HEAD
 /* ── Empty states ─────────────────────────────────────────────────────── */
+=======
+<<<<<<< HEAD
+/* ── Empty states ─────────────────────────────────────────────────────── */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .empty-state {
   text-align: center;
   padding: 50px 0;
@@ -245,7 +292,15 @@
   font-size: 14px;
 }
 
+<<<<<<< HEAD
 /* ── Modals ───────────────────────────────────────────────────────────── */
+=======
+<<<<<<< HEAD
+/* ── Modals ───────────────────────────────────────────────────────────── */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -340,6 +395,13 @@
   white-space: nowrap;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 
 /* ════════════════════════════════════════════════════════════════════════
    CHARTS — pure CSS, no Chart.js
@@ -351,9 +413,16 @@
   margin-bottom: 32px;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 @media (max-width: 640px) {
   .charts-grid { grid-template-columns: 1fr; }
 }
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
 
 .chart-card {
   background: white;
@@ -378,7 +447,14 @@
 
 .chart-card-sub { font-size: 12px; color: #aaa; }
 
+<<<<<<< HEAD
 /* Bar chart */
+=======
+<<<<<<< HEAD
+/* Bar chart */
+=======
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .bar-chart {
   display: flex;
   align-items: flex-end;
@@ -430,7 +506,15 @@
   white-space: nowrap;
 }
 
+<<<<<<< HEAD
 /* Donut chart */
+=======
+<<<<<<< HEAD
+/* Donut chart */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .donut-wrap {
   display: flex;
   align-items: center;
@@ -500,9 +584,19 @@
 .legend-value { font-weight: 600; color: #1a1a1a; }
 
 
+<<<<<<< HEAD
 /* ════════════════════════════════════════════════════════════════════════
    MONTHLY EVENTS — platform summary
 ════════════════════════════════════════════════════════════════════════ */
+=======
+<<<<<<< HEAD
+/* ════════════════════════════════════════════════════════════════════════
+   MONTHLY EVENTS — platform summary
+════════════════════════════════════════════════════════════════════════ */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .events-section {
   background: white;
   border-radius: 14px;
@@ -570,9 +664,19 @@
 .events-empty { font-size: 13px; color: #aaa; padding: 6px 0; }
 
 
+<<<<<<< HEAD
 /* ════════════════════════════════════════════════════════════════════════
    PER-VENUE ACTIVITY — toggle + grid of venue cards
 ════════════════════════════════════════════════════════════════════════ */
+=======
+<<<<<<< HEAD
+/* ════════════════════════════════════════════════════════════════════════
+   PER-VENUE ACTIVITY — toggle + grid of venue cards
+════════════════════════════════════════════════════════════════════════ */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .venue-activity-section {
   margin-top: 4px;
 }
@@ -605,7 +709,15 @@
   margin-top: 12px;
 }
 
+<<<<<<< HEAD
 /* Each venue card in the grid */
+=======
+<<<<<<< HEAD
+/* Each venue card in the grid */
+=======
+
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 .venue-activity-card {
   background: #faf9f7;
   border: 1px solid #e5e7eb;
@@ -660,10 +772,20 @@
 }
 
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
 /* ════════════════════════════════════════════════════════════════════════
    VENUE ACTIVITY MODAL — list of events inside a venue
 ════════════════════════════════════════════════════════════════════════ */
 .venue-activity-meta {
+<<<<<<< HEAD
+=======
+=======
+ .venue-activity-meta {
+>>>>>>> cbdbd8421f46e114072e2080f6e00228f8cfed55
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
   display: flex;
   gap: 8px;
   font-size: 13px;
