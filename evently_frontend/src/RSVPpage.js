@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-// RSVPPage.jsx
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 import { useEffect, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import api from './api';
@@ -39,7 +35,7 @@ export default function RSVPPage() {
 
         {!loading && error && (
           <>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
+            <div style={{ fontSize: 48, marginBottom: 16 }}></div>
             <h2 style={{ fontFamily: "'DM Sans', sans-serif", marginBottom: 8 }}>Link expired</h2>
             <p style={{ color: '#666', fontFamily: "'DM Sans', sans-serif", fontSize: 14 }}>{error}</p>
           </>
@@ -48,7 +44,7 @@ export default function RSVPPage() {
         {!loading && result && (
           <>
             <div style={{ fontSize: 56, marginBottom: 16 }}>
-              {isAccepted ? '🎉' : '😔'}
+              {isAccepted ? '' : ''}
             </div>
             <h2 style={{
               fontFamily: "'DM Sans', sans-serif", fontSize: 22,
@@ -72,7 +68,7 @@ export default function RSVPPage() {
               {result.email}
             </p>
 
-            {/* allow changing response */}
+          
             <div style={{ marginTop: 28, display: 'flex', gap: 10, justifyContent: 'center' }}>
               {isAccepted ? (
                 <a href={`/rsvp/${token}?response=declined`} style={{

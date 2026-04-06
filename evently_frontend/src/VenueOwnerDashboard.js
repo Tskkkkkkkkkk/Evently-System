@@ -51,11 +51,7 @@ function NotificationBell({ events }) {
       const eventDt  = new Date(`${ev.event_date}T${ev.event_time || '23:59'}:00`);
       const now      = new Date();
       const hoursAgo = (now - eventDt) / 36e5;
-<<<<<<< HEAD
     
-=======
-   
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       const upcoming = eventDt > now && eventDt - now < 24 * 36e5;
       const justDone = hoursAgo >= 0 && hoursAgo < 48;
       return upcoming || justDone;
@@ -128,7 +124,6 @@ function NotificationBell({ events }) {
                 borderBottom: i < notifications.length - 1 ? '1px solid #f9fafb' : 'none',
                 display: 'flex', gap: 10, alignItems: 'flex-start',
               }}>
-             
                 <div>
                   <div style={{
                     fontFamily: "'DM Sans', sans-serif", fontSize: 13,
@@ -149,11 +144,6 @@ function NotificationBell({ events }) {
         </div>
       )}
 
-<<<<<<< HEAD
-  
-=======
-   
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       {open && (
         <div
           style={{ position: 'fixed', inset: 0, zIndex: 99 }}
@@ -165,10 +155,6 @@ function NotificationBell({ events }) {
 }
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 function DeleteEventModal({ event, onConfirm, onCancel, loading }) {
   return (
     <div className="confirm-overlay" onClick={onCancel}>
@@ -215,7 +201,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
   const [deletingEventLoad, setDeletingEventLoad] = useState(false);
   const [pendingImageFiles, setPendingImageFiles] = useState([]);
   const [pendingPreviews,   setPendingPreviews]   = useState([]);
-  const [eventFilter,       setEventFilter]       = useState('all'); // all | upcoming | completed
+  const [eventFilter,       setEventFilter]       = useState('all');
 
   const loadVenues = useCallback(async () => {
     setLoading(true);
@@ -241,11 +227,6 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
   useEffect(() => { loadVenues(); loadEvents(); }, [loadVenues, loadEvents]);
 
-<<<<<<< HEAD
- 
-=======
-  
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
   const filteredEvents = events.filter(ev => {
     if (eventFilter === 'upcoming')  return !isEventPast(ev);
     if (eventFilter === 'completed') return isEventPast(ev);
@@ -271,7 +252,6 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     }
   };
 
- 
   const startEdit = (v) => {
     setEditingSlug(v.slug);
     setEditForm({
@@ -400,7 +380,6 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     setPendingPreviews(prev   => prev.filter((_, i) => i !== index));
   };
 
-
   const TypeChip = ({ label, selected, onToggle }) => (
     <button type="button" onClick={onToggle} style={{
       padding: '6px 14px', borderRadius: 50, cursor: 'pointer',
@@ -451,26 +430,11 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     );
   };
 
- 
   return (
     <div style={{ fontFamily: "'Georgia', serif", background: '#faf9f7', minHeight: '100vh', color: '#1a1a1a' }}>
       <Navbar user={user} onLogout={onLogout} transparent={false} />
 
       <main style={{ maxWidth: 900, margin: '0 auto', padding: '40px 24px 100px' }}>
-<<<<<<< HEAD
-=======
-
-   
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0 }}>
-            Venue Owner Dashboard
-          </h1>
-          <NotificationBell events={events} />
-        </div>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#888', marginBottom: 32 }}>
-          Manage your listed venues
-        </p>
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
           <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0 }}>
@@ -482,18 +446,12 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
           Manage your listed venues
         </p>
 
-       
         {events.length > 0 && (
           <section style={{ marginBottom: 40 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, margin: 0 }}>
                 Events
               </h2>
-<<<<<<< HEAD
-              
-=======
-         
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
               <div style={{ display: 'flex', gap: 6 }}>
                 {[
                   { key: 'all',       label: `All (${events.length})` },
@@ -520,96 +478,86 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                   No {eventFilter !== 'all' ? eventFilter : ''} events.
                 </p>
               )}
-              {filteredEvents.map(ev => (
-                <div
-                  key={ev.id}
-                  style={{
-                    background: isEventPast(ev) ? '#fafaf8' : 'white',
-                    borderRadius: 16, padding: 20,
-                    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-                    border: isEventPast(ev) ? '1px solid #f3f4f6' : '1px solid transparent',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div
-                      style={{ flex: 1, cursor: 'pointer' }}
-                      onClick={() => setSelectedEvent(ev)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={e => e.key === 'Enter' && setSelectedEvent(ev)}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700 }}>
-                          {ev.event_name || 'Unnamed Event'}
-                        </div>
-                        <EventStatusBadge event={ev} />
-                      </div>
-                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginBottom: 2 }}>
-                        {ev.venue_name} · {ev.event_date || '—'}{ev.event_time ? ` at ${ev.event_time}` : ''}
-                      </div>
-                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888' }}>
-                        Host: {ev.host_name || '—'} · {ev.host_email || ev.host_contact || '—'}
-                      </div>
-                      {ev.expected_guests > 0 && (
-                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#aaa', marginTop: 2 }}>
-                          {ev.expected_guests} expected guest{ev.expected_guests !== 1 ? 's' : ''}
-                          {ev.rsvp_accepted > 0 && ` · ${ev.rsvp_accepted} confirmed`}
-                        </div>
-                      )}
-                    </div>
-
-                 
-                    <div style={{ display: 'flex', gap: 8, flexShrink: 0, marginLeft: 16, alignItems: 'center' }}>
-                      <button
+              {filteredEvents.map(ev => {
+                const past = isEventPast(ev);
+                return (
+                  <div
+                    key={ev.id}
+                    style={{
+                      background: past ? '#fafaf8' : 'white',
+                      borderRadius: 16, padding: 20,
+                      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                      border: past ? '1px solid #f3f4f6' : '1px solid transparent',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div
+                        style={{ flex: 1, cursor: 'pointer' }}
                         onClick={() => setSelectedEvent(ev)}
-                        style={{
-                          background: 'none', border: '1.5px solid #e5e7eb',
-                          borderRadius: 8, padding: '6px 12px', cursor: 'pointer',
-                          fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#444',
-                        }}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={e => e.key === 'Enter' && setSelectedEvent(ev)}
                       >
-                        View
-                      </button>
-                      <button
-                        onClick={() => setDeletingEvent(ev)}
-                        style={{
-                          background: 'none', border: '1.5px solid #fecaca',
-                          borderRadius: 8, padding: '6px 12px', cursor: 'pointer',
-                          fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#dc2626',
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700 }}>
+                            {ev.event_name || 'Unnamed Event'}
+                          </div>
+                          <EventStatusBadge event={ev} />
+                        </div>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginBottom: 2 }}>
+                          {ev.venue_name} · {ev.event_date || '—'}{ev.event_time ? ` at ${ev.event_time}` : ''}
+                        </div>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888' }}>
+                          Host: {ev.host_name || '—'} · {ev.host_email || ev.host_contact || '—'}
+                        </div>
+                        {ev.expected_guests > 0 && (
+                          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#aaa', marginTop: 2 }}>
+                            {ev.expected_guests} expected guest{ev.expected_guests !== 1 ? 's' : ''}
+                            {ev.rsvp_accepted > 0 && ` · ${ev.rsvp_accepted} confirmed`}
+                          </div>
+                        )}
+                      </div>
 
-<<<<<<< HEAD
-                
-=======
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
-                  {isEventPast(ev) && (
-                    <div style={{
-                      marginTop: 12, padding: '10px 14px',
-                      background: '#fffbeb', borderRadius: 10,
-                      border: '1px solid #fef3c7',
-                      fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#92400e',
-                      display: 'flex', alignItems: 'center', gap: 8,
-                    }}>
                      
-                      <span>
-                        This event has been completed.
-                        {(ev.rsvp_accepted || 0) > 0 && ` ${ev.rsvp_accepted} guest${ev.rsvp_accepted !== 1 ? 's' : ''} attended.`}
-                        {(ev.rsvp_declined || 0) > 0 && ` ${ev.rsvp_declined} declined.`}
-                      </span>
+                      <div style={{ display: 'flex', gap: 8, flexShrink: 0, marginLeft: 16, alignItems: 'center' }}>
+                        <button
+                          onClick={() => setSelectedEvent(ev)}
+                          style={{
+                            background: 'none', border: '1.5px solid #e5e7eb',
+                            borderRadius: 8, padding: '6px 12px', cursor: 'pointer',
+                            fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#444',
+                          }}
+                        >
+                          View
+                        </button>
+
+                       
+                      </div>
                     </div>
-                  )}
-                </div>
-              ))}
+
+                    {past && (
+                      <div style={{
+                        marginTop: 12, padding: '10px 14px',
+                        background: '#fffbeb', borderRadius: 10,
+                        border: '1px solid #fef3c7',
+                        fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#92400e',
+                        display: 'flex', alignItems: 'center', gap: 8,
+                      }}>
+                        <span>
+                          This event has been completed.
+                          {(ev.rsvp_accepted || 0) > 0 && ` ${ev.rsvp_accepted} guest${ev.rsvp_accepted !== 1 ? 's' : ''} attended.`}
+                          {(ev.rsvp_declined || 0) > 0 && ` ${ev.rsvp_declined} declined.`}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
 
-        
+    
         {selectedEvent && (
           <div className="confirm-overlay" onClick={() => setSelectedEvent(null)}>
             <div className="confirm-box" style={{ maxWidth: 520, width: '90%', textAlign: 'left', padding: 28 }} onClick={e => e.stopPropagation()}>
@@ -655,7 +603,6 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                 )}
               </div>
 
-              
               {(selectedEvent.rsvp_accepted > 0 || selectedEvent.rsvp_declined > 0 || selectedEvent.rsvp_pending > 0) && (
                 <div style={{ marginTop: 20, borderTop: '1px solid #f3f4f6', paddingTop: 16 }}>
                   <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#444', marginBottom: 10 }}>
@@ -669,7 +616,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                     ].map(item => (
                       <div key={item.label} style={{
                         flex: 1, padding: '10px 14px', background: item.bg,
-                        borderRight: '1px solid #f3f4f6', borderRadius: 0,
+                       borderRadius: 0,
                       }}>
                         <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 20, fontWeight: 700, color: item.color }}>
                           {item.value}
@@ -683,31 +630,13 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                 </div>
               )}
 
-              <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => { setSelectedEvent(null); setDeletingEvent(selectedEvent); }}
-                  style={{
-                    background: 'none', border: '1.5px solid #fecaca',
-                    borderRadius: 8, padding: '7px 16px', cursor: 'pointer',
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#dc2626',
-                  }}
-                >
-                  Delete this event
-                </button>
-              </div>
+         
+              
             </div>
           </div>
         )}
 
-
-        {deletingEvent && (
-          <DeleteEventModal
-            event={deletingEvent}
-            onConfirm={deleteEvent}
-            onCancel={() => setDeletingEvent(null)}
-            loading={deletingEventLoad}
-          />
-        )}
+        
 
         {error && (
           <div style={{ marginBottom: 20, padding: '12px 16px', borderRadius: 12, background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', fontFamily: "'DM Sans', sans-serif", fontSize: 13 }}>
@@ -717,11 +646,6 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
         {loading && <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#888' }}>Loading venues…</p>}
 
-<<<<<<< HEAD
-       
-=======
-        {/* ── venue cards ── */}
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
         {!loading && venues.map(v => (
           <div key={v.slug} style={{ background: 'white', borderRadius: 16, padding: 20, marginBottom: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 20, alignItems: 'start' }}>
@@ -794,11 +718,6 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
           </div>
         )}
 
-<<<<<<< HEAD
-        
-=======
-       
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
         {creating && (
           <div style={{ background: 'white', borderRadius: 20, padding: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginTop: 20 }}>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Add New Venue</h2>
@@ -873,7 +792,6 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
         </button>
       )}
 
-     
       {deletingSlug && (
         <div className="confirm-overlay">
           <div className="confirm-box">

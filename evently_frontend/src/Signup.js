@@ -139,7 +139,10 @@ const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     value={formData.phone}
     onChange={(e) => {
       const value = e.target.value.replace(/\D/g, '');
-      handleChange({ ...e, target: { ...e.target, name: 'phone', value } });
+      handleChange({ ...e, target: // copy everything from the original even
+        { ...e.target,// copy everything from the original input element
+         name: 'phone', value  // use the CLEANED value
+          } });
     }}
     placeholder="Enter your phone number"
     maxLength={10}
