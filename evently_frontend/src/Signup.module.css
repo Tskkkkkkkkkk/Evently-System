@@ -74,6 +74,7 @@
 }
 
 .brandTitle {
+    font-family: 'Playfair Display', serif;
   font-size: 32px;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -147,7 +148,7 @@
 }
 
 .button:hover:not(:disabled) {
-  transform: translateY(-1px);
+ 
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.4);
 }
 

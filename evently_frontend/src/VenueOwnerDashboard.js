@@ -3,18 +3,16 @@ import Navbar from './Navbar';
 import api, { mediaUrl } from './api';
 import './VenueOwnerDashboard.css';
 
+
 const EVENT_TYPE_OPTIONS = [
   'Weddings', 'Corporate', 'Conferences', 'Birthday Parties', 'Concerts', 'Galas & Fundraisers',
 ];
 
 const MAX_IMAGES = 10;
 
-const emptyNew = {
-  name: '', city: 'Kathmandu', capacity: '', price: '',
-  amenitiesText: '', image_url: '', event_types: [],
-};
-
+const emptyNew  = { name: '', city: 'Kathmandu', capacity: '', price: '', amenitiesText: '', image_url: '', event_types: [] };
 const emptyEdit = { name: '', city: '', capacity: '', price: '', event_types: [], amenitiesText: '' };
+
 
 const toggle = (arr, item) =>
   arr.includes(item) ? arr.filter(x => x !== item) : [...arr, item];
@@ -25,6 +23,7 @@ function isEventPast(event) {
   const eventDt = new Date(`${event.event_date}T${event.event_time || '23:59'}:00`);
   return eventDt < new Date();
 }
+
 
 function EventStatusBadge({ event }) {
   const past = isEventPast(event);
@@ -41,134 +40,200 @@ function EventStatusBadge({ event }) {
 }
 
 
+function NotificationBell({ ownerId, onVenueRejected, onVenueApproved }) {
+  const [open,          setOpen]          = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount,   setUnreadCount]   = useState(0);
 
-function NotificationBell({ events }) {
-  const [open, setOpen] = useState(false);
 
-  const notifications = events
-    .filter(ev => {
-      if (!ev.event_date) return false;
-      const eventDt  = new Date(`${ev.event_date}T${ev.event_time || '23:59'}:00`);
-      const now      = new Date();
-      const hoursAgo = (now - eventDt) / 36e5;
-<<<<<<< HEAD
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const res = await api.get('/owner/notifications/');
+      const data = Array.isArray(res.data) ? res.data : [];
+      setNotifications(data);
     
-=======
-   
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
-      const upcoming = eventDt > now && eventDt - now < 24 * 36e5;
-      const justDone = hoursAgo >= 0 && hoursAgo < 48;
-      return upcoming || justDone;
-    })
-    .map(ev => {
-      const eventDt  = new Date(`${ev.event_date}T${ev.event_time || '23:59'}:00`);
-      const past     = eventDt < new Date();
-      return {
-        id:      ev.id,
-        title:   ev.event_name || 'Event',
-        venue:   ev.venue_name,
-        message: past
-          ? `"${ev.event_name || 'Event'}" at ${ev.venue_name} has ended.`
-          : `"${ev.event_name || 'Event'}" at ${ev.venue_name} is happening soon!`,
-        past,
-      };
-    });
+      setUnreadCount(data.filter(n => !n.read).length);
+
+  
+      data.forEach(n => {
+        if (n.type === 'venue_rejected' && n.venue_slug) {
+          onVenueRejected(n.venue_slug);
+        }
+      });
+    } catch {
+     
+    }
+  }, [onVenueRejected]);
+
+  useEffect(() => {
+    fetchNotifications();
+
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
+
+
+  const handleOpen = async () => {
+    setOpen(o => !o);
+    if (!open && unreadCount > 0) {
+      try {
+        await api.post('/owner/notifications/mark-read/');
+        setUnreadCount(0);
+        setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+      } catch {
+l
+      }
+    }
+  };
+
+  const notifBg = (type) => {
+    if (type === 'venue_approved') return '#f0fdf4';
+    if (type === 'venue_rejected') return '#fef2f2';
+    if (type === 'new_booking')    return '#eff6ff';
+    return '#f9fafb';
+  };
+
+  const notifBorder = (type) => {
+    if (type === 'venue_approved') return '#bbf7d0';
+    if (type === 'venue_rejected') return '#fecaca';
+    if (type === 'new_booking')    return '#bfdbfe';
+    return '#f3f4f6';
+  };
+
+  const notifDot = (type) => {
+    if (type === 'venue_approved') return '#16a34a';
+    if (type === 'venue_rejected') return '#dc2626';
+    if (type === 'new_booking')    return '#2563eb';
+    return '#9ca3af';
+  };
 
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
+
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={handleOpen}
         style={{
-          background: 'none', border: '1.5px solid #e5e7eb',
-          borderRadius: 10, padding: '7px 12px', cursor: 'pointer',
+          background: open ? '#f3f4f6' : 'white',
+          border: '1.5px solid #e5e7eb',
+          borderRadius: 10, padding: '7px 14px',
+          cursor: 'pointer',
           fontFamily: "'DM Sans', sans-serif", fontSize: 13,
-          display: 'flex', alignItems: 'center', gap: 6, position: 'relative',
+          display: 'flex', alignItems: 'center', gap: 6,
+          position: 'relative', transition: 'background 0.15s',
         }}
       >
-        🔔
-        {notifications.length > 0 && (
+
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      
+
+
+        {unreadCount > 0 && (
           <span style={{
             position: 'absolute', top: -6, right: -6,
             background: '#ef4444', color: 'white',
             borderRadius: '50%', width: 18, height: 18,
             fontSize: 10, fontWeight: 700,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
+            border: '2px solid white',
           }}>
-            {notifications.length}
+            {unreadCount}
           </span>
         )}
       </button>
 
-      {open && (
-        <div style={{
-          position: 'absolute', right: 0, top: 44, zIndex: 100,
-          background: 'white', borderRadius: 14,
-          boxShadow: '0 8px 32px rgba(0,0,0,0.13)',
-          border: '1px solid #f3f4f6',
-          minWidth: 300, maxWidth: 360,
-        }}>
-          <div style={{
-            padding: '12px 16px', borderBottom: '1px solid #f3f4f6',
-            fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#1a1a1a',
-          }}>
-            Notifications
-          </div>
-
-          {notifications.length === 0 ? (
-            <div style={{
-              padding: '20px 16px', fontFamily: "'DM Sans', sans-serif",
-              fontSize: 13, color: '#888', textAlign: 'center',
-            }}>
-              No new notifications
-            </div>
-          ) : (
-            notifications.map((n, i) => (
-              <div key={n.id} style={{
-                padding: '12px 16px',
-                borderBottom: i < notifications.length - 1 ? '1px solid #f9fafb' : 'none',
-                display: 'flex', gap: 10, alignItems: 'flex-start',
-              }}>
-             
-                <div>
-                  <div style={{
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 13,
-                    color: '#1a1a1a', lineHeight: 1.4,
-                  }}>
-                    {n.message}
-                  </div>
-                  <div style={{
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 11,
-                    color: '#aaa', marginTop: 3,
-                  }}>
-                    {n.past ? 'Completed' : 'Coming up'}
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-<<<<<<< HEAD
-  
-=======
    
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
       {open && (
-        <div
-          style={{ position: 'fixed', inset: 0, zIndex: 99 }}
-          onClick={() => setOpen(false)}
-        />
+        <>
+         
+          <div style={{ position: 'fixed', inset: 0, zIndex: 99 }} onClick={() => setOpen(false)} />
+
+          <div style={{
+            position: 'absolute', right: 0, top: 48, zIndex: 100,
+            background: 'white', borderRadius: 16,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.13)',
+            border: '1px solid #f3f4f6',
+            width: 340,
+          }}>
+          
+            <div style={{
+              padding: '14px 18px', borderBottom: '1px solid #f3f4f6',
+              fontFamily: "'DM Sans', sans-serif", fontSize: 14,
+              fontWeight: 600, color: '#1a1a1a',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+            }}>
+              <span>Notifications</span>
+              {notifications.length > 0 && (
+                <span style={{ fontSize: 12, color: '#9ca3af', fontWeight: 400 }}>
+                  {notifications.length} total
+                </span>
+              )}
+            </div>
+
+           
+            {notifications.length === 0 ? (
+              <div style={{
+                padding: '24px 18px', textAlign: 'center',
+                fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#aaa',
+              }}>
+                No notifications yet
+              </div>
+            ) : (
+              <div style={{ maxHeight: 380, overflowY: 'auto' }}>
+                {notifications.map((n, i) => (
+                  <div key={n.id || i} style={{
+                    padding: '12px 18px',
+                    borderBottom: i < notifications.length - 1 ? '1px solid #f9fafb' : 'none',
+                    background: n.read ? 'white' : notifBg(n.type),
+                    borderLeft: n.read ? 'none' : `3px solid ${notifBorder(n.type)}`,
+                    display: 'flex', gap: 10, alignItems: 'flex-start',
+                  }}>
+                    
+                    <div style={{
+                      width: 8, height: 8, borderRadius: '50%',
+                      background: notifDot(n.type),
+                      flexShrink: 0, marginTop: 5,
+                    }} />
+                    <div style={{ flex: 1 }}>
+                      <div style={{
+                        fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+                        color: '#1a1a1a', lineHeight: 1.5, marginBottom: 3,
+                      }}>
+                        {n.message}
+                      </div>
+                
+                      <div style={{
+                        fontFamily: "'DM Sans', sans-serif",
+                        fontSize: 11, color: '#bbb',
+                      }}>
+                        {n.created_at
+                          ? new Date(n.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                          : ''}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+       
+            <div style={{
+              padding: '10px 18px', borderTop: '1px solid #f3f4f6',
+              fontFamily: "'DM Sans', sans-serif", fontSize: 11,
+              color: '#bbb', textAlign: 'center',
+            }}>
+              Updates for venue approvals and new bookings
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
 }
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
 function DeleteEventModal({ event, onConfirm, onCancel, loading }) {
   return (
     <div className="confirm-overlay" onClick={onCancel}>
@@ -183,12 +248,7 @@ function DeleteEventModal({ event, onConfirm, onCancel, loading }) {
           This will also remove all RSVP records for this event.
         </p>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
-          <button
-            className="btn-delete"
-            style={{ padding: '10px 28px', fontSize: 14 }}
-            onClick={onConfirm}
-            disabled={loading}
-          >
+          <button className="btn-delete" style={{ padding: '10px 28px', fontSize: 14 }} onClick={onConfirm} disabled={loading}>
             {loading ? 'Deleting…' : 'Yes, Delete'}
           </button>
           <button className="btn-ghost" onClick={onCancel} disabled={loading}>Cancel</button>
@@ -200,7 +260,12 @@ function DeleteEventModal({ event, onConfirm, onCancel, loading }) {
 
 
 export default function VenueOwnerDashboard({ user, onLogout }) {
+
+ 
   const [venues,            setVenues]            = useState([]);
+  const [events,            setEvents]            = useState([]);
+
+  
   const [loading,           setLoading]           = useState(true);
   const [error,             setError]             = useState('');
   const [editingSlug,       setEditingSlug]       = useState('');
@@ -209,13 +274,14 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
   const [creating,          setCreating]          = useState(false);
   const [uploading,         setUploading]         = useState(false);
   const [deletingSlug,      setDeletingSlug]      = useState('');
-  const [events,            setEvents]            = useState([]);
   const [selectedEvent,     setSelectedEvent]     = useState(null);
   const [deletingEvent,     setDeletingEvent]     = useState(null);
   const [deletingEventLoad, setDeletingEventLoad] = useState(false);
   const [pendingImageFiles, setPendingImageFiles] = useState([]);
   const [pendingPreviews,   setPendingPreviews]   = useState([]);
-  const [eventFilter,       setEventFilter]       = useState('all'); // all | upcoming | completed
+  const [eventFilter,       setEventFilter]       = useState('all');
+
+  
 
   const loadVenues = useCallback(async () => {
     setLoading(true);
@@ -241,14 +307,21 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
   useEffect(() => { loadVenues(); loadEvents(); }, [loadVenues, loadEvents]);
 
-<<<<<<< HEAD
- 
-=======
   
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
+  const handleVenueRejected = useCallback((venueSlug) => {
+    setVenues(prev => prev.filter(v => v.slug !== venueSlug));
+  }, []);
+
+
+  const handleVenueApproved = useCallback(() => {
+    loadVenues();
+  }, [loadVenues]);
+
+  
+
   const filteredEvents = events.filter(ev => {
     if (eventFilter === 'upcoming')  return !isEventPast(ev);
-    if (eventFilter === 'completed') return isEventPast(ev);
+    if (eventFilter === 'completed') return  isEventPast(ev);
     return true;
   });
 
@@ -271,7 +344,8 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     }
   };
 
- 
+  
+
   const startEdit = (v) => {
     setEditingSlug(v.slug);
     setEditForm({
@@ -311,6 +385,8 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     }
   };
 
+  
+
   const uploadOneImage = async (file, slug) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -323,8 +399,8 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
   const handleMultiImageUpload = async (files, slug) => {
     if (!files || !files.length || !slug) return;
-    const venue    = venues.find(v => v.slug === slug);
-    const allowed  = MAX_IMAGES - (venue?.images || []).length;
+    const venue   = venues.find(v => v.slug === slug);
+    const allowed = MAX_IMAGES - (venue?.images || []).length;
     if (allowed <= 0) { setError(`Maximum ${MAX_IMAGES} images already uploaded.`); return; }
     const toUpload = Array.from(files).slice(0, allowed);
     if (toUpload.length < files.length)
@@ -343,9 +419,9 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
   const removeImage = async (slug, imageUrl) => {
     setError('');
     try {
-      const venue      = venues.find(v => v.slug === slug);
+      const venue     = venues.find(v => v.slug === slug);
       if (!venue) return;
-      const newImages  = (venue.images || []).filter(u => u !== imageUrl);
+      const newImages = (venue.images || []).filter(u => u !== imageUrl);
       const newPrimary = venue.image_url === imageUrl ? (newImages[0] || '') : venue.image_url;
       await api.patch(`/owner/venues/${slug}/`, { images: newImages, image_url: newPrimary });
       loadVenues();
@@ -392,7 +468,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     const remaining = MAX_IMAGES - pendingImageFiles.length;
     const toAdd     = files.slice(0, remaining);
     setPendingImageFiles(prev => [...prev, ...toAdd]);
-    setPendingPreviews(prev  => [...prev, ...toAdd.map(f => URL.createObjectURL(f))]);
+    setPendingPreviews(prev   => [...prev, ...toAdd.map(f => URL.createObjectURL(f))]);
   };
 
   const removePendingImage = (index) => {
@@ -400,17 +476,21 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     setPendingPreviews(prev   => prev.filter((_, i) => i !== index));
   };
 
+  
 
+ 
   const TypeChip = ({ label, selected, onToggle }) => (
     <button type="button" onClick={onToggle} style={{
       padding: '6px 14px', borderRadius: 50, cursor: 'pointer',
       fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500,
       border:     `2px solid ${selected ? '#1a1a1a' : '#e5e7eb'}`,
       background: selected ? '#1a1a1a' : 'white',
-      color:      selected ? 'white' : '#555', transition: 'all 0.15s',
+      color:      selected ? 'white' : '#555',
+      transition: 'all 0.15s',
     }}>{label}</button>
   );
 
+  
   const ImageStrip = ({ venue, editable }) => {
     const images = venue.images?.length ? venue.images : (venue.image_url ? [venue.image_url] : []);
     return (
@@ -451,49 +531,40 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     );
   };
 
- 
   return (
     <div style={{ fontFamily: "'Georgia', serif", background: '#faf9f7', minHeight: '100vh', color: '#1a1a1a' }}>
       <Navbar user={user} onLogout={onLogout} transparent={false} />
 
       <main style={{ maxWidth: 900, margin: '0 auto', padding: '40px 24px 100px' }}>
-<<<<<<< HEAD
-=======
-
-   
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0 }}>
-            Venue Owner Dashboard
-          </h1>
-          <NotificationBell events={events} />
-        </div>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#888', marginBottom: 32 }}>
-          Manage your listed venues
-        </p>
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
-
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0 }}>
-            Venue Owner Dashboard
-          </h1>
-          <NotificationBell events={events} />
-        </div>
-        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#888', marginBottom: 32 }}>
-          Manage your listed venues
-        </p>
 
        
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+          <h1 style={{
+            fontFamily: "'Playfair Display', serif",
+            fontSize: 'clamp(1.8rem, 3vw, 2.4rem)',
+            fontWeight: 700, letterSpacing: '-0.02em', margin: 0,
+          }}>
+            Venue Owner Dashboard
+          </h1>
+
+           <NotificationBell
+            ownerId={user?.id}
+            onVenueRejected={handleVenueRejected}
+            onVenueApproved={handleVenueApproved}
+          />
+        </div>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#888', marginBottom: 32 }}>
+          Manage your listed venues
+        </p>
+
+      
         {events.length > 0 && (
           <section style={{ marginBottom: 40 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, margin: 0 }}>
-                Events
+                Events at your venues
               </h2>
-<<<<<<< HEAD
-              
-=======
-         
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
+            
               <div style={{ display: 'flex', gap: 6 }}>
                 {[
                   { key: 'all',       label: `All (${events.length})` },
@@ -520,210 +591,96 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                   No {eventFilter !== 'all' ? eventFilter : ''} events.
                 </p>
               )}
-              {filteredEvents.map(ev => (
-                <div
-                  key={ev.id}
-                  style={{
-                    background: isEventPast(ev) ? '#fafaf8' : 'white',
+
+              {filteredEvents.map(ev => {
+                const past = isEventPast(ev);
+                return (
+                  <div key={ev.id} style={{
+                    background: past ? '#fafaf8' : 'white',
                     borderRadius: 16, padding: 20,
                     boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-                    border: isEventPast(ev) ? '1px solid #f3f4f6' : '1px solid transparent',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div
-                      style={{ flex: 1, cursor: 'pointer' }}
-                      onClick={() => setSelectedEvent(ev)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={e => e.key === 'Enter' && setSelectedEvent(ev)}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-                        <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700 }}>
-                          {ev.event_name || 'Unnamed Event'}
+                    border: past ? '1px solid #f3f4f6' : '1px solid transparent',
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div
+                        style={{ flex: 1, cursor: 'pointer' }}
+                        onClick={() => setSelectedEvent(ev)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={e => e.key === 'Enter' && setSelectedEvent(ev)}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700 }}>
+                            {ev.event_name || 'Unnamed Event'}
+                          </div>
+                          <EventStatusBadge event={ev} />
                         </div>
-                        <EventStatusBadge event={ev} />
-                      </div>
-                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginBottom: 2 }}>
-                        {ev.venue_name} · {ev.event_date || '—'}{ev.event_time ? ` at ${ev.event_time}` : ''}
-                      </div>
-                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888' }}>
-                        Host: {ev.host_name || '—'} · {ev.host_email || ev.host_contact || '—'}
-                      </div>
-                      {ev.expected_guests > 0 && (
-                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#aaa', marginTop: 2 }}>
-                          {ev.expected_guests} expected guest{ev.expected_guests !== 1 ? 's' : ''}
-                          {ev.rsvp_accepted > 0 && ` · ${ev.rsvp_accepted} confirmed`}
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginBottom: 2 }}>
+                          {ev.venue_name} · {ev.event_date || '—'}{ev.event_time ? ` at ${ev.event_time}` : ''}
                         </div>
-                      )}
-                    </div>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888' }}>
+                          Host: {ev.host_name || '—'} · {ev.host_email || ev.host_contact || '—'}
+                        </div>
+                        {ev.expected_guests > 0 && (
+                          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#aaa', marginTop: 2 }}>
+                            {ev.expected_guests} expected guest{ev.expected_guests !== 1 ? 's' : ''}
+                            {ev.rsvp_accepted > 0 && ` · ${ev.rsvp_accepted} confirmed`}
+                          </div>
+                        )}
+                      </div>
 
-                 
-                    <div style={{ display: 'flex', gap: 8, flexShrink: 0, marginLeft: 16, alignItems: 'center' }}>
                       <button
                         onClick={() => setSelectedEvent(ev)}
                         style={{
                           background: 'none', border: '1.5px solid #e5e7eb',
                           borderRadius: 8, padding: '6px 12px', cursor: 'pointer',
                           fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#444',
+                          flexShrink: 0, marginLeft: 16,
                         }}
                       >
                         View
                       </button>
-                      <button
-                        onClick={() => setDeletingEvent(ev)}
-                        style={{
-                          background: 'none', border: '1.5px solid #fecaca',
-                          borderRadius: 8, padding: '6px 12px', cursor: 'pointer',
-                          fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#dc2626',
-                        }}
-                      >
-                        Delete
-                      </button>
                     </div>
-                  </div>
 
-<<<<<<< HEAD
-                
-=======
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
-                  {isEventPast(ev) && (
-                    <div style={{
-                      marginTop: 12, padding: '10px 14px',
-                      background: '#fffbeb', borderRadius: 10,
-                      border: '1px solid #fef3c7',
-                      fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#92400e',
-                      display: 'flex', alignItems: 'center', gap: 8,
-                    }}>
-                     
-                      <span>
+                    
+                    {past && (
+                      <div style={{
+                        marginTop: 12, padding: '10px 14px',
+                        background: '#fffbeb', borderRadius: 10,
+                        border: '1px solid #fef3c7',
+                        fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#92400e',
+                      }}>
                         This event has been completed.
                         {(ev.rsvp_accepted || 0) > 0 && ` ${ev.rsvp_accepted} guest${ev.rsvp_accepted !== 1 ? 's' : ''} attended.`}
                         {(ev.rsvp_declined || 0) > 0 && ` ${ev.rsvp_declined} declined.`}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </section>
         )}
 
         
-        {selectedEvent && (
-          <div className="confirm-overlay" onClick={() => setSelectedEvent(null)}>
-            <div className="confirm-box" style={{ maxWidth: 520, width: '90%', textAlign: 'left', padding: 28 }} onClick={e => e.stopPropagation()}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, margin: 0 }}>
-                    {selectedEvent.event_name || 'Event details'}
-                  </h3>
-                  <EventStatusBadge event={selectedEvent} />
-                </div>
-                <button type="button" className="btn-ghost" style={{ padding: '6px 12px' }} onClick={() => setSelectedEvent(null)}>
-                  Close
-                </button>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px' }}>
-                {[
-                  ['Venue',   selectedEvent.venue_name],
-                  ['Date',    selectedEvent.event_date],
-                  ['Time',    selectedEvent.event_time],
-                  ['Type',    selectedEvent.event_type],
-                  ['Theme',   selectedEvent.event_theme],
-                  ['Dress code', selectedEvent.dress_code],
-                  ['Guests',  selectedEvent.expected_guests],
-                  ['Host',    selectedEvent.host_name],
-                  ['Contact', selectedEvent.host_contact],
-                  ['Email',   selectedEvent.host_email],
-                ].map(([label, val]) => (
-                  <div key={label} className="event-detail-row">
-                    <div className="event-detail-label">{label}</div>
-                    <div className="event-detail-value">{val || '—'}</div>
-                  </div>
-                ))}
-                <div className="event-detail-row" style={{ gridColumn: '1 / -1' }}>
-                  <div className="event-detail-label">Description</div>
-                  <div className="event-detail-value">{selectedEvent.event_description || '—'}</div>
-                </div>
-                {selectedEvent.guest_emails?.length > 0 && (
-                  <div className="event-detail-row" style={{ gridColumn: '1 / -1' }}>
-                    <div className="event-detail-label">Invited guests</div>
-                    <div className="event-detail-value">{selectedEvent.guest_emails.join(', ')}</div>
-                  </div>
-                )}
-              </div>
-
-              
-              {(selectedEvent.rsvp_accepted > 0 || selectedEvent.rsvp_declined > 0 || selectedEvent.rsvp_pending > 0) && (
-                <div style={{ marginTop: 20, borderTop: '1px solid #f3f4f6', paddingTop: 16 }}>
-                  <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#444', marginBottom: 10 }}>
-                    RSVP Summary
-                  </div>
-                  <div style={{ display: 'flex', gap: 0 }}>
-                    {[
-                      { label: 'Attending',     value: selectedEvent.rsvp_accepted || 0, color: '#16a34a', bg: '#f0fdf4' },
-                      { label: 'Not attending', value: selectedEvent.rsvp_declined || 0, color: '#dc2626', bg: '#fef2f2' },
-                      { label: 'Pending',       value: selectedEvent.rsvp_pending  || 0, color: '#d97706', bg: '#fffbeb' },
-                    ].map(item => (
-                      <div key={item.label} style={{
-                        flex: 1, padding: '10px 14px', background: item.bg,
-                        borderRight: '1px solid #f3f4f6', borderRadius: 0,
-                      }}>
-                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 20, fontWeight: 700, color: item.color }}>
-                          {item.value}
-                        </div>
-                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: '#888', marginTop: 2 }}>
-                          {item.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div style={{ marginTop: 20, display: 'flex', justifyContent: 'flex-end' }}>
-                <button
-                  onClick={() => { setSelectedEvent(null); setDeletingEvent(selectedEvent); }}
-                  style={{
-                    background: 'none', border: '1.5px solid #fecaca',
-                    borderRadius: 8, padding: '7px 16px', cursor: 'pointer',
-                    fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#dc2626',
-                  }}
-                >
-                  Delete this event
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-
-        {deletingEvent && (
-          <DeleteEventModal
-            event={deletingEvent}
-            onConfirm={deleteEvent}
-            onCancel={() => setDeletingEvent(null)}
-            loading={deletingEventLoad}
-          />
-        )}
-
         {error && (
-          <div style={{ marginBottom: 20, padding: '12px 16px', borderRadius: 12, background: '#fef2f2', border: '1px solid #fecaca', color: '#b91c1c', fontFamily: "'DM Sans', sans-serif", fontSize: 13 }}>
+          <div style={{
+            marginBottom: 20, padding: '12px 16px', borderRadius: 12,
+            background: '#fef2f2', border: '1px solid #fecaca',
+            color: '#b91c1c', fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+          }}>
             {error}
           </div>
         )}
 
         {loading && <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#888' }}>Loading venues…</p>}
 
-<<<<<<< HEAD
-       
-=======
-        {/* ── venue cards ── */}
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
+        
         {!loading && venues.map(v => (
-          <div key={v.slug} style={{ background: 'white', borderRadius: 16, padding: 20, marginBottom: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+          <div key={v.slug} style={{
+            background: 'white', borderRadius: 16, padding: 20,
+            marginBottom: 16, boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+          }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 20, alignItems: 'start' }}>
               {editingSlug === v.slug ? (
                 <div>
@@ -750,8 +707,18 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                   <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888', marginBottom: 4 }}>
                     {v.city} · {v.capacity} guests · Rs {v.price?.toLocaleString?.() ?? v.price}
                   </div>
+                  
+                  <span style={{
+                    display: 'inline-block', fontSize: 11, fontWeight: 600,
+                    fontFamily: "'DM Sans', sans-serif",
+                    padding: '2px 10px', borderRadius: 20, marginBottom: 6,
+                    background: v.status === 'approved' ? '#f0fdf4' : v.status === 'rejected' ? '#fef2f2' : '#fffbeb',
+                    color:      v.status === 'approved' ? '#16a34a' : v.status === 'rejected' ? '#dc2626' : '#d97706',
+                  }}>
+                    {v.status === 'approved' ? 'Approved' : v.status === 'rejected' ? 'Rejected' : 'Pending approval'}
+                  </span>
                   {v.event_types?.length > 0 && (
-                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 4 }}>
                       {v.event_types.map(t => <span key={t} className="tag">{t}</span>)}
                     </div>
                   )}
@@ -794,19 +761,15 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
           </div>
         )}
 
-<<<<<<< HEAD
-        
-=======
-       
->>>>>>> 9903e087d6dd92003ebb8ca6518d036a8f551848
+      
         {creating && (
           <div style={{ background: 'white', borderRadius: 20, padding: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginTop: 20 }}>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Add New Venue</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-              <input className="field" style={{ gridColumn: '1 / -1' }} placeholder="Venue name *"           value={newForm.name}          onChange={e => setNewForm({ ...newForm, name: e.target.value })} />
-              <input className="field"                                   placeholder="City"                   value={newForm.city}          onChange={e => setNewForm({ ...newForm, city: e.target.value })} />
-              <input className="field"                                   placeholder="Capacity (guests)"      value={newForm.capacity}      onChange={e => setNewForm({ ...newForm, capacity: e.target.value })} />
-              <input className="field"                                   placeholder="Price (Rs)"             value={newForm.price}         onChange={e => setNewForm({ ...newForm, price: e.target.value })} />
+              <input className="field" style={{ gridColumn: '1 / -1' }} placeholder="Venue name *"              value={newForm.name}          onChange={e => setNewForm({ ...newForm, name: e.target.value })} />
+              <input className="field"                                   placeholder="City"                      value={newForm.city}          onChange={e => setNewForm({ ...newForm, city: e.target.value })} />
+              <input className="field"                                   placeholder="Capacity (guests)"         value={newForm.capacity}      onChange={e => setNewForm({ ...newForm, capacity: e.target.value })} />
+              <input className="field"                                   placeholder="Price (Rs)"                value={newForm.price}         onChange={e => setNewForm({ ...newForm, price: e.target.value })} />
               <input className="field" style={{ gridColumn: '1 / -1' }} placeholder="Amenities e.g. Parking, WiFi" value={newForm.amenitiesText} onChange={e => setNewForm({ ...newForm, amenitiesText: e.target.value })} />
             </div>
             <div style={{ marginBottom: 16 }}>
@@ -863,6 +826,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
         )}
       </main>
 
+  
       {!creating && (
         <button className="btn-dark" onClick={() => setCreating(true)} style={{
           position: 'fixed', right: 40, bottom: 40, padding: '14px 24px',
@@ -873,7 +837,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
         </button>
       )}
 
-     
+    
       {deletingSlug && (
         <div className="confirm-overlay">
           <div className="confirm-box">
@@ -887,6 +851,87 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
             </div>
           </div>
         </div>
+      )}
+      
+      {selectedEvent && (
+        <div className="confirm-overlay" onClick={() => setSelectedEvent(null)}>
+          <div className="confirm-box" style={{ maxWidth: 520, width: '90%', textAlign: 'left', padding: 28 }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, margin: 0 }}>
+                  {selectedEvent.event_name || 'Event details'}
+                </h3>
+                <EventStatusBadge event={selectedEvent} />
+              </div>
+              <button type="button" className="btn-ghost" style={{ padding: '6px 12px' }} onClick={() => setSelectedEvent(null)}>Close</button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px' }}>
+              {[
+                ['Venue',      selectedEvent.venue_name],
+                ['Date',       selectedEvent.event_date],
+                ['Time',       selectedEvent.event_time],
+                ['Type',       selectedEvent.event_type],
+                ['Theme',      selectedEvent.event_theme],
+                ['Dress code', selectedEvent.dress_code],
+                ['Guests',     selectedEvent.expected_guests],
+                ['Host',       selectedEvent.host_name],
+                ['Contact',    selectedEvent.host_contact],
+                ['Email',      selectedEvent.host_email],
+              ].map(([label, val]) => (
+                <div key={label} className="event-detail-row">
+                  <div className="event-detail-label">{label}</div>
+                  <div className="event-detail-value">{val || '—'}</div>
+                </div>
+              ))}
+              <div className="event-detail-row" style={{ gridColumn: '1 / -1' }}>
+                <div className="event-detail-label">Description</div>
+                <div className="event-detail-value">{selectedEvent.event_description || '—'}</div>
+              </div>
+              {selectedEvent.guest_emails?.length > 0 && (
+                <div className="event-detail-row" style={{ gridColumn: '1 / -1' }}>
+                  <div className="event-detail-label">Invited guests</div>
+                  <div className="event-detail-value">{selectedEvent.guest_emails.join(', ')}</div>
+                </div>
+              )}
+            </div>
+
+            
+            {(selectedEvent.rsvp_accepted > 0 || selectedEvent.rsvp_declined > 0 || selectedEvent.rsvp_pending > 0) && (
+              <div style={{ marginTop: 20, borderTop: '1px solid #f3f4f6', paddingTop: 16 }}>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#444', marginBottom: 10 }}>
+                  RSVP Summary
+                </div>
+                <div style={{ display: 'flex', gap: 0 }}>
+                  {[
+                    { label: 'Attending',     value: selectedEvent.rsvp_accepted || 0, color: '#16a34a', bg: '#f0fdf4' },
+                    { label: 'Not attending', value: selectedEvent.rsvp_declined || 0, color: '#dc2626', bg: '#fef2f2' },
+                    { label: 'Pending',       value: selectedEvent.rsvp_pending  || 0, color: '#d97706', bg: '#fffbeb' },
+                  ].map(item => (
+                    <div key={item.label} style={{ flex: 1, padding: '10px 14px', background: item.bg }}>
+                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 20, fontWeight: 700, color: item.color }}>
+                        {item.value}
+                      </div>
+                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: '#888', marginTop: 2 }}>
+                        {item.label}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+    
+      {deletingEvent && (
+        <DeleteEventModal
+          event={deletingEvent}
+          onConfirm={deleteEvent}
+          onCancel={() => setDeletingEvent(null)}
+          loading={deletingEventLoad}
+        />
       )}
     </div>
   );
