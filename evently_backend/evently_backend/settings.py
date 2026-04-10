@@ -135,7 +135,15 @@ else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
     DEFAULT_FROM_EMAIL = "noreply@evently.local"
 
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+
+=======
+# settings.py
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
 BACKEND_URL  = os.environ.get("BACKEND_URL",  "https://poikilitic-unsublimed-marlys.ngrok-free.dev")
 FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:3000") 
 ALLOWED_HOSTS = [

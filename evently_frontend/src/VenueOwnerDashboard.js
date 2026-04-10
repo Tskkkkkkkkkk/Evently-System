@@ -46,6 +46,7 @@ function NotificationBell({ ownerId, onVenueRejected, onVenueApproved }) {
   const [unreadCount,   setUnreadCount]   = useState(0);
 
 
+<<<<<<< HEAD
   const fetchNotifications = useCallback(async () => {
     try {
       const res = await api.get('/owner/notifications/');
@@ -106,6 +107,32 @@ l
     if (type === 'new_booking')    return '#2563eb';
     return '#9ca3af';
   };
+=======
+  const notifications = events
+    .filter(ev => {
+      if (!ev.event_date) return false;
+      const eventDt  = new Date(`${ev.event_date}T${ev.event_time || '23:59'}:00`);
+      const now      = new Date();
+      const hoursAgo = (now - eventDt) / 36e5;
+    
+      const upcoming = eventDt > now && eventDt - now < 24 * 36e5;
+      const justDone = hoursAgo >= 0 && hoursAgo < 48;
+      return upcoming || justDone;
+    })
+    .map(ev => {
+      const eventDt  = new Date(`${ev.event_date}T${ev.event_time || '23:59'}:00`);
+      const past     = eventDt < new Date();
+      return {
+        id:      ev.id,
+        title:   ev.event_name || 'Event',
+        venue:   ev.venue_name,
+        message: past
+          ? `"${ev.event_name || 'Event'}" at ${ev.venue_name} has ended.`
+          : `"${ev.event_name || 'Event'}" at ${ev.venue_name} is happening soon!`,
+        past,
+      };
+    });
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
 
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -144,7 +171,63 @@ l
         )}
       </button>
 
+<<<<<<< HEAD
    
+=======
+      {open && (
+        <div style={{
+          position: 'absolute', right: 0, top: 44, zIndex: 100,
+          background: 'white', borderRadius: 14,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.13)',
+          border: '1px solid #f3f4f6',
+          minWidth: 300, maxWidth: 360,
+        }}>
+          <div style={{
+            padding: '12px 16px', borderBottom: '1px solid #f3f4f6',
+            fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#1a1a1a',
+          }}>
+            Notifications
+          </div>
+
+          {notifications.length === 0 ? (
+            <div style={{
+              padding: '20px 16px', fontFamily: "'DM Sans', sans-serif",
+              fontSize: 13, color: '#888', textAlign: 'center',
+            }}>
+              No new notifications
+            </div>
+          ) : (
+            notifications.map((n, i) => (
+              <div key={n.id} style={{
+                padding: '12px 16px',
+                borderBottom: i < notifications.length - 1 ? '1px solid #f9fafb' : 'none',
+                display: 'flex', gap: 10, alignItems: 'flex-start',
+              }}>
+                <div>
+                  <div style={{
+                    fontFamily: "'DM Sans', sans-serif", fontSize: 13,
+                    color: '#1a1a1a', lineHeight: 1.4,
+                  }}>
+                    {n.message}
+                  </div>
+                  <div style={{
+                    fontFamily: "'DM Sans', sans-serif", fontSize: 11,
+                    color: '#aaa', marginTop: 3,
+                  }}>
+                    {n.past ? 'Completed' : 'Coming up'}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+
+<<<<<<< HEAD
+=======
+  
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
       {open && (
         <>
          
@@ -280,8 +363,11 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
   const [pendingImageFiles, setPendingImageFiles] = useState([]);
   const [pendingPreviews,   setPendingPreviews]   = useState([]);
   const [eventFilter,       setEventFilter]       = useState('all');
+<<<<<<< HEAD
 
   
+=======
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
 
   const loadVenues = useCallback(async () => {
     setLoading(true);
@@ -307,6 +393,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
   useEffect(() => { loadVenues(); loadEvents(); }, [loadVenues, loadEvents]);
 
+<<<<<<< HEAD
   
   const handleVenueRejected = useCallback((venueSlug) => {
     setVenues(prev => prev.filter(v => v.slug !== venueSlug));
@@ -319,6 +406,12 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
   
 
+=======
+<<<<<<< HEAD
+=======
+ 
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   const filteredEvents = events.filter(ev => {
     if (eventFilter === 'upcoming')  return !isEventPast(ev);
     if (eventFilter === 'completed') return  isEventPast(ev);
@@ -344,8 +437,11 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     }
   };
 
+<<<<<<< HEAD
   
 
+=======
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   const startEdit = (v) => {
     setEditingSlug(v.slug);
     setEditForm({
@@ -476,9 +572,12 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
     setPendingPreviews(prev   => prev.filter((_, i) => i !== index));
   };
 
+<<<<<<< HEAD
   
 
  
+=======
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   const TypeChip = ({ label, selected, onToggle }) => (
     <button type="button" onClick={onToggle} style={{
       padding: '6px 14px', borderRadius: 50, cursor: 'pointer',
@@ -536,6 +635,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
       <Navbar user={user} onLogout={onLogout} transparent={false} />
 
       <main style={{ maxWidth: 900, margin: '0 auto', padding: '40px 24px 100px' }}>
+<<<<<<< HEAD
 
        
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
@@ -558,13 +658,33 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
         </p>
 
       
+=======
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 700, letterSpacing: '-0.02em', margin: 0 }}>
+            Venue Owner Dashboard
+          </h1>
+          <NotificationBell events={events} />
+        </div>
+        <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 15, color: '#888', marginBottom: 32 }}>
+          Manage your listed venues
+        </p>
+
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {events.length > 0 && (
           <section style={{ marginBottom: 40 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, margin: 0 }}>
                 Events at your venues
               </h2>
+<<<<<<< HEAD
             
+=======
+<<<<<<< HEAD
+=======
+              
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
               <div style={{ display: 'flex', gap: 6 }}>
                 {[
                   { key: 'all',       label: `All (${events.length})` },
@@ -591,6 +711,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                   No {eventFilter !== 'all' ? eventFilter : ''} events.
                 </p>
               )}
+<<<<<<< HEAD
 
               {filteredEvents.map(ev => {
                 const past = isEventPast(ev);
@@ -643,16 +764,97 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                     </div>
 
                     
+=======
+              {filteredEvents.map(ev => {
+                const past = isEventPast(ev);
+                return (
+                  <div
+                    key={ev.id}
+                    style={{
+                      background: past ? '#fafaf8' : 'white',
+                      borderRadius: 16, padding: 20,
+                      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                      border: past ? '1px solid #f3f4f6' : '1px solid transparent',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div
+                        style={{ flex: 1, cursor: 'pointer' }}
+                        onClick={() => setSelectedEvent(ev)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={e => e.key === 'Enter' && setSelectedEvent(ev)}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                          <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700 }}>
+                            {ev.event_name || 'Unnamed Event'}
+                          </div>
+                          <EventStatusBadge event={ev} />
+                        </div>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginBottom: 2 }}>
+                          {ev.venue_name} · {ev.event_date || '—'}{ev.event_time ? ` at ${ev.event_time}` : ''}
+                        </div>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888' }}>
+                          Host: {ev.host_name || '—'} · {ev.host_email || ev.host_contact || '—'}
+                        </div>
+                        {ev.expected_guests > 0 && (
+                          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#aaa', marginTop: 2 }}>
+                            {ev.expected_guests} expected guest{ev.expected_guests !== 1 ? 's' : ''}
+                            {ev.rsvp_accepted > 0 && ` · ${ev.rsvp_accepted} confirmed`}
+                          </div>
+                        )}
+                      </div>
+
+<<<<<<< HEAD
+=======
+                
+                  {isEventPast(ev) && (
+                    <div style={{
+                      marginTop: 12, padding: '10px 14px',
+                      background: '#fffbeb', borderRadius: 10,
+                      border: '1px solid #fef3c7',
+                      fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#92400e',
+                      display: 'flex', alignItems: 'center', gap: 8,
+                    }}>
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+                     
+                      <div style={{ display: 'flex', gap: 8, flexShrink: 0, marginLeft: 16, alignItems: 'center' }}>
+                        <button
+                          onClick={() => setSelectedEvent(ev)}
+                          style={{
+                            background: 'none', border: '1.5px solid #e5e7eb',
+                            borderRadius: 8, padding: '6px 12px', cursor: 'pointer',
+                            fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#444',
+                          }}
+                        >
+                          View
+                        </button>
+
+                       
+                      </div>
+                    </div>
+
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                     {past && (
                       <div style={{
                         marginTop: 12, padding: '10px 14px',
                         background: '#fffbeb', borderRadius: 10,
                         border: '1px solid #fef3c7',
                         fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#92400e',
+<<<<<<< HEAD
                       }}>
                         This event has been completed.
                         {(ev.rsvp_accepted || 0) > 0 && ` ${ev.rsvp_accepted} guest${ev.rsvp_accepted !== 1 ? 's' : ''} attended.`}
                         {(ev.rsvp_declined || 0) > 0 && ` ${ev.rsvp_declined} declined.`}
+=======
+                        display: 'flex', alignItems: 'center', gap: 8,
+                      }}>
+                        <span>
+                          This event has been completed.
+                          {(ev.rsvp_accepted || 0) > 0 && ` ${ev.rsvp_accepted} guest${ev.rsvp_accepted !== 1 ? 's' : ''} attended.`}
+                          {(ev.rsvp_declined || 0) > 0 && ` ${ev.rsvp_declined} declined.`}
+                        </span>
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                       </div>
                     )}
                   </div>
@@ -662,7 +864,91 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
           </section>
         )}
 
+<<<<<<< HEAD
         
+=======
+    
+        {selectedEvent && (
+          <div className="confirm-overlay" onClick={() => setSelectedEvent(null)}>
+            <div className="confirm-box" style={{ maxWidth: 520, width: '90%', textAlign: 'left', padding: 28 }} onClick={e => e.stopPropagation()}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, margin: 0 }}>
+                    {selectedEvent.event_name || 'Event details'}
+                  </h3>
+                  <EventStatusBadge event={selectedEvent} />
+                </div>
+                <button type="button" className="btn-ghost" style={{ padding: '6px 12px' }} onClick={() => setSelectedEvent(null)}>
+                  Close
+                </button>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px' }}>
+                {[
+                  ['Venue',   selectedEvent.venue_name],
+                  ['Date',    selectedEvent.event_date],
+                  ['Time',    selectedEvent.event_time],
+                  ['Type',    selectedEvent.event_type],
+                  ['Theme',   selectedEvent.event_theme],
+                  ['Dress code', selectedEvent.dress_code],
+                  ['Guests',  selectedEvent.expected_guests],
+                  ['Host',    selectedEvent.host_name],
+                  ['Contact', selectedEvent.host_contact],
+                  ['Email',   selectedEvent.host_email],
+                ].map(([label, val]) => (
+                  <div key={label} className="event-detail-row">
+                    <div className="event-detail-label">{label}</div>
+                    <div className="event-detail-value">{val || '—'}</div>
+                  </div>
+                ))}
+                <div className="event-detail-row" style={{ gridColumn: '1 / -1' }}>
+                  <div className="event-detail-label">Description</div>
+                  <div className="event-detail-value">{selectedEvent.event_description || '—'}</div>
+                </div>
+                {selectedEvent.guest_emails?.length > 0 && (
+                  <div className="event-detail-row" style={{ gridColumn: '1 / -1' }}>
+                    <div className="event-detail-label">Invited guests</div>
+                    <div className="event-detail-value">{selectedEvent.guest_emails.join(', ')}</div>
+                  </div>
+                )}
+              </div>
+
+              {(selectedEvent.rsvp_accepted > 0 || selectedEvent.rsvp_declined > 0 || selectedEvent.rsvp_pending > 0) && (
+                <div style={{ marginTop: 20, borderTop: '1px solid #f3f4f6', paddingTop: 16 }}>
+                  <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#444', marginBottom: 10 }}>
+                    RSVP Summary
+                  </div>
+                  <div style={{ display: 'flex', gap: 0 }}>
+                    {[
+                      { label: 'Attending',     value: selectedEvent.rsvp_accepted || 0, color: '#16a34a', bg: '#f0fdf4' },
+                      { label: 'Not attending', value: selectedEvent.rsvp_declined || 0, color: '#dc2626', bg: '#fef2f2' },
+                      { label: 'Pending',       value: selectedEvent.rsvp_pending  || 0, color: '#d97706', bg: '#fffbeb' },
+                    ].map(item => (
+                      <div key={item.label} style={{
+                        flex: 1, padding: '10px 14px', background: item.bg,
+                       borderRadius: 0,
+                      }}>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 20, fontWeight: 700, color: item.color }}>
+                          {item.value}
+                        </div>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: '#888', marginTop: 2 }}>
+                          {item.label}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+         
+              
+            </div>
+          </div>
+        )}
+
+        
+
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {error && (
           <div style={{
             marginBottom: 20, padding: '12px 16px', borderRadius: 12,
@@ -675,7 +961,14 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
 
         {loading && <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#888' }}>Loading venues…</p>}
 
+<<<<<<< HEAD
         
+=======
+<<<<<<< HEAD
+=======
+       
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {!loading && venues.map(v => (
           <div key={v.slug} style={{
             background: 'white', borderRadius: 16, padding: 20,
@@ -722,6 +1015,7 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
                       {v.event_types.map(t => <span key={t} className="tag">{t}</span>)}
                     </div>
                   )}
+                 
                   {v.amenities?.length > 0 && (
                     <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#6b7280', marginTop: 4 }}>
                       Amenities: {v.amenities.join(', ')}
@@ -761,7 +1055,14 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
           </div>
         )}
 
+<<<<<<< HEAD
       
+=======
+<<<<<<< HEAD
+=======
+        
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {creating && (
           <div style={{ background: 'white', borderRadius: 20, padding: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.08)', marginTop: 20 }}>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Add New Venue</h2>
@@ -837,7 +1138,10 @@ export default function VenueOwnerDashboard({ user, onLogout }) {
         </button>
       )}
 
+<<<<<<< HEAD
     
+=======
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
       {deletingSlug && (
         <div className="confirm-overlay">
           <div className="confirm-box">

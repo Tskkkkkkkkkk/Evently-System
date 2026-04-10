@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import styles from './Navbar.module.css';
-
-function getNavLinks(user) {
-  const links = [
+ const links = [
     { label: 'Home',   href: '/' },
     { label: 'Venues', href: '/venues' },
   ];
   
+function getNavLinks(user) {
+ 
   if (user?.user_type === 'event_organizer' || user?.user_type === 'organizer') {
     links.push({ label: 'My Events', href: '/organizer' });
   }

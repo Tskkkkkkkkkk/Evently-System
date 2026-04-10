@@ -46,10 +46,19 @@ function Login({ onLoginSuccess }) {
       const userType = userData?.user_type || '';
       const path = getRedirectPath(userType);
 
+<<<<<<< HEAD
      
       if (onLoginSuccess) {
         onLoginSuccess(userData);
        
+=======
+      // Notify parent, then redirect after it has had a chance to update
+      if (onLoginSuccess) {
+        onLoginSuccess(userData);
+        // Give the parent one tick to re-render before navigating.
+        // If the parent's re-render already redirects (e.g. via a protected
+        // route check), this setTimeout is harmless.
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         setTimeout(() => {
           window.location.href = path;
         }, 100);

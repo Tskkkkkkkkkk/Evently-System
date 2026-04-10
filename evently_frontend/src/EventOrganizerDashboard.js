@@ -3,7 +3,14 @@ import Navbar from './Navbar';
 import api from './api';
 import './EventOrganizerDashboard.css';
 
+<<<<<<< HEAD
 
+=======
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper: figure out how many days away an event date is from today
+// Returns a number (negative = already passed, 0 = today, positive = future)
+// ─────────────────────────────────────────────────────────────────────────────
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
 function daysUntil(dateStr) {
   if (!dateStr) return null;
   const today     = new Date();
@@ -15,26 +22,49 @@ function daysUntil(dateStr) {
   return diffDays;
 }
 
+<<<<<<< HEAD
  
 function NotificationBell({ events }) {
   const [open, setOpen] = useState(false);
 
  
+=======
+// ─────────────────────────────────────────────────────────────────────────────
+// NotificationBell — the bell icon in the top-right of the dashboard header.
+// Shows a red badge when there are upcoming events within 7 days.
+// Clicking it opens a dropdown listing those events.
+// ─────────────────────────────────────────────────────────────────────────────
+function NotificationBell({ events }) {
+  const [open, setOpen] = useState(false);
+
+  // Filter to only events happening within the next 7 days (and not already past)
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   const upcoming = events.filter(ev => {
     const d = daysUntil(ev.event_date);
     return d !== null && d >= 0 && d <= 7;
   });
 
+<<<<<<< HEAD
   
+=======
+  // Sort soonest first
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   upcoming.sort((a, b) => daysUntil(a.event_date) - daysUntil(b.event_date));
 
   const count = upcoming.length;
 
   return (
+<<<<<<< HEAD
     
     <div style={{ position: 'relative', display: 'inline-block' }}>
 
       
+=======
+    // Wrapper keeps the dropdown positioned relative to the bell button
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+
+      {/* Bell button */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
       <button
         onClick={() => setOpen(o => !o)}
         style={{
@@ -52,13 +82,21 @@ function NotificationBell({ events }) {
         }}
         aria-label="Notifications"
       >
+<<<<<<< HEAD
       
+=======
+        {/* Bell SVG icon */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
         </svg>
 
+<<<<<<< HEAD
         
+=======
+        {/* Red badge — only shows when there are upcoming events */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {count > 0 && (
           <span style={{
             position: 'absolute',
@@ -82,15 +120,26 @@ function NotificationBell({ events }) {
         )}
       </button>
 
+<<<<<<< HEAD
       {open && (
         <>
           
+=======
+      {/* Dropdown panel — only visible when bell is clicked */}
+      {open && (
+        <>
+          {/* Invisible backdrop — clicking outside closes the dropdown */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
           <div
             style={{ position: 'fixed', inset: 0, zIndex: 9 }}
             onClick={() => setOpen(false)}
           />
 
+<<<<<<< HEAD
         
+=======
+          {/* The actual dropdown card */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
           <div style={{
             position: 'absolute',
             top: 48,
@@ -104,7 +153,11 @@ function NotificationBell({ events }) {
             overflow: 'hidden',
           }}>
 
+<<<<<<< HEAD
             
+=======
+            {/* Dropdown header */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
             <div style={{
               padding: '14px 18px',
               borderBottom: '1px solid #f3f4f6',
@@ -131,7 +184,11 @@ function NotificationBell({ events }) {
               )}
             </div>
 
+<<<<<<< HEAD
             
+=======
+            {/* List of upcoming events, or empty state */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
             {count === 0 ? (
               <div style={{
                 padding: '20px 18px',
@@ -147,14 +204,22 @@ function NotificationBell({ events }) {
                 {upcoming.map((ev, i) => {
                   const days = daysUntil(ev.event_date);
 
+<<<<<<< HEAD
               
+=======
+                  // Pick a label based on how soon the event is
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                   const urgencyLabel = days === 0
                     ? 'Today!'
                     : days === 1
                     ? 'Tomorrow'
                     : `In ${days} days`;
 
+<<<<<<< HEAD
              
+=======
+                  // Red for today/tomorrow, amber for 2-4 days, green for 5-7
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                   const urgencyColor = days <= 1 ? '#dc2626' : days <= 4 ? '#d97706' : '#16a34a';
                   const urgencyBg    = days <= 1 ? '#fef2f2' : days <= 4 ? '#fffbeb' : '#f0fdf4';
 
@@ -168,7 +233,11 @@ function NotificationBell({ events }) {
                       gap: 10,
                     }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
+<<<<<<< HEAD
                         
+=======
+                        {/* Event name */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                         <div style={{
                           fontFamily: "'DM Sans', sans-serif",
                           fontSize: 13,
@@ -181,7 +250,11 @@ function NotificationBell({ events }) {
                         }}>
                           {ev.event_name || 'Unnamed Event'}
                         </div>
+<<<<<<< HEAD
                         
+=======
+                        {/* Venue and date */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                         <div style={{
                           fontFamily: "'DM Sans', sans-serif",
                           fontSize: 11,
@@ -192,7 +265,11 @@ function NotificationBell({ events }) {
                         </div>
                       </div>
 
+<<<<<<< HEAD
                       
+=======
+                      {/* Urgency pill */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                       <span style={{
                         fontFamily: "'DM Sans', sans-serif",
                         fontSize: 11,
@@ -211,7 +288,11 @@ function NotificationBell({ events }) {
               </div>
             )}
 
+<<<<<<< HEAD
   
+=======
+            {/* Footer note */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
             <div style={{
               padding: '10px 18px',
               borderTop: '1px solid #f3f4f6',
@@ -229,17 +310,34 @@ function NotificationBell({ events }) {
   );
 }
 
+<<<<<<< HEAD
 
 function UpcomingEventsBanner({ events }) {
   
+=======
+// ─────────────────────────────────────────────────────────────────────────────
+// UpcomingEventsBanner — a yellow banner that appears at the top of the page
+// when the organizer has events happening within the next 7 days.
+// This is a passive reminder even before they click the bell.
+// ─────────────────────────────────────────────────────────────────────────────
+function UpcomingEventsBanner({ events }) {
+  // Same filter as the bell — events in the next 7 days
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   const upcoming = events.filter(ev => {
     const d = daysUntil(ev.event_date);
     return d !== null && d >= 0 && d <= 7;
   });
 
+<<<<<<< HEAD
 
   if (upcoming.length === 0) return null;
 
+=======
+  // Don't render anything if no upcoming events
+  if (upcoming.length === 0) return null;
+
+  // Find the soonest event to highlight in the banner
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   const soonest = upcoming.reduce((a, b) =>
     daysUntil(a.event_date) < daysUntil(b.event_date) ? a : b
   );
@@ -257,7 +355,11 @@ function UpcomingEventsBanner({ events }) {
       gap: 12,
       fontFamily: "'DM Sans', sans-serif",
     }}>
+<<<<<<< HEAD
       
+=======
+      {/* Warning triangle icon */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
       
 
       <div style={{ flex: 1 }}>
@@ -268,7 +370,11 @@ function UpcomingEventsBanner({ events }) {
             ? `Your event "${soonest.event_name}" is tomorrow.`
             : `Your event "${soonest.event_name}" is in ${days} days.`}
         </span>
+<<<<<<< HEAD
         
+=======
+        {/* If there are more upcoming events beyond the soonest, mention the count */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {upcoming.length > 1 && (
           <span style={{ fontSize: 12, color: '#a16207', marginLeft: 6 }}>
             +{upcoming.length - 1} more event{upcoming.length - 1 !== 1 ? 's' : ''} this week.
@@ -276,7 +382,11 @@ function UpcomingEventsBanner({ events }) {
         )}
       </div>
 
+<<<<<<< HEAD
       
+=======
+      {/* Small note about the reminder email */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
       <span style={{ fontSize: 11, color: '#a16207', flexShrink: 0 }}>
         Reminder email sent
       </span>
@@ -284,11 +394,19 @@ function UpcomingEventsBanner({ events }) {
   );
 }
 
+<<<<<<< HEAD
+=======
+// ─────────────────────────────────────────────────────────────────────────────
+// EventRSVPStats — expandable RSVP tracker for a single event.
+// Clicking "View RSVP responses" fetches and shows guest response data.
+// ─────────────────────────────────────────────────────────────────────────────
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
 function EventRSVPStats({ eventId }) {
   const [stats, setStats]     = useState(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen]       = useState(false);
 
+  // Only fetch RSVP data when the section is expanded and we have an eventId
   useEffect(() => {
     if (!open || !eventId) return;
     setLoading(true);
@@ -298,14 +416,22 @@ function EventRSVPStats({ eventId }) {
       .finally(() => setLoading(false));
   }, [open, eventId]);
 
+<<<<<<< HEAD
   
+=======
+  // Color/label mappings for each RSVP status
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   const statusColor = { accepted: '#16a34a', declined: '#dc2626', pending: '#d97706' };
   const statusBg    = { accepted: '#f0fdf4', declined: '#fef2f2', pending: '#fffbeb' };
   const statusLabel = { accepted: 'Attending', declined: 'Not attending', pending: 'Pending' };
 
   return (
     <div style={{ marginTop: 14 }} onClick={e => e.stopPropagation()}>
+<<<<<<< HEAD
       
+=======
+      {/* Toggle button */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
       <button
         onClick={() => setOpen(o => !o)}
         style={{
@@ -322,9 +448,18 @@ function EventRSVPStats({ eventId }) {
           gap: 6,
         }}
       >
+<<<<<<< HEAD
         {open ? 'Hide' : 'View'} RSVP responses
+=======
+<<<<<<< HEAD
+        {open ? 'Hide' : 'View'} RSVP responses
+=======
+         {open ? 'Hide' : 'View'} RSVP responses
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
       </button>
 
+      {/* Expanded RSVP panel */}
       {open && (
         <div style={{
           marginTop: 10,
@@ -333,17 +468,32 @@ function EventRSVPStats({ eventId }) {
           overflow: 'hidden',
           background: 'white',
         }}>
+<<<<<<< HEAD
          
+=======
+          {/* Loading state */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
           {loading && (
             <p style={{ padding: '16px 20px', fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888', margin: 0 }}>
               Loading…
             </p>
           )}
 
+<<<<<<< HEAD
          
           {!loading && stats && (
             <>
              
+=======
+          {/* Stats loaded successfully */}
+          {!loading && stats && (
+            <>
+<<<<<<< HEAD
+              {/* Summary row: 4 count boxes */}
+=======
+             
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
               <div style={{ display: 'flex', borderBottom: '1px solid #f3f4f6' }}>
                 {[
                   { label: 'Attending',     value: stats.accepted, color: '#16a34a', bg: '#f0fdf4' },
@@ -367,7 +517,15 @@ function EventRSVPStats({ eventId }) {
                 ))}
               </div>
 
+<<<<<<< HEAD
              
+=======
+<<<<<<< HEAD
+              {/* Progress bar — green/red/yellow proportional to responses */}
+=======
+             
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
               {stats.total > 0 && (
                 <div style={{ padding: '10px 16px', borderBottom: '1px solid #f3f4f6' }}>
                   <div style={{ height: 7, borderRadius: 4, background: '#f3f4f6', overflow: 'hidden', display: 'flex' }}>
@@ -383,7 +541,15 @@ function EventRSVPStats({ eventId }) {
                 </div>
               )}
 
+<<<<<<< HEAD
               
+=======
+<<<<<<< HEAD
+              {/* Per-guest list */}
+=======
+             
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
               <div style={{ maxHeight: 240, overflowY: 'auto' }}>
                 {stats.guests.length === 0 ? (
                   <p style={{ padding: '14px 16px', fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888', margin: 0 }}>
@@ -401,13 +567,21 @@ function EventRSVPStats({ eventId }) {
                       {g.email}
                     </span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+<<<<<<< HEAD
                       
+=======
+                      {/* Show the date they responded if available */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                       {g.responded_at && (
                         <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: '#aaa' }}>
                           {new Date(g.responded_at).toLocaleDateString()}
                         </span>
                       )}
+<<<<<<< HEAD
                       
+=======
+                      {/* Status badge */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
                       <span style={{
                         fontFamily: "'DM Sans', sans-serif",
                         fontSize: 12,
@@ -425,7 +599,11 @@ function EventRSVPStats({ eventId }) {
             </>
           )}
 
+<<<<<<< HEAD
         
+=======
+          {/* Error state */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
           {!loading && !stats && (
             <p style={{ padding: '14px 16px', fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888', margin: 0 }}>
               Could not load RSVP data.
@@ -436,14 +614,25 @@ function EventRSVPStats({ eventId }) {
     </div>
   );
 }
+<<<<<<< HEAD
  
+=======
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Main dashboard component
+// ─────────────────────────────────────────────────────────────────────────────
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
 export default function EventOrganizerDashboard({ user, onLogout }) {
   const [events, setEvents]           = useState([]);
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState('');
   const [selectedEvent, setSelectedEvent] = useState(null);
 
+<<<<<<< HEAD
  
+=======
+  // Fetch all confirmed events for this organizer on mount
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
   const loadEvents = async () => {
     setLoading(true);
     setError('');
@@ -452,7 +641,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
       setEvents(Array.isArray(res.data) ? res.data : []);
     } catch (e) {
       setEvents([]);
+<<<<<<< HEAD
    
+=======
+      // 403 means they're not an event organizer — show a friendly message
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
       setError(e.response?.status === 403
         ? 'You must sign up as an Event Organizer to access this dashboard.'
         : 'Unable to load your events.');
@@ -469,7 +662,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
 
       <main style={{ maxWidth: 900, margin: '0 auto', padding: '40px 24px 100px' }}>
 
+<<<<<<< HEAD
        
+=======
+        {/* Page header row — title on the left, notification bell on the right */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
           <h1 style={{
             fontFamily: "'Playfair Display', serif",
@@ -481,7 +678,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
             Event Organizer Dashboard
           </h1>
 
+<<<<<<< HEAD
           
+=======
+          {/* Bell only renders once events have loaded (needs the list to compute upcoming) */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
           {!loading && <NotificationBell events={events} />}
         </div>
 
@@ -489,9 +690,16 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
           Events you've created at venues
         </p>
 
+<<<<<<< HEAD
       
         {!loading && <UpcomingEventsBanner events={events} />}
 
+=======
+        {/* Yellow banner — shows automatically if any event is within 7 days */}
+        {!loading && <UpcomingEventsBanner events={events} />}
+
+        {/* Error message */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {error && (
           <div style={{
             marginBottom: 20,
@@ -507,22 +715,35 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
           </div>
         )}
 
+<<<<<<< HEAD
  
+=======
+        {/* Loading state */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {loading && (
           <p style={{ fontFamily: "'DM Sans', sans-serif", color: '#888' }}>Loading your events…</p>
         )}
 
+<<<<<<< HEAD
      
+=======
+        {/* Event cards */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {!loading && events.length > 0 && (
           <section>
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, marginBottom: 16 }}>
               My Events
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
               {events.map((ev) => {
                 // Calculate days until this event so we can show a countdown pill
                 const days = daysUntil(ev.event_date);
                 const isUpcoming = days !== null && days >= 0 && days <= 7;
+<<<<<<< HEAD
 
                 return (
                   <div
@@ -591,11 +812,130 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                   </div>
                 );
               })}
+=======
+
+                return (
+                  <div
+                    key={ev.id}
+                    style={{
+                      background: 'white',
+                      borderRadius: 16,
+                      padding: 20,
+                      boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                      // Subtle amber left border for events happening within 7 days
+                     
+                    }}
+                  >
+                    {/* Clickable header row — opens the detail modal */}
+                    <div
+                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', cursor: 'pointer' }}
+                      onClick={() => setSelectedEvent(ev)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={e => e.key === 'Enter' && setSelectedEvent(ev)}
+                    >
+                      <div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                          <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700 }}>
+                            {ev.event_name || 'Unnamed Event'}
+                          </span>
+
+                          {/* Countdown pill — only visible for events within 7 days */}
+                          {isUpcoming && (
+                            <span style={{
+                              fontFamily: "'DM Sans', sans-serif",
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: days <= 1 ? '#dc2626' : '#d97706',
+                              background: days <= 1 ? '#fef2f2' : '#fffbeb',
+                              padding: '2px 8px',
+                              borderRadius: 20,
+                              flexShrink: 0,
+                            }}>
+                              {days === 0 ? 'Today' : days === 1 ? 'Tomorrow' : `${days} days`}
+                            </span>
+                          )}
+                        </div>
+
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginBottom: 4 }}>
+                          {ev.venue_name} · {ev.event_date || '—'}{ev.event_time ? ` at ${ev.event_time}` : ''}
+                        </div>
+                        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888' }}>
+                          Host: {ev.host_name || '—'}{ev.expected_guests ? ` · ${ev.expected_guests} expected guests` : ''}
+                        </div>
+                        {ev.event_type && (
+                          <span className="tag" style={{ marginTop: 8, display: 'inline-block' }}>
+                            {ev.event_type}
+                          </span>
+                        )}
+                      </div>
+                      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#1a1a1a', fontWeight: 500, flexShrink: 0, marginLeft: 16 }}>
+                        View details →
+                      </span>
+                    </div>
+
+                    {/* RSVP tracker — only shown if guests were invited */}
+                    {ev.guest_emails?.length > 0 && (
+                      <EventRSVPStats eventId={ev.id} />
+                    )}
+                  </div>
+                );
+              })}
+=======
+              {events.map((ev) => (
+                <div
+                  key={ev.id}
+                  style={{
+                    background: 'white', borderRadius: 16, padding: 20,
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                  }}
+                >
+           
+                  <div
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', cursor: 'pointer' }}
+                    onClick={() => setSelectedEvent(ev)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={e => e.key === 'Enter' && setSelectedEvent(ev)}
+                  >
+                    <div>
+                      <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 17, fontWeight: 700, marginBottom: 6 }}>
+                        {ev.event_name || 'Unnamed Event'}
+                      </div>
+                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#666', marginBottom: 4 }}>
+                        {ev.venue_name} · {ev.event_date || '—'}{ev.event_time ? ` at ${ev.event_time}` : ''}
+                      </div>
+                      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#888' }}>
+                        Host: {ev.host_name || '—'}{ev.expected_guests ? ` · ${ev.expected_guests} expected guests` : ''}
+                      </div>
+                      {ev.event_type && (
+                        <span className="tag" style={{ marginTop: 8, display: 'inline-block' }}>
+                          {ev.event_type}
+                        </span>
+                      )}
+                    </div>
+                    <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: '#1a1a1a', fontWeight: 500, flexShrink: 0, marginLeft: 16 }}>
+                      View details →
+                    </span>
+                  </div>
+
+                 
+                  {ev.guest_emails?.length > 0 && (
+                    <EventRSVPStats eventId={ev.id} />
+                  )}
+                </div>
+              ))}
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
             </div>
           </section>
         )}
 
+<<<<<<< HEAD
         
+=======
+        {/* Empty state */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {!loading && events.length === 0 && !error && (
           <div style={{ textAlign: 'center', padding: '60px 24px', background: 'white', borderRadius: 20, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
             <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 16, color: '#666', marginBottom: 20 }}>
@@ -607,12 +947,24 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
           </div>
         )}
 
+<<<<<<< HEAD
      
+=======
+<<<<<<< HEAD
+        {/* ── Event detail modal ─────────────────────────────────────────── */}
+=======
+      
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
         {selectedEvent && (
           <div className="confirm-overlay" onClick={() => setSelectedEvent(null)}>
             <div className="confirm-box" style={{ textAlign: 'left', padding: 28 }} onClick={e => e.stopPropagation()}>
 
+<<<<<<< HEAD
         
+=======
+              {/* Modal header */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                 <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, color: '#1a1a1a' }}>
                   Event Host Details
@@ -622,7 +974,11 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                 </button>
               </div>
 
+<<<<<<< HEAD
              
+=======
+              {/* Detail grid — 2-column layout for most fields */}
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px' }}>
                 <div className="event-detail-row" style={{ gridColumn: '1 / -1' }}>
                   <div className="event-detail-label">Event Name</div>
@@ -683,7 +1039,15 @@ export default function EventOrganizerDashboard({ user, onLogout }) {
                 )}
               </div>
 
+<<<<<<< HEAD
            
+=======
+<<<<<<< HEAD
+              {/* RSVP tracker inside modal too */}
+=======
+             
+>>>>>>> f127d7fe71f4bae8d4cc62914fc39ab9bade4baa
+>>>>>>> e6d55850870d78c9665dbded260ac7f635f38d90
               {selectedEvent.guest_emails?.length > 0 && (
                 <div style={{ marginTop: 24, borderTop: '1px solid #f3f4f6', paddingTop: 20 }}>
                   <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 600, color: '#444', marginBottom: 8 }}>
